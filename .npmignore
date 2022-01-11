@@ -9,6 +9,5 @@ src/
 .gitignore
 .prettierrc
 .travis.yml
-nest-cli.json
 tsconfig.build.json
 tsconfig.json

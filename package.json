@@ -34,7 +34,12 @@
   "keywords": [
     "harmony",
     "marketplace",
-    "blockchain"
+    "blockchain",
+    "nft",
+    "hr721",
+    "hr1155",
+    "harmony-sdk",
+    "one"
   ],
   "bugs": {
     "url": "https://github.com/blockcoders/harmony-marketplace-sdk/issues"
