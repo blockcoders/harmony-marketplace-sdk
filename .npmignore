@@ -1,0 +1,13 @@
+tests/
+.github/
+coverage/
+.circleci/
+*.tsbuildinfo
+*.js.map
+src/
+.eslintrc.js
+.gitignore
+.prettierrc
+.travis.yml
+tsconfig.build.json
+tsconfig.json
