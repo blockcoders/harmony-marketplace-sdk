@@ -16,6 +16,10 @@ Contributions welcome! See [Contributing](CONTRIBUTING.md).
 - [**Brian Zuker**](https://github.com/bzuker)
 - [**Ana Riera**](https://github.com/AnnRiera)
 
+## Acknowledgements
+
+This project was kindly sponsored by [Harmony](https://www.harmony.one/).
+
 ## License
 
 Licensed under the MIT - see the [LICENSE](LICENSE) file for details.
