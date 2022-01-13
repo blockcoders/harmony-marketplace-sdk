@@ -1,3 +1,7 @@
+
+/**
+ * @see {@link https://docs.openzeppelin.com/contracts/3.x/api/token/erc721#IERC721}
+ */
 export abstract class  BaseHR721 {
     async balanceOf(address: string) {}
     async ownerOf(tokenId: string) {}
