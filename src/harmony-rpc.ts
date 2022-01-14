@@ -1,5 +1,5 @@
 import { getStatic } from '@ethersproject/properties'
-import { Network, Networkish } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { BaseHR721 } from './base-hr721'
 import { getNetwork } from './networks'
 
@@ -20,13 +20,8 @@ export class BaseError extends Error {
 }
 
 export class HR721 extends BaseHR721 {
-  constructor(_network?: Networkish) {
-    const network = getNetwork(_network)
-    const baseUrl = getStatic<(network?: Network | null) => string>(new.target, 'getBaseUrl')(network)
-
-    super(baseUrl, network)
-
-    this._nextId = 52
+  constructor(provider: JsonRpcProvider) {
+    super(provider)
   }
 
   async balanceOf(address: string): Promise<string> {
