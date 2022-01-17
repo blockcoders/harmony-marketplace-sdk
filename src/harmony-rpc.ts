@@ -22,7 +22,7 @@ export class BaseError extends Error {
 export class HR721 extends BaseHR721 {
   private readonly rpcProvider: JsonRpcProvider
   constructor(provider: JsonRpcProvider) {
-    super(provider)
+    super()
     this.rpcProvider = provider
   }
 

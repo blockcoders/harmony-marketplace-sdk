@@ -4,10 +4,6 @@ import { JsonRpcProvider } from '@ethersproject/providers'
  * @see {@link https://docs.openzeppelin.com/contracts/3.x/api/token/erc721#IERC721}
  */
 export abstract class BaseHR721 {
-  readonly provider: JsonRpcProvider
-  constructor(rpcProvider: JsonRpcProvider) {
-    this.provider = rpcProvider
-  }
   abstract balanceOf(address: string): Promise<string>
   abstract ownerOf(tokenId: string): Promise<string>
   abstract safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any>
