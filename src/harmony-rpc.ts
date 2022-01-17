@@ -1,5 +1,8 @@
+import { BigNumber } from '@ethersproject/bignumber'
+import { Logger } from '@ethersproject/logger'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { BaseHR721 } from './base-hr721'
+import { logger } from './logger'
 
 export class RpcError extends Error {
   public readonly type: string
@@ -30,7 +33,16 @@ export class HR721 extends BaseHR721 {
     }
 
     const balance = await this.rpcProvider.getBalance(address)
-    return balance.toHexString()
+    try {
+      return BigNumber.from(balance).toString()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'balanceOf',
+        params: address,
+        result: balance,
+        error,
+      })
+    }
   }
 
   async ownerOf(tokenId: string): Promise<string> {
