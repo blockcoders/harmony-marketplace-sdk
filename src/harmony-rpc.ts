@@ -1,16 +1,14 @@
-import { getStatic } from '@ethersproject/properties'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { BaseHR721 } from './base-hr721'
-import { getNetwork } from './networks'
 
-export class BaseError extends Error {
+export class RpcError extends Error {
   public readonly type: string
   public readonly code: number
   public readonly data: string
 
   constructor(message: string, type: string, code: number, data: string) {
     super(message)
-    this.name = BaseError.name
+    this.name = RpcError.name
     this.type = type
     this.code = code
     this.data = data
@@ -27,11 +25,12 @@ export class HR721 extends BaseHR721 {
   }
 
   async balanceOf(address: string): Promise<string> {
-    if (address) {
+    if (!address) {
       throw new Error('Balance query for the zero address')
     }
 
-    return ''
+    const balance = await this.rpcProvider.getBalance(address)
+    return balance.toHexString()
   }
 
   async ownerOf(tokenId: string): Promise<string> {
