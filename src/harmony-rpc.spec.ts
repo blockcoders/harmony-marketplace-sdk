@@ -11,7 +11,8 @@ describe('HarmonyProvider', () => {
 
   beforeEach(async () => {
     const jsonProvider = new JsonRpcProvider(HARMONY_TESTNET_NETWORK)
-    provider = new HR721(jsonProvider)
+    const abi = ''
+    provider = new HR721(jsonProvider, abi)
   })
 
   afterEach(async () => {

@@ -1,5 +1,9 @@
+import { BigNumber } from '@ethersproject/bignumber'
+import { Logger } from '@ethersproject/logger'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 import { BaseHR721 } from './base-hr721'
+import { logger } from './logger'
 
 export class RpcError extends Error {
   public readonly type: string
@@ -19,9 +23,15 @@ export class RpcError extends Error {
 
 export class HR721 extends BaseHR721 {
   private readonly rpcProvider: JsonRpcProvider
-  constructor(provider: JsonRpcProvider) {
+  private abi: string
+  constructor(provider: JsonRpcProvider, abi: string) {
     super()
     this.rpcProvider = provider
+    this.abi = abi
+  }
+
+  private async _createAContract(address: string): Promise<ethers.Contract> {
+    return new ethers.Contract(address, this.abi)
   }
 
   async balanceOf(address: string): Promise<string> {
@@ -29,12 +39,22 @@ export class HR721 extends BaseHR721 {
       throw new Error('Balance query for the zero address')
     }
 
-    const balance = await this.rpcProvider.getBalance(address)
-    return balance.toHexString()
+    const contract = await this._createAContract(address)
+    const balance = await contract.balanceOf(address)
+    try {
+      return BigNumber.from(balance).toString()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'balanceOf',
+        params: address,
+        result: balance,
+        error,
+      })
+    }
   }
 
   async ownerOf(tokenId: string): Promise<string> {
-    return ''
+    return tokenId
   }
 
   async safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any> {
@@ -50,7 +70,7 @@ export class HR721 extends BaseHR721 {
   }
 
   async getApproved(tokenId: string): Promise<string> {
-    return ''
+    return tokenId
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
