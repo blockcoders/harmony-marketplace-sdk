@@ -24,14 +24,12 @@ export class RpcError extends Error {
 export class HR721 extends BaseHR721 {
   private readonly rpcProvider: JsonRpcProvider
   private abi: string
-  constructor(provider: JsonRpcProvider, abi: string) {
+  private readonly contract: ethers.Contract
+  constructor(provider: JsonRpcProvider, abi: string, address: string) {
     super()
     this.rpcProvider = provider
     this.abi = abi
-  }
-
-  private async _createAContract(address: string): Promise<ethers.Contract> {
-    return new ethers.Contract(address, this.abi)
+    this.contract = new ethers.Contract(address, this.abi, this.rpcProvider)
   }
 
   async balanceOf(address: string): Promise<string> {
@@ -39,8 +37,7 @@ export class HR721 extends BaseHR721 {
       throw new Error('Balance query for the zero address')
     }
 
-    const contract = await this._createAContract(address)
-    const balance = await contract.balanceOf(address)
+    const balance = await this.contract.balanceOf(address)
     try {
       return BigNumber.from(balance).toString()
     } catch (error) {
