@@ -23,9 +23,9 @@ export class RpcError extends Error {
 
 export class HR721 extends BaseHR721 {
   private readonly rpcProvider: JsonRpcProvider
-  private abi: string
+  private abi: any[]
   private readonly contract: ethers.Contract
-  constructor(provider: JsonRpcProvider, abi: string, address: string) {
+  constructor(provider: JsonRpcProvider, abi: any[], address: string) {
     super()
     this.rpcProvider = provider
     this.abi = abi
