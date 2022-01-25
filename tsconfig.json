@@ -18,22 +18,18 @@
     "strictNullChecks": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "composite": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "es2015",
-      "es5",
-      "dom"
-    ],
+    "lib": ["es2015", "es5", "dom"],
     "moduleResolution": "node",
     "noEmitOnError": true,
     "preserveSymlinks": true,
     "preserveWatchOutput": true,
-    "pretty": false,
+    "pretty": false
   }
 }

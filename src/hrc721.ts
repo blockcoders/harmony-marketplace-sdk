@@ -1,6 +1,7 @@
 import { getStatic } from '@ethersproject/properties'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { BaseHR721 } from './base-hr721'
+import { Contract } from '@harmony-js/contract'
+import { Harmony } from '@harmony-js/core'
+import { BaseHRC721 } from './base-hr721'
 import { getNetwork } from './networks'
 
 export class BaseError extends Error {
@@ -19,19 +20,26 @@ export class BaseError extends Error {
   }
 }
 
-export class HR721 extends BaseHR721 {
-  private readonly rpcProvider: JsonRpcProvider
-  constructor(provider: JsonRpcProvider) {
+export class HRC721 extends BaseHRC721 {
+  private contract: Contract
+
+  constructor(address: string, abi: any, private client: Harmony) {
     super()
-    this.rpcProvider = provider
+    this.contract = this.client.contracts.createContract(abi, address)
   }
 
   async balanceOf(address: string): Promise<string> {
-    if (address) {
+    if (!address) {
       throw new Error('Balance query for the zero address')
     }
 
-    return ''
+    try {
+      const balance = await this.contract.methods.balanceOf(address).call()
+      return balance
+    } catch (error) {
+      console.error('failed', error)
+      throw error
+    }
   }
 
   async ownerOf(tokenId: string): Promise<string> {
