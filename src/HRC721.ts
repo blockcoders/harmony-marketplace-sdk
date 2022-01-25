@@ -1,16 +1,18 @@
-import { getStatic } from '@ethersproject/properties'
+import { BigNumber } from '@ethersproject/bignumber'
+import { Logger } from '@ethersproject/logger'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { BaseHR721 } from './base-hr721'
-import { getNetwork } from './networks'
+import { ethers } from 'ethers'
+import { BaseHRC721 } from './base-HRC721'
+import { logger } from './logger'
 
-export class BaseError extends Error {
+export class RpcError extends Error {
   public readonly type: string
   public readonly code: number
   public readonly data: string
 
   constructor(message: string, type: string, code: number, data: string) {
     super(message)
-    this.name = BaseError.name
+    this.name = RpcError.name
     this.type = type
     this.code = code
     this.data = data
@@ -19,23 +21,36 @@ export class BaseError extends Error {
   }
 }
 
-export class HR721 extends BaseHR721 {
+export class HRC721 extends BaseHRC721 {
   private readonly rpcProvider: JsonRpcProvider
-  constructor(provider: JsonRpcProvider) {
+  private abi: any[]
+  private readonly contract: ethers.Contract
+  constructor(provider: JsonRpcProvider, abi: any[], address: string) {
     super()
     this.rpcProvider = provider
+    this.abi = abi
+    this.contract = new ethers.Contract(address, this.abi, this.rpcProvider)
   }
 
   async balanceOf(address: string): Promise<string> {
-    if (address) {
-      throw new Error('Balance query for the zero address')
+    if (!address) {
+      throw new Error('You have to provide an address')
     }
 
-    return ''
+    try {
+      const balance = await this.contract.balanceOf(address)
+      return BigNumber.from(balance).toString()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'balanceOf',
+        params: address,
+        error,
+      })
+    }
   }
 
   async ownerOf(tokenId: string): Promise<string> {
-    return ''
+    return tokenId
   }
 
   async safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any> {
@@ -51,7 +66,7 @@ export class HR721 extends BaseHR721 {
   }
 
   async getApproved(tokenId: string): Promise<string> {
-    return ''
+    return tokenId
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
