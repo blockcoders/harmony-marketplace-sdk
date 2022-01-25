@@ -51,7 +51,7 @@ export class HRC721 extends BaseHRC721 {
 
   async ownerOf(tokenId: string): Promise<string> {
     if (!tokenId) {
-      throw new Error('Owner query for nonexistent token')
+      throw new Error('You must to provide a tokenId')
     }
     try {
       return await this.contract.ownerOf(tokenId)
