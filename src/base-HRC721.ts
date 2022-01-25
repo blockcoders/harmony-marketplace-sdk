@@ -1,7 +1,7 @@
 /**
  * @see {@link https://docs.openzeppelin.com/contracts/3.x/api/token/erc721#IERC721}
  */
-export abstract class BaseHR721 {
+export abstract class BaseHRC721 {
   abstract balanceOf(address: string): Promise<string>
   abstract ownerOf(tokenId: string): Promise<string>
   abstract safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any>

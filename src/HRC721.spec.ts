@@ -2,17 +2,17 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from './constants'
-import { HR721, RpcError } from './harmony-rpc'
+import { HRC721, RpcError } from './HRC721'
 import { HARMONY_TESTNET_NETWORK } from './networks'
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from './tests/constants'
 
 describe('HarmonyProvider', () => {
-  let provider: HR721
+  let provider: HRC721
   use(chaiAsPromised)
 
   beforeEach(async () => {
     const jsonProvider = new JsonRpcProvider(HARMONY_TESTNET_NETWORK)
-    provider = new HR721(jsonProvider, CONTRACT_ABI, CONTRACT_ADDRESS)
+    provider = new HRC721(jsonProvider, CONTRACT_ABI, CONTRACT_ADDRESS)
   })
 
   afterEach(async () => {
