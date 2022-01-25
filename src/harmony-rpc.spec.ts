@@ -2,6 +2,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from './constants'
 import { HR721, RpcError } from './harmony-rpc'
 import { HARMONY_TESTNET_NETWORK } from './networks'
 
@@ -11,9 +12,7 @@ describe('HarmonyProvider', () => {
 
   beforeEach(async () => {
     const jsonProvider = new JsonRpcProvider(HARMONY_TESTNET_NETWORK)
-    const abi = ''
-    const address = ''
-    provider = new HR721(jsonProvider, abi, address)
+    provider = new HR721(jsonProvider, CONTRACT_ABI, CONTRACT_ADDRESS)
   })
 
   afterEach(async () => {
@@ -26,7 +25,7 @@ describe('HarmonyProvider', () => {
 
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
-      const balance = await provider.balanceOf('one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a')
+      const balance = await provider.balanceOf('0x36f41b8a79eca329610d6158f3ea9676bec281b9')
       expect(balance).to.exist
     })
 
