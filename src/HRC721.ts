@@ -34,7 +34,7 @@ export class HRC721 extends BaseHRC721 {
 
   async balanceOf(address: string): Promise<string> {
     if (!address) {
-      throw new Error('You have to provide an address')
+      throw new Error('You must to provide an address')
     }
 
     try {
@@ -66,7 +66,19 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async getApproved(tokenId: string): Promise<string> {
-    return tokenId
+    if (!tokenId) {
+      throw new Error('You must to provide a tokenId')
+    }
+
+    try {
+      return await this.contract.getApproved(tokenId)
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'getApproved',
+        params: tokenId,
+        error,
+      })
+    }
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {

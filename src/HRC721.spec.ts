@@ -37,6 +37,20 @@ describe('HarmonyProvider', () => {
     })
   })
 
+  describe('getApproved', () => {
+    it('should returns the account approved for tokenId token.', async () => {
+      const approved = await provider.getApproved('1')
+      expect(approved).to.exist
+      expect(approved).to.not.be.null
+      expect(approved).to.not.be.undefined
+      expect(approved).to.be.equals('0x0000000000000000000000000000000000000000')
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(provider.getApproved('')).to.be.rejectedWith(Error)
+    })
+  })
+
   describe('RpcError', () => {
     it('should be an instance of Error', () => {
       const type = 'METHOD_NOT_FOUND'
