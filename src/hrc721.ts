@@ -1,8 +1,7 @@
-import { getStatic } from '@ethersproject/properties'
 import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
-import { BaseHRC721 } from './base-hr721'
-import { getNetwork } from './networks'
+import { BigNumber } from 'ethers'
+import { BaseHRC721 } from './base-hrc721'
 
 export class BaseError extends Error {
   public readonly type: string
@@ -28,14 +27,14 @@ export class HRC721 extends BaseHRC721 {
     this.contract = this.client.contracts.createContract(abi, address)
   }
 
-  async balanceOf(address: string): Promise<string> {
+  async balanceOf(address: string): Promise<number> {
     if (!address) {
       throw new Error('Balance query for the zero address')
     }
 
     try {
-      const balance = await this.contract.methods.balanceOf(address).call()
-      return balance
+      const balance: BigNumber = await this.contract.methods.balanceOf(address).call()
+      return balance.toNumber()
     } catch (error) {
       console.error('failed', error)
       throw error

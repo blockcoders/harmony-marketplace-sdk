@@ -29,10 +29,11 @@ describe('HarmonyProvider', () => {
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
       const balance = await provider.balanceOf('0x36f41b8a79eca329610d6158f3ea9676bec281b9')
-      console.log(balance)
-
       expect(balance).to.exist
-    })
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).to.be.equals(0)
+    }).timeout(5000)
 
     it('should throw an error if address is not provided', async () => {
       expect(provider.balanceOf('')).to.be.rejectedWith(Error)
