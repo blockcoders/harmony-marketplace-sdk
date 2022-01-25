@@ -2,17 +2,17 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from './constants'
-import { HR721, RpcError } from './harmony-rpc'
+import { HRC721, RpcError } from './HRC721'
 import { HARMONY_TESTNET_NETWORK } from './networks'
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from './tests/constants'
 
 describe('HarmonyProvider', () => {
-  let provider: HR721
+  let provider: HRC721
   use(chaiAsPromised)
 
   beforeEach(async () => {
     const jsonProvider = new JsonRpcProvider(HARMONY_TESTNET_NETWORK)
-    provider = new HR721(jsonProvider, CONTRACT_ABI, CONTRACT_ADDRESS)
+    provider = new HRC721(jsonProvider, CONTRACT_ABI, CONTRACT_ADDRESS)
   })
 
   afterEach(async () => {
@@ -23,10 +23,27 @@ describe('HarmonyProvider', () => {
     expect(provider).to.not.be.undefined
   })
 
+  describe('balanceOf', () => {
+    it('should get the number of tokens in the specified account', async () => {
+      const balance = await provider.balanceOf('0x36f41b8a79eca329610d6158f3ea9676bec281b9')
+      expect(balance).to.exist
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).to.be.equals('0')
+    })
+
+    it('should throw an error if address is not provided', async () => {
+      expect(provider.balanceOf('')).to.be.rejectedWith(Error)
+    })
+  })
+
   describe('ownerOf', () => {
     it('should returns the owner of the tokenId token.', async () => {
       const owner = await provider.ownerOf('1')
       expect(owner).to.exist
+      expect(owner).to.not.be.null
+      expect(owner).to.not.be.undefined
+      expect(owner).to.be.equals('0x7C61c8F282Aeaae3E0476d0533D21dC42C5Aa146')
     })
 
     it('should throw an error if tokenId is not provided', async () => {
