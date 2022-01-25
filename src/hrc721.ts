@@ -1,6 +1,7 @@
 import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
-import { BigNumber } from 'ethers'
+import { BigNumber, logger } from 'ethers'
+import { Logger } from 'ethers/lib/utils'
 import { BaseHRC721 } from './base-hrc721'
 
 export class BaseError extends Error {
@@ -29,15 +30,18 @@ export class HRC721 extends BaseHRC721 {
 
   async balanceOf(address: string): Promise<number> {
     if (!address) {
-      throw new Error('Balance query for the zero address')
+      throw new Error('You have to provide an address')
     }
 
     try {
       const balance: BigNumber = await this.contract.methods.balanceOf(address).call()
       return balance.toNumber()
     } catch (error) {
-      console.error('failed', error)
-      throw error
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'balanceOf',
+        params: address,
+        error,
+      })
     }
   }
 
