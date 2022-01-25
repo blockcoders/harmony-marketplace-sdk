@@ -1,16 +1,17 @@
-import { getStatic } from '@ethersproject/properties'
+import { Logger } from '@ethersproject/logger'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 import { BaseHR721 } from './base-hr721'
-import { getNetwork } from './networks'
+import { logger } from './logger'
 
-export class BaseError extends Error {
+export class RpcError extends Error {
   public readonly type: string
   public readonly code: number
   public readonly data: string
 
   constructor(message: string, type: string, code: number, data: string) {
     super(message)
-    this.name = BaseError.name
+    this.name = RpcError.name
     this.type = type
     this.code = code
     this.data = data
@@ -21,9 +22,13 @@ export class BaseError extends Error {
 
 export class HR721 extends BaseHR721 {
   private readonly rpcProvider: JsonRpcProvider
-  constructor(provider: JsonRpcProvider) {
+  private abi: any[]
+  private readonly contract: ethers.Contract
+  constructor(provider: JsonRpcProvider, abi: any[], address: string) {
     super()
     this.rpcProvider = provider
+    this.abi = abi
+    this.contract = new ethers.Contract(address, this.abi, this.rpcProvider)
   }
 
   async balanceOf(address: string): Promise<string> {
@@ -35,7 +40,21 @@ export class HR721 extends BaseHR721 {
   }
 
   async ownerOf(tokenId: string): Promise<string> {
-    return ''
+    if (!tokenId) {
+      throw new Error('Owner query for nonexistent token')
+    }
+
+    const owner = await this.contract.ownerOf(tokenId)
+    try {
+      return owner
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'ownerOf',
+        params: tokenId,
+        result: owner,
+        error,
+      })
+    }
   }
 
   async safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any> {

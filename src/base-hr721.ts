@@ -1,5 +1,3 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
-
 /**
  * @see {@link https://docs.openzeppelin.com/contracts/3.x/api/token/erc721#IERC721}
  */
