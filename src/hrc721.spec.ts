@@ -10,6 +10,7 @@ import {
   TEST_ADDRESS,
   RESULT_TEST_ADDRESS,
   RESULT_ORIGIN_ADDRESS,
+  EMPTY_TEST_ADDRESS,
 } from './tests/constants'
 
 describe('HarmonyProvider', () => {
@@ -69,6 +70,28 @@ describe('HarmonyProvider', () => {
 
     it('should throw an error if tokenId is not provided', async () => {
       expect(provider.ownerOf('')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('isApprovedForAll', () => {
+    it('should return a boolean value if the operator is allowed to manage all of the assets of owner', async () => {
+      const approved = await provider.isApprovedForAll(TEST_ADDRESS, EMPTY_TEST_ADDRESS)
+      expect(approved).to.exist
+      expect(approved).to.not.be.null
+      expect(approved).to.not.be.undefined
+      expect(approved).to.be.equals(false)
+    }).timeout(5000)
+
+    it('should throw an error if addressOwner is not provided', async () => {
+      expect(provider.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOperator is not provided', async () => {
+      expect(provider.isApprovedForAll(TEST_ADDRESS, '')).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(provider.isApprovedForAll('', '')).to.be.rejectedWith(Error)
     })
   })
 })
