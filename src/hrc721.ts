@@ -30,7 +30,7 @@ export class HRC721 extends BaseHRC721 {
 
   async balanceOf(address: string): Promise<number> {
     if (!address) {
-      throw new Error('You have to provide an address')
+      throw new Error('You have provide an address')
     }
 
     try {
@@ -47,7 +47,7 @@ export class HRC721 extends BaseHRC721 {
 
   async ownerOf(tokenId: string): Promise<string> {
     if (!tokenId) {
-      throw new Error('You must to provide a tokenId')
+      throw new Error('You must provide a tokenId')
     }
     try {
       return await this.contract.methods.ownerOf(tokenId).call()
