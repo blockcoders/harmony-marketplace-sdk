@@ -54,7 +54,7 @@ describe('HarmonyProvider', () => {
     })
   })
 
-  describe('RpcError', () => {
+  describe('BaseError', () => {
     it('should be an instance of Error', () => {
       const type = 'METHOD_NOT_FOUND'
       const code = 32601
