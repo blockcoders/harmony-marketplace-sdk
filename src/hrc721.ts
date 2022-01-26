@@ -30,7 +30,7 @@ export class HRC721 extends BaseHRC721 {
 
   async balanceOf(address: string): Promise<number> {
     if (!address) {
-      throw new Error('You must to provide an address')
+      throw new Error('You have provide an address')
     }
 
     try {
@@ -46,7 +46,18 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async ownerOf(tokenId: string): Promise<string> {
-    return ''
+    if (!tokenId) {
+      throw new Error('You must provide a tokenId')
+    }
+    try {
+      return await this.contract.methods.ownerOf(tokenId).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'ownerOf',
+        params: tokenId,
+        error,
+      })
+    }
   }
 
   async safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any> {
@@ -63,7 +74,7 @@ export class HRC721 extends BaseHRC721 {
 
   async getApproved(tokenId: string): Promise<string> {
     if (!tokenId) {
-      throw new Error('You must to provide a tokenId')
+      throw new Error('You must provide a tokenId')
     }
 
     try {
