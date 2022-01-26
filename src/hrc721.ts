@@ -3,7 +3,7 @@ import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
 import { BigNumber, logger } from 'ethers'
 import { Logger } from 'ethers/lib/utils'
-import { BaseHRC721 } from './base-hrc721'
+import { BaseHRC721 } from './base-HRC721'
 
 export class BaseError extends Error {
   public readonly type: string
@@ -31,7 +31,7 @@ export class HRC721 extends BaseHRC721 {
 
   async balanceOf(address: string): Promise<number> {
     if (!address) {
-      throw new Error('You have to provide an address')
+      throw new Error('You have provide an address')
     }
 
     try {
@@ -47,7 +47,18 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async ownerOf(tokenId: string): Promise<string> {
-    return ''
+    if (!tokenId) {
+      throw new Error('You must provide a tokenId')
+    }
+    try {
+      return await this.contract.methods.ownerOf(tokenId).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'ownerOf',
+        params: tokenId,
+        error,
+      })
+    }
   }
 
   async safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any> {
