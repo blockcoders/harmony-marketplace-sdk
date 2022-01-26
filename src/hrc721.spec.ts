@@ -55,7 +55,7 @@ describe('HarmonyProvider', () => {
       expect(owner).to.be.equals(RESULT_TEST_ADDRESS)
     }).timeout(5000)
 
-    it('should returns the owner of the tokenId token in an account without NFT.', async () => {
+    it('should returns the origin address of the tokenId token if the token has no owner.', async () => {
       const owner = await provider.ownerOf('0')
       expect(owner).to.exist
       expect(owner).to.not.be.null
@@ -63,7 +63,7 @@ describe('HarmonyProvider', () => {
       expect(owner).to.be.equals(RESULT_ORIGIN_ADDRESS)
     }).timeout(5000)
 
-    it('should throw an error if tokenId is not valid', async () => {
+    it('should throw an error if tokenId is a non existent token', async () => {
       expect(provider.ownerOf('6')).to.be.rejectedWith(Error)
     })
 
