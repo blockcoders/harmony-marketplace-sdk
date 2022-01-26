@@ -1,3 +1,4 @@
+import { Wallet } from '@harmony-js/account'
 import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
 import { BigNumber, logger } from 'ethers'
@@ -75,5 +76,10 @@ export class HRC721 extends BaseHRC721 {
 
   async safeTransferFromWithData(fromAddress: string, toAddress: string, tokenId: string, data: any): Promise<any> {
     return
+  }
+
+  setPrivateKey(privateKey: string) {
+    const wallet: Wallet = this.contract.wallet
+    return wallet.addByPrivateKey(privateKey)
   }
 }
