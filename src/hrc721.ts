@@ -1,18 +1,17 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { Logger } from '@ethersproject/logger'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { ethers } from 'ethers'
+import { Contract } from '@harmony-js/contract'
+import { Harmony } from '@harmony-js/core'
+import { BigNumber, logger } from 'ethers'
+import { Logger } from 'ethers/lib/utils'
 import { BaseHRC721 } from './base-HRC721'
-import { logger } from './logger'
 
-export class RpcError extends Error {
+export class BaseError extends Error {
   public readonly type: string
   public readonly code: number
   public readonly data: string
 
   constructor(message: string, type: string, code: number, data: string) {
     super(message)
-    this.name = RpcError.name
+    this.name = BaseError.name
     this.type = type
     this.code = code
     this.data = data
@@ -22,24 +21,21 @@ export class RpcError extends Error {
 }
 
 export class HRC721 extends BaseHRC721 {
-  private readonly rpcProvider: JsonRpcProvider
-  private abi: any[]
-  private readonly contract: ethers.Contract
-  constructor(provider: JsonRpcProvider, abi: any[], address: string) {
+  private contract: Contract
+
+  constructor(address: string, abi: any, private client: Harmony) {
     super()
-    this.rpcProvider = provider
-    this.abi = abi
-    this.contract = new ethers.Contract(address, this.abi, this.rpcProvider)
+    this.contract = this.client.contracts.createContract(abi, address)
   }
 
-  async balanceOf(address: string): Promise<string> {
+  async balanceOf(address: string): Promise<number> {
     if (!address) {
       throw new Error('You must to provide an address')
     }
 
     try {
-      const balance = await this.contract.balanceOf(address)
-      return BigNumber.from(balance).toString()
+      const balance: BigNumber = await this.contract.methods.balanceOf(address).call()
+      return balance.toNumber()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
         method: 'balanceOf',
@@ -50,7 +46,7 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async ownerOf(tokenId: string): Promise<string> {
-    return tokenId
+    return ''
   }
 
   async safeTransferFrom(fromAddress: string, toAddress: string, tokenId: string): Promise<any> {
@@ -71,7 +67,7 @@ export class HRC721 extends BaseHRC721 {
     }
 
     try {
-      return await this.contract.getApproved(tokenId)
+      return await this.contract.methods.getApproved(tokenId).call()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
         method: 'getApproved',

@@ -17,7 +17,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts",
+    "test": "NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts --exit",
     "test:watch": "NODE_ENV=test mocha --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
     "test:cov": "nyc npm run test",
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
@@ -52,11 +52,11 @@
     "@types/chai": "^4.3.0",
     "@types/chai-as-promised": "^7.1.4",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^17.0.8",
-    "@types/sinon": "^10.0.6",
+    "@types/node": "^17.0.10",
+    "@types/sinon": "^10.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
     "@typescript-eslint/parser": "^5.9.1",
-    "chai": "^4.3.4",
+    "chai": "^4.3.5",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
@@ -71,6 +71,9 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.5.2",
+    "@harmony-js/contract": "^0.1.56",
+    "@harmony-js/core": "^0.1.57",
+    "@harmony-js/utils": "^0.1.56",
     "ethers": "^5.5.3"
   }
 }

@@ -25,15 +25,11 @@
     "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "es2015",
-      "es5",
-      "dom"
-    ],
+    "lib": ["es2015", "es5", "dom"],
     "moduleResolution": "node",
     "noEmitOnError": true,
     "preserveSymlinks": true,
     "preserveWatchOutput": true,
-    "pretty": false,
+    "pretty": false
   }
 }
