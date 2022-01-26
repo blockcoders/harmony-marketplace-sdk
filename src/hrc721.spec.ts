@@ -55,7 +55,7 @@ describe('HarmonyProvider', () => {
       expect(owner).to.be.equals(RESULT_TEST_ADDRESS)
     }).timeout(5000)
 
-    it('should return the origin address of the tokenId token if the token has no owner.', async () => {
+    it('should return the origin address of the tokenId token if the token has no owner', async () => {
       const owner = await provider.ownerOf('0')
       expect(owner).to.exist
       expect(owner).to.not.be.null
@@ -74,7 +74,7 @@ describe('HarmonyProvider', () => {
 
   // TODO: add more tests when the approve function works
   describe('getApproved', () => {
-    it('should return the account approved for tokenId token.', async () => {
+    it('should return the account approved for tokenId token', async () => {
       const approved = await provider.getApproved('1')
       expect(approved).to.exist
       expect(approved).to.not.be.null
