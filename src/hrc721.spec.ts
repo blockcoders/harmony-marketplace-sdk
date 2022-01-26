@@ -1,4 +1,5 @@
 import { Harmony } from '@harmony-js/core'
+import { TxStatus } from '@harmony-js/transaction'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
@@ -7,9 +8,11 @@ import { HRC721 } from './hrc721'
 import {
   CONTRACT_ABI,
   CONTRACT_ADDRESS,
-  TEST_ADDRESS,
+  TEST_ADDRESS_1,
   RESULT_TEST_ADDRESS,
   RESULT_ORIGIN_ADDRESS,
+  TEST_ACCOUNT_2,
+  TEST_ACCOUNT_3,
 } from './tests/constants'
 
 describe('HarmonyProvider', () => {
@@ -34,11 +37,11 @@ describe('HarmonyProvider', () => {
 
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
-      const balance = await provider.balanceOf(TEST_ADDRESS)
+      const balance = await provider.balanceOf(TEST_ADDRESS_1)
       expect(balance).to.exist
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
-      expect(balance).to.be.equals(3)
+      expect(balance).to.be.equals(4)
     }).timeout(5000)
 
     it('should throw an error if address is not provided', async () => {
@@ -70,5 +73,49 @@ describe('HarmonyProvider', () => {
     it('should throw an error if tokenId is not provided', async () => {
       expect(provider.ownerOf('')).to.be.rejectedWith(Error)
     })
+  })
+
+  describe('transferFrom', () => {
+    it('should throw if there is no signer', () => {
+      expect(provider.transferFrom(TEST_ADDRESS_1, RESULT_TEST_ADDRESS, '1')).to.be.rejectedWith(Error)
+    })
+
+    it('should transfer the ownership of a token from one address to another', async () => {
+      const owner = await provider.ownerOf('5')
+      expect(owner).to.be.oneOf([TEST_ACCOUNT_2.address, TEST_ACCOUNT_3.address])
+
+      const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
+      const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
+      if (!ownerAccount || !receiverAccount) throw new Error('Account not found')
+
+      provider.setSignerByPrivateKey(ownerAccount.privateKey)
+      const result = await provider.transferFrom(ownerAccount.address, receiverAccount.address, '5')
+
+      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
+      expect(result.receipt).to.exist
+      expect(result.receipt?.blockHash).to.be.string
+    }).timeout(30000)
+  })
+
+  describe.skip('safeTransferFrom', () => {
+    it('should throw if there is no signer', () => {
+      expect(provider.safeTransferFrom(TEST_ADDRESS_1, RESULT_TEST_ADDRESS, '1')).to.be.rejectedWith(Error)
+    })
+
+    it('should transfer the ownership of a token from one address to another', async () => {
+      const owner = await provider.ownerOf('5')
+      expect(owner).to.be.oneOf([TEST_ACCOUNT_2.address, TEST_ACCOUNT_3.address])
+
+      const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
+      const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
+      if (!ownerAccount || !receiverAccount) throw new Error('Account not found')
+
+      provider.setSignerByPrivateKey(ownerAccount.privateKey)
+      const result = await provider.safeTransferFrom(ownerAccount.address, receiverAccount.address, '5')
+
+      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
+      expect(result.receipt).to.exist
+      expect(result.receipt?.blockHash).to.be.string
+    }).timeout(30000)
   })
 })
