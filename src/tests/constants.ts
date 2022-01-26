@@ -1,3 +1,5 @@
+export const TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'
+export const RESULT_TEST_ADDRESS = '0x7C61c8F282Aeaae3E0476d0533D21dC42C5Aa146'
 export const CONTRACT_ADDRESS = '0x16703afb468e4ba88380c2a2fda1aa4c5ec7b264'
 export const CONTRACT_ABI = [
   {
