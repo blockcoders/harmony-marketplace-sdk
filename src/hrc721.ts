@@ -93,7 +93,19 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
-    return true
+    if (!addressOwner && !addressOperator) {
+      throw new Error('You must provide an addressOwner and an addressOperator')
+    }
+
+    try {
+      return await this.contract.methods.isApprovedForAll(addressOwner, addressOperator).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'isApprovedForAll',
+        params: { addressOwner, addressOperator },
+        error,
+      })
+    }
   }
 
   async safeTransferFromWithData(fromAddress: string, toAddress: string, tokenId: string, data: any): Promise<any> {
