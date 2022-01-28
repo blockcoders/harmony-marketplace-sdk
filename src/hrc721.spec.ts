@@ -47,7 +47,7 @@ describe('HarmonyProvider', () => {
   })
 
   describe('ownerOf', () => {
-    it('should returns the owner of the tokenId token.', async () => {
+    it('should return the owner of the tokenId token.', async () => {
       const owner = await provider.ownerOf('1')
       expect(owner).to.exist
       expect(owner).to.not.be.null
@@ -55,7 +55,7 @@ describe('HarmonyProvider', () => {
       expect(owner).to.be.equals(RESULT_TEST_ADDRESS)
     }).timeout(5000)
 
-    it('should returns the origin address of the tokenId token if the token has no owner.', async () => {
+    it('should return the origin address of the tokenId token if the token has no owner', async () => {
       const owner = await provider.ownerOf('0')
       expect(owner).to.exist
       expect(owner).to.not.be.null
@@ -69,6 +69,21 @@ describe('HarmonyProvider', () => {
 
     it('should throw an error if tokenId is not provided', async () => {
       expect(provider.ownerOf('')).to.be.rejectedWith(Error)
+    })
+  })
+
+  // TODO: add more tests when the approve function works
+  describe('getApproved', () => {
+    it('should return the account approved for tokenId token', async () => {
+      const approved = await provider.getApproved('1')
+      expect(approved).to.exist
+      expect(approved).to.not.be.null
+      expect(approved).to.not.be.undefined
+      expect(approved).to.be.equals('0x0000000000000000000000000000000000000000')
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(provider.getApproved('')).to.be.rejectedWith(Error)
     })
   })
 })

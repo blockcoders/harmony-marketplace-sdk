@@ -73,7 +73,19 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async getApproved(tokenId: string): Promise<string> {
-    return ''
+    if (!tokenId) {
+      throw new Error('You must provide a tokenId')
+    }
+
+    try {
+      return await this.contract.methods.getApproved(tokenId).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'getApproved',
+        params: tokenId,
+        error,
+      })
+    }
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
