@@ -17,8 +17,8 @@
     "access": "public"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts --exit",
-    "test:watch": "NODE_ENV=test mocha --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
+    "test": "NODE_ENV=test mocha -t 60000 --require ts-node/register src/**/*.spec.ts --exit",
+    "test:watch": "NODE_ENV=test mocha -t 60000 --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
     "test:cov": "nyc npm run test",
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
     "build": "tsc --build ./tsconfig.json",
@@ -71,8 +71,10 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.5.2",
+    "@harmony-js/account": "^0.1.57",
     "@harmony-js/contract": "^0.1.56",
     "@harmony-js/core": "^0.1.57",
+    "@harmony-js/transaction": "^0.1.56",
     "@harmony-js/utils": "^0.1.56",
     "ethers": "^5.5.3"
   }
