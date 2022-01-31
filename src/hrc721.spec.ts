@@ -82,11 +82,10 @@ describe('HarmonyProvider', () => {
 
     it('should transfer the ownership of a token from one address to another', async () => {
       const owner = await provider.ownerOf('5')
-      expect(owner).to.be.oneOf([TEST_ACCOUNT_2.address, TEST_ACCOUNT_3.address])
 
       const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
       const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
-      if (!ownerAccount || !receiverAccount) throw new Error('Account not found')
+      if (!ownerAccount || !receiverAccount) throw new Error('Owner or receiver not found')
 
       provider.setSignerByPrivateKey(ownerAccount.privateKey)
       const result = await provider.transferFrom(ownerAccount.address, receiverAccount.address, '5')
@@ -94,7 +93,7 @@ describe('HarmonyProvider', () => {
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result.receipt).to.exist
       expect(result.receipt?.blockHash).to.be.string
-    }).timeout(30000)
+    })
   })
 
   describe.skip('safeTransferFrom', () => {
@@ -116,6 +115,6 @@ describe('HarmonyProvider', () => {
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result.receipt).to.exist
       expect(result.receipt?.blockHash).to.be.string
-    }).timeout(30000)
+    })
   })
 })

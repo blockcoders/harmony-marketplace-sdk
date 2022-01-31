@@ -17,8 +17,8 @@
     "access": "public"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts --exit",
-    "test:watch": "NODE_ENV=test mocha --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
+    "test": "NODE_ENV=test mocha -t 60000 --require ts-node/register src/**/*.spec.ts --exit",
+    "test:watch": "NODE_ENV=test mocha -t 60000 --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
     "test:cov": "nyc npm run test",
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
     "build": "tsc --build ./tsconfig.json",
