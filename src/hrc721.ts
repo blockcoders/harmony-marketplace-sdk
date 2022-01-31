@@ -123,7 +123,19 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async getApproved(tokenId: string): Promise<string> {
-    return ''
+    if (!tokenId) {
+      throw new Error('You must provide a tokenId')
+    }
+
+    try {
+      return await this.contract.methods.getApproved(tokenId).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'getApproved',
+        params: tokenId,
+        error,
+      })
+    }
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
@@ -131,7 +143,19 @@ export class HRC721 extends BaseHRC721 {
   }
 
   async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
-    return true
+    if (!addressOwner && !addressOperator) {
+      throw new Error('You must provide an addressOwner and an addressOperator')
+    }
+
+    try {
+      return await this.contract.methods.isApprovedForAll(addressOwner, addressOperator).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'isApprovedForAll',
+        params: { addressOwner, addressOperator },
+        error,
+      })
+    }
   }
 
   async safeTransferFromWithData(fromAddress: string, toAddress: string, tokenId: string, data: any): Promise<any> {
