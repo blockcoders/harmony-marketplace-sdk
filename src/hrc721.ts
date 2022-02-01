@@ -1,39 +1,17 @@
-import { Wallet } from '@harmony-js/account'
-import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
 import { Transaction } from '@harmony-js/transaction'
 import { Unit } from '@harmony-js/utils'
 import { hexToNumber } from '@harmony-js/utils'
 import { BigNumber, logger } from 'ethers'
 import { Logger } from 'ethers/lib/utils'
-import { BaseHRC721 } from './base-hrc721'
+import { BaseToken } from './base-implementation'
 import { ITransactionOptions } from './interfaces'
 
 const DEFAULT_GAS_PRICE = new Unit('100').asGwei().toHex()
 
-export class BaseError extends Error {
-  public readonly type: string
-  public readonly code: number
-  public readonly data: string
-
-  constructor(message: string, type: string, code: number, data: string) {
-    super(message)
-    this.name = BaseError.name
-    this.type = type
-    this.code = code
-    this.data = data
-
-    Error.captureStackTrace(this, this.constructor)
-  }
-}
-
-export class HRC721 extends BaseHRC721 {
-  private contract: Contract
-  private isSignerSet = false
-
-  constructor(address: string, abi: any, private client: Harmony) {
-    super()
-    this.contract = this.client.contracts.createContract(abi, address)
+export class HRC721 extends BaseToken {
+  constructor(address: string, abi: any, client: Harmony) {
+    super(address, abi, client)
   }
 
   async balanceOf(address: string): Promise<number> {
@@ -42,7 +20,7 @@ export class HRC721 extends BaseHRC721 {
     }
 
     try {
-      const balance: BigNumber = await this.contract.methods.balanceOf(address).call()
+      const balance: BigNumber = await this._getBalance(address)
       return balance.toNumber()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
@@ -138,55 +116,7 @@ export class HRC721 extends BaseHRC721 {
     }
   }
 
-  async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
-    return
-  }
-
-  async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
-    if (!addressOwner && !addressOperator) {
-      throw new Error('You must provide an addressOwner and an addressOperator')
-    }
-
-    try {
-      return await this.contract.methods.isApprovedForAll(addressOwner, addressOperator).call()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'isApprovedForAll',
-        params: { addressOwner, addressOperator },
-        error,
-      })
-    }
-  }
-
   async safeTransferFromWithData(fromAddress: string, toAddress: string, tokenId: string, data: any): Promise<any> {
     return
-  }
-
-  /**
-   * Will set the signer in order to execute transactions
-   *
-   * @param {string} privateKey
-   * @memberof HRC721
-   */
-  setSignerByPrivateKey(privateKey: string): void {
-    if (!privateKey) throw new BaseError('You must provide a privateKey', 'HRC721', -1, privateKey)
-
-    const wallet: Wallet = this.contract.wallet
-    const account = wallet.addByPrivateKey(privateKey)
-
-    if (!account.address) throw new BaseError('You must provide a valid privateKey', 'HRC721', -1, privateKey)
-
-    wallet.setSigner(account.address)
-    this.isSignerSet = true
-  }
-
-  private checkForSigner(): void {
-    if (!this.isSignerSet)
-      throw new BaseError(
-        'You must set the signer before executing transactions. Call setSignerByPrivateKey',
-        'HRC721',
-        -1,
-        '',
-      )
   }
 }
