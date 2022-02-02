@@ -1,7 +1,5 @@
 import { Harmony } from '@harmony-js/core'
-import { BigNumber, logger } from 'ethers'
-import { Logger } from 'ethers/lib/utils'
-import { BaseToken } from './base-implementation'
+import { BaseToken } from './base-token'
 
 export class HRC1155 extends BaseToken {
   constructor(address: string, abi: any, client: Harmony) {
@@ -9,20 +7,7 @@ export class HRC1155 extends BaseToken {
   }
 
   async balanceOf(address: string, id: string): Promise<number> {
-    if (!address) {
-      throw new Error('You have provide an address')
-    }
-
-    try {
-      const balance: BigNumber = await this._getBalance(address, id)
-      return balance.toNumber()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'balanceOf',
-        params: address,
-        error,
-      })
-    }
+    return await this._getBalance(address, id)
   }
 
   async balanceOfBatch(accounts: string[], ids: string[]): Promise<number[]> {

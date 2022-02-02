@@ -1,34 +1,24 @@
+import { Logger } from '@ethersproject/logger'
+import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
 import { Transaction } from '@harmony-js/transaction'
 import { Unit } from '@harmony-js/utils'
 import { hexToNumber } from '@harmony-js/utils'
-import { BigNumber, logger } from 'ethers'
-import { Logger } from 'ethers/lib/utils'
-import { BaseToken } from './base-implementation'
+import { BaseToken } from './base-token'
 import { ITransactionOptions } from './interfaces'
+import { logger } from './logger'
 
 const DEFAULT_GAS_PRICE = new Unit('100').asGwei().toHex()
 
 export class HRC721 extends BaseToken {
-  constructor(address: string, abi: any, client: Harmony) {
-    super(address, abi, client)
+  private contract: Contract
+  constructor(address: string, abi: any, private harmonyClient: Harmony) {
+    super(address, abi, harmonyClient)
+    this.contract = this.harmonyClient.contracts.createContract(abi, address)
   }
 
   async balanceOf(address: string): Promise<number> {
-    if (!address) {
-      throw new Error('You have provide an address')
-    }
-
-    try {
-      const balance: BigNumber = await this._getBalance(address)
-      return balance.toNumber()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'balanceOf',
-        params: address,
-        error,
-      })
-    }
+    return await this._getBalance(address)
   }
 
   async ownerOf(tokenId: string): Promise<string> {
