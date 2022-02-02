@@ -155,4 +155,10 @@ describe('HarmonyProvider', () => {
       expect(provider.isApprovedForAll('', '')).to.be.rejectedWith(Error)
     })
   })
+
+  describe('setApprovalForAll', () => {
+    it('should throw an error if params are not provided', async () => {
+      expect(provider.setApprovalForAll('', false)).to.be.rejectedWith(Error)
+    })
+  })
 })
