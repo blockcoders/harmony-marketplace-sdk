@@ -53,7 +53,7 @@ export abstract class BaseToken {
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
-    return
+    throw new Error('setApprovalForAll is not implemented yet')
   }
 
   async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
