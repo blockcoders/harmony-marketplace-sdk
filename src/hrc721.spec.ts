@@ -6,8 +6,8 @@ import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { HRC721 } from './hrc721'
 import {
-  CONTRACT_ABI,
-  CONTRACT_ADDRESS,
+  HRC721_CONTRACT_ABI,
+  HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
   RESULT_TEST_ADDRESS,
   RESULT_ORIGIN_ADDRESS,
@@ -25,7 +25,7 @@ describe('HarmonyProvider', () => {
   use(chaiAsPromised)
 
   beforeEach(async () => {
-    provider = new HRC721(CONTRACT_ADDRESS, CONTRACT_ABI, client)
+    provider = new HRC721(HRC721_CONTRACT_ADDRESS, HRC721_CONTRACT_ABI, client)
   })
 
   afterEach(async () => {

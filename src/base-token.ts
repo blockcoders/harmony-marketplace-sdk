@@ -29,7 +29,7 @@ export abstract class BaseToken {
     this.baseContract = this.client.contracts.createContract(abi, address)
   }
 
-  async _getBalance(address: string, id?: string): Promise<number> {
+  async _getBalance(address: string, id?: number): Promise<number> {
     if (!address) {
       throw new Error('You have to provide an address')
     }
