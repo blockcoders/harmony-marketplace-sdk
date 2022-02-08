@@ -23,9 +23,7 @@ export class HRC1155 extends BaseToken {
 
     try {
       const balances = await this.contract.methods.balanceOfBatch(accounts, ids).call()
-      return balances.map((amount: BigNumber) => {
-        return amount.toNumber()
-      })
+      return balances.map((amount: BigNumber) => amount.toNumber())
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
         method: 'balanceOfBatch',
