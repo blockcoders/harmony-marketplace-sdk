@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { Logger } from '@ethersproject/logger'
 import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
@@ -12,11 +12,11 @@ export class HRC1155 extends BaseToken {
     this.contract = this.harmonyClient.contracts.createContract(abi, address)
   }
 
-  async balanceOf(address: string, id: number): Promise<number> {
+  async balanceOf(address: string, id: BigNumberish): Promise<number> {
     return await this._getBalance(address, id)
   }
 
-  async balanceOfBatch(accounts: string[], ids: string[]): Promise<number[]> {
+  async balanceOfBatch(accounts: string[], ids: BigNumberish[]): Promise<number[]> {
     if (accounts.length !== ids.length) {
       throw new Error('Accounts and ids must have the same length')
     }

@@ -14,10 +14,11 @@ import {
   TEST_ACCOUNT_2,
   TEST_ACCOUNT_3,
   EMPTY_TEST_ADDRESS,
+  HARMONY_TESTNET,
 } from './tests/constants'
 
-describe('HarmonyProvider', () => {
-  const client = new Harmony('https://api.s0.b.hmny.io/', {
+describe('HRC721 Provider', () => {
+  const client = new Harmony(HARMONY_TESTNET, {
     chainType: ChainType.Harmony,
     chainId: ChainID.HmyTestnet,
   })
