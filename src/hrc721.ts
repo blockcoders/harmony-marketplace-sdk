@@ -44,7 +44,7 @@ export class HRC721 extends BaseToken {
       gasPrice: DEFAULT_GAS_PRICE,
     },
   ): Promise<Transaction> {
-    this.checkForSigner()
+    this.checkForSigner('HRC721')
     const method = this.contract.methods.safeTransferFrom(fromAddress, toAddress, tokenId)
 
     if (!options.gasLimit) {
@@ -70,7 +70,7 @@ export class HRC721 extends BaseToken {
       gasPrice: DEFAULT_GAS_PRICE,
     },
   ): Promise<Transaction> {
-    this.checkForSigner()
+    this.checkForSigner('HRC721')
     const method = this.contract.methods.transferFrom(fromAddress, toAddress, tokenId)
 
     if (!options.gasLimit) {

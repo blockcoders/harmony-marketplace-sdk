@@ -1,5 +1,5 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { Zero } from '@ethersproject/constants'
+import { BigNumber, BigNumberish, isBigNumberish } from '@ethersproject/bignumber/lib/bignumber'
+import { Zero, AddressZero } from '@ethersproject/constants'
 import { Logger } from '@ethersproject/logger'
 import { Wallet } from '@harmony-js/account'
 import { Contract } from '@harmony-js/contract'
@@ -29,15 +29,16 @@ export abstract class BaseToken {
     this.baseContract = this.client.contracts.createContract(abi, address)
   }
 
-  async _getBalance(address: string, id?: string): Promise<number> {
+  async _getBalance(address: string, id?: BigNumberish): Promise<number> {
     if (!address) {
       throw new Error('You have to provide an address')
     }
 
+    this.checkNotBeZeroAddress(address)
+
     try {
       let balance: BigNumber = Zero
-
-      if (!id) {
+      if (!isBigNumberish(id)) {
         balance = await this.baseContract.methods.balanceOf(address).call()
         return balance.toNumber()
       }
@@ -53,7 +54,20 @@ export abstract class BaseToken {
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
-    throw new Error('setApprovalForAll is not implemented yet')
+    if (!addressOperator) {
+      throw new Error('You must provide an addressOperator')
+    }
+
+    try {
+      return await this.baseContract.methods.setApprovalForAll(addressOperator, approved).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'setApprovalForAll',
+        params: { addressOperator, approved },
+        error,
+      })
+    }
+    // throw new Error('setApprovalForAll is not implemented yet')
   }
 
   async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
@@ -78,25 +92,31 @@ export abstract class BaseToken {
    * @param {string} privateKey
    * @memberof HRC721
    */
-  setSignerByPrivateKey(privateKey: string): void {
-    if (!privateKey) throw new BaseError('You must provide a privateKey', 'HRC721', -1, privateKey)
+  setSignerByPrivateKey(privateKey: string, type: string): void {
+    if (!privateKey) throw new BaseError('You must provide a privateKey', type, -1, privateKey)
 
     const wallet: Wallet = this.baseContract.wallet
     const account = wallet.addByPrivateKey(privateKey)
 
-    if (!account.address) throw new BaseError('You must provide a valid privateKey', 'HRC721', -1, privateKey)
+    if (!account.address) throw new BaseError('You must provide a valid privateKey', type, -1, privateKey)
 
     wallet.setSigner(account.address)
     this.isSignerSet = true
   }
 
-  checkForSigner(): void {
+  checkForSigner(type: string): void {
     if (!this.isSignerSet)
       throw new BaseError(
         'You must set the signer before executing transactions. Call setSignerByPrivateKey',
-        'HRC721',
+        type,
         -1,
         '',
       )
+  }
+
+  checkNotBeZeroAddress(firstAddress: string, secondsAddress?: string) {
+    if (firstAddress === AddressZero || (secondsAddress && secondsAddress === AddressZero)) {
+      throw new Error('You have to provide a non zero address')
+    }
   }
 }

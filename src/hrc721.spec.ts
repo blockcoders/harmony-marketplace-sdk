@@ -6,8 +6,8 @@ import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { HRC721 } from './hrc721'
 import {
-  CONTRACT_ABI,
-  CONTRACT_ADDRESS,
+  HRC721_CONTRACT_ABI,
+  HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
   RESULT_TEST_ADDRESS,
   RESULT_ORIGIN_ADDRESS,
@@ -16,7 +16,7 @@ import {
   EMPTY_TEST_ADDRESS,
 } from './tests/constants'
 
-describe('HarmonyProvider', () => {
+describe('HRC721 Provider', () => {
   const client = new Harmony('https://api.s0.b.hmny.io/', {
     chainType: ChainType.Harmony,
     chainId: ChainID.HmyTestnet,
@@ -25,7 +25,7 @@ describe('HarmonyProvider', () => {
   use(chaiAsPromised)
 
   beforeEach(async () => {
-    provider = new HRC721(CONTRACT_ADDRESS, CONTRACT_ABI, client)
+    provider = new HRC721(HRC721_CONTRACT_ADDRESS, HRC721_CONTRACT_ABI, client)
   })
 
   afterEach(async () => {
@@ -88,7 +88,7 @@ describe('HarmonyProvider', () => {
       const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
       if (!ownerAccount || !receiverAccount) throw new Error('Owner or receiver not found')
 
-      provider.setSignerByPrivateKey(ownerAccount.privateKey)
+      provider.setSignerByPrivateKey(ownerAccount.privateKey, 'HRC721')
       const result = await provider.transferFrom(ownerAccount.address, receiverAccount.address, '5')
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
@@ -110,7 +110,7 @@ describe('HarmonyProvider', () => {
       const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
       if (!ownerAccount || !receiverAccount) throw new Error('Account not found')
 
-      provider.setSignerByPrivateKey(ownerAccount.privateKey)
+      provider.setSignerByPrivateKey(ownerAccount.privateKey, 'HRC721')
       const result = await provider.safeTransferFrom(ownerAccount.address, receiverAccount.address, '5')
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
