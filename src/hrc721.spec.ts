@@ -6,8 +6,8 @@ import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { HRC721 } from './hrc721'
 import {
-  CONTRACT_ABI,
-  CONTRACT_ADDRESS,
+  HRC721_CONTRACT_ABI,
+  HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
   RESULT_TEST_ADDRESS,
   RESULT_ORIGIN_ADDRESS,
@@ -16,7 +16,7 @@ import {
   EMPTY_TEST_ADDRESS,
 } from './tests/constants'
 
-describe('HarmonyProvider', () => {
+describe('HRC721 Provider', () => {
   const client = new Harmony('https://api.s0.b.hmny.io/', {
     chainType: ChainType.Harmony,
     chainId: ChainID.HmyTestnet,
@@ -25,7 +25,7 @@ describe('HarmonyProvider', () => {
   use(chaiAsPromised)
 
   beforeEach(async () => {
-    provider = new HRC721(CONTRACT_ADDRESS, CONTRACT_ABI, client)
+    provider = new HRC721(HRC721_CONTRACT_ADDRESS, HRC721_CONTRACT_ABI, client)
   })
 
   afterEach(async () => {
@@ -51,13 +51,29 @@ describe('HarmonyProvider', () => {
   })
 
   describe('ownerOf', () => {
-    it('should return the owner of the tokenId token', async () => {
+    it('should return the owner of the tokenId token with tokenId as a number', async () => {
+      const owner = await provider.ownerOf(1)
+      expect(owner).to.exist
+      expect(owner).to.not.be.null
+      expect(owner).to.not.be.undefined
+      expect(owner).to.be.equals(RESULT_TEST_ADDRESS)
+    })
+
+    it('should return the owner of the tokenId token with tokenId as a string', async () => {
       const owner = await provider.ownerOf('1')
       expect(owner).to.exist
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
       expect(owner).to.be.equals(RESULT_TEST_ADDRESS)
-    }).timeout(5000)
+    })
+
+    it('should return the owner of the tokenId token with tokenId as a byte', async () => {
+      const owner = await provider.ownerOf('00000001')
+      expect(owner).to.exist
+      expect(owner).to.not.be.null
+      expect(owner).to.not.be.undefined
+      expect(owner).to.be.equals(RESULT_TEST_ADDRESS)
+    })
 
     it('should return the origin address of the tokenId token if the token has no owner', async () => {
       const owner = await provider.ownerOf('0')
@@ -65,7 +81,7 @@ describe('HarmonyProvider', () => {
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
       expect(owner).to.be.equals(RESULT_ORIGIN_ADDRESS)
-    }).timeout(5000)
+    })
 
     it('should throw an error if tokenId is a non existent token', async () => {
       expect(provider.ownerOf('6')).to.be.rejectedWith(Error)
@@ -77,18 +93,33 @@ describe('HarmonyProvider', () => {
   })
 
   describe('transferFrom', () => {
-    it('should throw if there is no signer', () => {
+    it('should throw an error if there is no signer', () => {
       expect(provider.transferFrom(TEST_ADDRESS_1, RESULT_TEST_ADDRESS, '1')).to.be.rejectedWith(Error)
     })
 
-    it('should transfer the ownership of a token from one address to another', async () => {
+    it('should transfer the ownership of a token from one address to another with tokenId as a number', async () => {
       const owner = await provider.ownerOf('5')
 
       const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
       const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
       if (!ownerAccount || !receiverAccount) throw new Error('Owner or receiver not found')
 
-      provider.setSignerByPrivateKey(ownerAccount.privateKey)
+      provider.setSignerByPrivateKey(ownerAccount.privateKey, 'HRC721')
+      const result = await provider.transferFrom(ownerAccount.address, receiverAccount.address, 5)
+
+      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
+      expect(result.receipt).to.exist
+      expect(result.receipt?.blockHash).to.be.string
+    })
+
+    it('should transfer the ownership of a token from one address to another with tokenId as a string', async () => {
+      const owner = await provider.ownerOf(5)
+
+      const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
+      const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
+      if (!ownerAccount || !receiverAccount) throw new Error('Owner or receiver not found')
+
+      provider.setSignerByPrivateKey(ownerAccount.privateKey, 'HRC721')
       const result = await provider.transferFrom(ownerAccount.address, receiverAccount.address, '5')
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
@@ -110,7 +141,7 @@ describe('HarmonyProvider', () => {
       const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
       if (!ownerAccount || !receiverAccount) throw new Error('Account not found')
 
-      provider.setSignerByPrivateKey(ownerAccount.privateKey)
+      provider.setSignerByPrivateKey(ownerAccount.privateKey, 'HRC721')
       const result = await provider.safeTransferFrom(ownerAccount.address, receiverAccount.address, '5')
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
@@ -121,8 +152,24 @@ describe('HarmonyProvider', () => {
 
   // TODO: add more tests when the approve function works
   describe('getApproved', () => {
-    it('should return the account approved for tokenId token', async () => {
+    it('should return the account approved for tokenId token with tokenId as a number', async () => {
+      const approved = await provider.getApproved(1)
+      expect(approved).to.exist
+      expect(approved).to.not.be.null
+      expect(approved).to.not.be.undefined
+      expect(approved).to.be.equals('0x0000000000000000000000000000000000000000')
+    })
+
+    it('should return the account approved for tokenId token with tokenId as a string', async () => {
       const approved = await provider.getApproved('1')
+      expect(approved).to.exist
+      expect(approved).to.not.be.null
+      expect(approved).to.not.be.undefined
+      expect(approved).to.be.equals('0x0000000000000000000000000000000000000000')
+    })
+
+    it('should return the account approved for tokenId token with tokenId as a byte', async () => {
+      const approved = await provider.getApproved('00000001')
       expect(approved).to.exist
       expect(approved).to.not.be.null
       expect(approved).to.not.be.undefined

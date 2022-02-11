@@ -1,3 +1,4 @@
+import { BigNumberish } from '@ethersproject/bignumber'
 import { Logger } from '@ethersproject/logger'
 import { Contract } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
@@ -21,7 +22,7 @@ export class HRC721 extends BaseToken {
     return await this._getBalance(address)
   }
 
-  async ownerOf(tokenId: string): Promise<string> {
+  async ownerOf(tokenId: BigNumberish): Promise<string> {
     if (!tokenId) {
       throw new Error('You must provide a tokenId')
     }
@@ -39,12 +40,12 @@ export class HRC721 extends BaseToken {
   async safeTransferFrom(
     fromAddress: string,
     toAddress: string,
-    tokenId: string,
+    tokenId: BigNumberish,
     options: ITransactionOptions = {
       gasPrice: DEFAULT_GAS_PRICE,
     },
   ): Promise<Transaction> {
-    this.checkForSigner()
+    this.checkForSigner('HRC721')
     const method = this.contract.methods.safeTransferFrom(fromAddress, toAddress, tokenId)
 
     if (!options.gasLimit) {
@@ -65,12 +66,12 @@ export class HRC721 extends BaseToken {
   async transferFrom(
     fromAddress: string,
     toAddress: string,
-    tokenId: string,
+    tokenId: BigNumberish,
     options: ITransactionOptions = {
       gasPrice: DEFAULT_GAS_PRICE,
     },
   ): Promise<Transaction> {
-    this.checkForSigner()
+    this.checkForSigner('HRC721')
     const method = this.contract.methods.transferFrom(fromAddress, toAddress, tokenId)
 
     if (!options.gasLimit) {
@@ -86,11 +87,11 @@ export class HRC721 extends BaseToken {
     return result.transaction
   }
 
-  async approve(toAddress: string, tokenId: string): Promise<any> {
+  async approve(toAddress: string, tokenId: BigNumberish): Promise<any> {
     return
   }
 
-  async getApproved(tokenId: string): Promise<string> {
+  async getApproved(tokenId: BigNumberish): Promise<string> {
     if (!tokenId) {
       throw new Error('You must provide a tokenId')
     }
@@ -106,7 +107,12 @@ export class HRC721 extends BaseToken {
     }
   }
 
-  async safeTransferFromWithData(fromAddress: string, toAddress: string, tokenId: string, data: any): Promise<any> {
+  async safeTransferFromWithData(
+    fromAddress: string,
+    toAddress: string,
+    tokenId: BigNumberish,
+    data: any,
+  ): Promise<any> {
     return
   }
 }
