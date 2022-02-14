@@ -4,7 +4,13 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { HRC1155 } from './hrc1155'
-import { HRC1155_CONTRACT_ABI, HRC1155_CONTRACT_ADDRESS, TEST_ADDRESS_1, HARMONY_TESTNET } from './tests/constants'
+import {
+  HRC1155_CONTRACT_ABI,
+  HRC1155_CONTRACT_ADDRESS,
+  TEST_ADDRESS_1,
+  HARMONY_TESTNET,
+  EMPTY_TEST_ADDRESS,
+} from './tests/constants'
 
 describe('HRC1155 Provider', () => {
   const client = new Harmony(HARMONY_TESTNET, {
@@ -61,6 +67,44 @@ describe('HRC1155 Provider', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(provider.balanceOf('', 0)).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('balanceOfBatch', () => {
+    it('should return multiple balances in the specified account with id as a number', async () => {
+      const balance = await provider.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], [1, 2])
+      expect(balance).to.exist
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).length(2)
+    })
+
+    it('should return multiple balances in the specified account with id as a string', async () => {
+      const balance = await provider.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['1', '2'])
+      expect(balance).to.exist
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).length(2)
+    })
+
+    it('should return multiple balances in the specified account with id as a byte', async () => {
+      const balance = await provider.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['00000001', '00000010'])
+      expect(balance).to.exist
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).length(2)
+    })
+
+    it('should throw an error if ids is not provided', async () => {
+      expect(provider.balanceOfBatch([], [1, 2])).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if accounts is not provided', async () => {
+      expect(provider.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], [])).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(provider.balanceOfBatch([], [])).to.be.rejectedWith(Error)
     })
   })
 })

@@ -62,6 +62,8 @@ export abstract class BaseToken {
       throw new Error('You must provide an addressOwner and an addressOperator')
     }
 
+    this.checkNotBeZeroAddress(addressOwner, addressOperator)
+
     try {
       return await this.baseContract.methods.isApprovedForAll(addressOwner, addressOperator).call()
     } catch (error) {
@@ -101,8 +103,8 @@ export abstract class BaseToken {
       )
   }
 
-  checkNotBeZeroAddress(firstAddress: string, secondsAddress?: string) {
-    if (firstAddress === AddressZero || (secondsAddress && secondsAddress === AddressZero)) {
+  checkNotBeZeroAddress(firstAddress: string, secondAddress?: string) {
+    if (firstAddress === AddressZero || (secondAddress && secondAddress === AddressZero)) {
       throw new Error('You have to provide a non zero address')
     }
   }
