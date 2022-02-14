@@ -75,6 +75,8 @@ export abstract class BaseToken {
       throw new Error('You must provide an addressOwner and an addressOperator')
     }
 
+    this.checkNotBeZeroAddress(addressOwner, addressOperator)
+
     try {
       return await this.baseContract.methods.isApprovedForAll(addressOwner, addressOperator).call()
     } catch (error) {
