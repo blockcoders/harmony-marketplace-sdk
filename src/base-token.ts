@@ -1,5 +1,5 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { Zero } from '@ethersproject/constants'
+import { BigNumber, BigNumberish, isBigNumberish } from '@ethersproject/bignumber/lib/bignumber'
+import { Zero, AddressZero } from '@ethersproject/constants'
 import { Logger } from '@ethersproject/logger'
 import { Wallet } from '@harmony-js/account'
 import { Contract } from '@harmony-js/contract'
@@ -29,15 +29,16 @@ export abstract class BaseToken {
     this.baseContract = this.client.contracts.createContract(abi, address)
   }
 
-  async _getBalance(address: string, id?: string): Promise<number> {
+  async _getBalance(address: string, id?: BigNumberish): Promise<number> {
     if (!address) {
       throw new Error('You have to provide an address')
     }
 
+    this.checkNotBeZeroAddress(address)
+
     try {
       let balance: BigNumber = Zero
-
-      if (!id) {
+      if (!isBigNumberish(id)) {
         balance = await this.baseContract.methods.balanceOf(address).call()
         return balance.toNumber()
       }
@@ -60,6 +61,8 @@ export abstract class BaseToken {
     if (!addressOwner && !addressOperator) {
       throw new Error('You must provide an addressOwner and an addressOperator')
     }
+
+    this.checkNotBeZeroAddress(addressOwner, addressOperator)
 
     try {
       return await this.baseContract.methods.isApprovedForAll(addressOwner, addressOperator).call()
@@ -98,5 +101,11 @@ export abstract class BaseToken {
         -1,
         '',
       )
+  }
+
+  checkNotBeZeroAddress(firstAddress: string, secondsAddress?: string) {
+    if (firstAddress === AddressZero || (secondsAddress && secondsAddress === AddressZero)) {
+      throw new Error('You have to provide a non zero address')
+    }
   }
 }
