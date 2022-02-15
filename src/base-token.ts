@@ -116,8 +116,8 @@ export abstract class BaseToken {
       )
   }
 
-  checkNotBeZeroAddress(firstAddress: string, secondsAddress?: string) {
-    if (firstAddress === AddressZero || (secondsAddress && secondsAddress === AddressZero)) {
+  checkNotBeZeroAddress(firstAddress: string, secondAddress?: string) {
+    if (firstAddress === AddressZero || (secondAddress && secondAddress === AddressZero)) {
       throw new Error('You have to provide a non zero address')
     }
   }

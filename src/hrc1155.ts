@@ -40,24 +40,14 @@ export class HRC1155 extends BaseToken {
     amount: BigNumberish,
     data: any,
   ): Promise<any> {
-    this.checkNotBeZeroAddress(toAddress)
-    try {
-      const transfer = await this.contract.methods.safeTransferFrom(fromAddress, toAddress, id, amount, data).call()
-      return transfer
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'safeTransferFrom',
-        params: { fromAddress, toAddress, id, amount, data },
-        error,
-      })
-    }
+    return
   }
 
   async safeBatchTransferFrom(
     fromAddress: string,
     toAddress: string,
-    ids: string[],
-    amounts: number[],
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
     data: any,
   ): Promise<any> {
     return
