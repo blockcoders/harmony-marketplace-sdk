@@ -33,15 +33,21 @@ export class HRC1155 extends BaseToken {
     }
   }
 
-  async safeTransferFrom(fromAddress: string, toAddress: string, id: string, amount: number, data: any): Promise<any> {
+  async safeTransferFrom(
+    fromAddress: string,
+    toAddress: string,
+    id: BigNumberish,
+    amount: BigNumberish,
+    data: any,
+  ): Promise<any> {
     return
   }
 
   async safeBatchTransferFrom(
     fromAddress: string,
     toAddress: string,
-    ids: string[],
-    amounts: number[],
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
     data: any,
   ): Promise<any> {
     return

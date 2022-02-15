@@ -3,6 +3,10 @@ export const TEST_ADDRESS_1 = '0x7c61c8f282aeaae3e0476d0533d21dc42c5aa146'
 export const TEST_ADDRESS_2 = '0xc57DE96E7ADd6D0fc6BdF51758Fd90b111f89b79'
 export const TEST_ADDRESS_3 = '0x264F47C0E2fb1B587F6fa270862F3CBc68460B75'
 
+export const TEST_ACCOUNT_1 = {
+  address: TEST_ADDRESS_1,
+  privateKey: '0xdc0ab9fc02cb694853c939037c986a792bdd779fe481c0767d7551ad45d45b39',
+}
 export const TEST_ACCOUNT_2 = {
   address: TEST_ADDRESS_2,
   privateKey: '4fafe94f8482895d335b2c1534e3c3332db16dc5a65a554c7e26b92d5179ca76',

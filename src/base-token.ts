@@ -81,30 +81,30 @@ export abstract class BaseToken {
    * @param {string} privateKey
    * @memberof HRC721
    */
-  setSignerByPrivateKey(privateKey: string): void {
-    if (!privateKey) throw new BaseError('You must provide a privateKey', 'HRC721', -1, privateKey)
+  setSignerByPrivateKey(privateKey: string, type: string): void {
+    if (!privateKey) throw new BaseError('You must provide a privateKey', type, -1, privateKey)
 
     const wallet: Wallet = this.baseContract.wallet
     const account = wallet.addByPrivateKey(privateKey)
 
-    if (!account.address) throw new BaseError('You must provide a valid privateKey', 'HRC721', -1, privateKey)
+    if (!account.address) throw new BaseError('You must provide a valid privateKey', type, -1, privateKey)
 
     wallet.setSigner(account.address)
     this.isSignerSet = true
   }
 
-  checkForSigner(): void {
+  checkForSigner(type: string): void {
     if (!this.isSignerSet)
       throw new BaseError(
         'You must set the signer before executing transactions. Call setSignerByPrivateKey',
-        'HRC721',
+        type,
         -1,
         '',
       )
   }
 
-  checkNotBeZeroAddress(firstAddress: string, secondsAddress?: string) {
-    if (firstAddress === AddressZero || (secondsAddress && secondsAddress === AddressZero)) {
+  checkNotBeZeroAddress(firstAddress: string, secondAddress?: string) {
+    if (firstAddress === AddressZero || (secondAddress && secondAddress === AddressZero)) {
       throw new Error('You have to provide a non zero address')
     }
   }

@@ -38,7 +38,7 @@ describe('HRC1155 Provider', () => {
       expect(balance).to.exist
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
-      expect(balance).to.be.equals(100)
+      expect(balance).to.be.equals(100000100)
     })
 
     it('should get the number of tokens in the specified account with id as a string', async () => {
@@ -46,7 +46,7 @@ describe('HRC1155 Provider', () => {
       expect(balance).to.exist
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
-      expect(balance).to.be.equals(100)
+      expect(balance).to.be.equals(100000100)
     })
 
     it('should get the number of tokens in the specified account with id as a byte', async () => {
@@ -54,7 +54,7 @@ describe('HRC1155 Provider', () => {
       expect(balance).to.exist
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
-      expect(balance).to.be.equals(100)
+      expect(balance).to.be.equals(100000100)
     })
 
     it('should throw an error if address is not provided', async () => {
