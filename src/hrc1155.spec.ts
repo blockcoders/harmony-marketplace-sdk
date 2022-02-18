@@ -8,10 +8,8 @@ import {
   HRC1155_CONTRACT_ABI,
   HRC1155_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
-  TEST_ACCOUNT_1,
   HARMONY_TESTNET,
   EMPTY_TEST_ADDRESS,
-  TEST_ACCOUNT_2,
 } from './tests/constants'
 
 describe('HRC1155 Provider', () => {
@@ -107,43 +105,6 @@ describe('HRC1155 Provider', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(provider.balanceOfBatch([], [])).to.be.rejectedWith(Error)
-    })
-  })
-
-  describe('safeTransferFrom', async () => {
-    it('should transfer amount tokens of the specified id from one address to another', async () => {
-      provider.setSignerByPrivateKey(TEST_ACCOUNT_1.privateKey, 'HRC1155')
-      const approved = await provider.setApprovalForAll(TEST_ACCOUNT_1.address, true)
-      provider.setSignerByPrivateKey(TEST_ACCOUNT_2.privateKey, 'HRC1155')
-      console.log(approved)
-      const transfer = await provider.safeTransferFrom(TEST_ADDRESS_1, TEST_ACCOUNT_2.address, 1, 1, '0x')
-      expect(transfer).to.exist
-      expect(transfer).to.not.be.null
-      expect(transfer).to.not.be.undefined
-    })
-
-    it('should thow an error if sender address is not provided', async () => {
-      expect(provider.safeTransferFrom('', TEST_ADDRESS_1, 1, 10, '0x')).to.be.rejectedWith(Error)
-    })
-
-    it('should thow an error if receiver address is not provided', async () => {
-      expect(provider.safeTransferFrom(TEST_ADDRESS_1, '', 1, 10, '0x')).to.be.rejectedWith(Error)
-    })
-
-    it('should thow an error if token id is not provided', async () => {
-      expect(provider.safeTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, '', 10, '0x')).to.be.rejectedWith(Error)
-    })
-
-    it('should thow an error if amount is not provided', async () => {
-      expect(provider.safeTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, 1, '', '0x')).to.be.rejectedWith(Error)
-    })
-
-    it('should thow an error if data is not provided', async () => {
-      expect(provider.safeTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, 1, 10, '')).to.be.rejectedWith(Error)
-    })
-
-    it('should throw an error if params are not provided', async () => {
-      expect(provider.safeTransferFrom('', '', 0, 0, '')).to.be.rejectedWith(Error)
     })
   })
 })

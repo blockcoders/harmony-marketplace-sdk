@@ -5,18 +5,26 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { BaseToken } from './base-token'
-import { TEST_ADDRESS_1, TESTING_ABI, EMPTY_TEST_ADDRESS, TEST_ACCOUNT_2 } from './tests/constants'
+import { HRC1155 } from './hrc1155'
+import { HRC721 } from './hrc721'
+import { TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TESTING_ABI, TEST_ACCOUNT_2 } from './tests/constants'
 
 class TestToken extends BaseToken {}
+class TestHRC721 extends HRC721 {}
+class TestHRC1155 extends HRC1155 {}
 
 describe('Base Token Provider', () => {
   let provider: TestToken
+  let hrc721Provider: TestHRC721
+  let hrc1155Provider: TestHRC1155
   use(chaiAsPromised)
 
   beforeEach(async () => {
     const client = sinon.createStubInstance(Harmony)
     client.contracts = sinon.createStubInstance(ContractFactory)
     provider = new TestToken('', TESTING_ABI, client)
+    hrc721Provider = new TestHRC721('', '', client)
+    hrc1155Provider = new TestHRC1155('', '', client)
   })
 
   afterEach(async () => {
@@ -27,81 +35,58 @@ describe('Base Token Provider', () => {
     expect(provider).to.not.be.undefined
   })
 
-  describe('_getBalance', () => {
-    it('should get the number of tokens in the specified account in base provider', async () => {
-      const stub = sinon.stub(BaseToken.prototype, '_getBalance')
-      stub.withArgs(TEST_ADDRESS_1, 1).resolves()
-
-      expect(provider._getBalance(TEST_ADDRESS_1, 1)).to.eventually.to.exist
-      stub.restore()
+  describe('balanceOf', () => {
+    it('should throw an error if address is not provided in HRC1155', async () => {
+      expect(hrc1155Provider.balanceOf('', 1)).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if address is not provided', async () => {
-      const stub = sinon.stub(BaseToken.prototype, '_getBalance')
-      stub.withArgs('', 1).onCall(0).rejects()
-
-      expect(provider._getBalance('', 1)).to.be.rejectedWith(Error)
-      stub.restore()
+    it('should throw an error if address is not provided in HRC721', async () => {
+      expect(hrc721Provider.balanceOf('')).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if provided address is zero-address', async () => {
-      const stub = sinon.stub(BaseToken.prototype, '_getBalance')
-      stub.withArgs(AddressZero, 1).onCall(0).rejects()
+    it('should throw an error if provided address is zero-address in HRC1155', async () => {
+      expect(hrc1155Provider.balanceOf(AddressZero, 1)).to.be.rejectedWith(Error)
+    })
 
-      expect(provider._getBalance(AddressZero, 1)).to.be.rejectedWith(Error)
-      stub.restore()
+    it('should throw an error if provided address is zero-address in HRC721', async () => {
+      expect(hrc721Provider.balanceOf(AddressZero)).to.be.rejectedWith(Error)
     })
   })
 
   describe('setApprovalForAll', () => {
-    it('should grants or revokes permission to addressOperator to transfer the callers tokens, according to approved', async () => {
-      const stub = sinon.stub(BaseToken.prototype, 'setApprovalForAll')
-      stub.withArgs(TEST_ADDRESS_1, true).resolves()
-
-      expect(provider.setApprovalForAll(TEST_ADDRESS_1, true)).to.eventually.to.exist
-      stub.restore()
+    it('should throw an error if addressOperator is not provided in HRC1155', async () => {
+      expect(hrc1155Provider.setApprovalForAll('', true)).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if addressOperator is not provided', async () => {
-      const stub = sinon.stub(BaseToken.prototype, 'setApprovalForAll')
-      stub.withArgs('', true).onCall(0).rejects()
-
-      expect(provider.setApprovalForAll('', true)).to.be.rejectedWith(Error)
-      stub.restore()
+    it('should throw an error if addressOperator is not provided in HRC721', async () => {
+      expect(hrc721Provider.setApprovalForAll('', true)).to.be.rejectedWith(Error)
     })
   })
 
   describe('isApprovedForAll', () => {
-    it('should return true if operator is approved to transfer accounts tokens', async () => {
-      const stub = sinon.stub(BaseToken.prototype, 'isApprovedForAll')
-      stub.withArgs(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS).resolves()
-
-      expect(provider.isApprovedForAll(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS)).to.eventually.to.exist
-      stub.restore()
+    it('should throw an error if addressOwner is not provided in HRC1155', async () => {
+      expect(hrc1155Provider.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if addressOwner is not provided', async () => {
-      const stub = sinon.stub(BaseToken.prototype, 'isApprovedForAll')
-      stub.withArgs('', EMPTY_TEST_ADDRESS).onCall(0).rejects()
-
-      expect(provider.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
-      stub.restore()
+    it('should throw an error if addressOwner is not provided in HRC721', async () => {
+      expect(hrc721Provider.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if addressOperator is not provided', async () => {
-      const stub = sinon.stub(BaseToken.prototype, 'isApprovedForAll')
-      stub.withArgs(TEST_ADDRESS_1, '').onCall(0).rejects()
-
-      expect(provider.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
-      stub.restore()
+    it('should throw an error if addressOperator is not provided in HRC1155', async () => {
+      expect(hrc1155Provider.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if params are not provided', async () => {
-      const stub = sinon.stub(BaseToken.prototype, 'isApprovedForAll')
-      stub.withArgs('', '').onCall(0).rejects()
+    it('should throw an error if addressOperator is not provided in HRC721', async () => {
+      expect(hrc721Provider.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
+    })
 
-      expect(provider.isApprovedForAll('', '')).to.be.rejectedWith(Error)
-      stub.restore()
+    it('should throw an error if params are not provided in HRC1155', async () => {
+      expect(hrc1155Provider.isApprovedForAll('', '')).to.be.rejectedWith(Error)
+      expect(hrc721Provider.isApprovedForAll('', '')).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided in HRC721', async () => {
+      expect(hrc721Provider.isApprovedForAll('', '')).to.be.rejectedWith(Error)
     })
   })
 
