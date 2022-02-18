@@ -1,28 +1,21 @@
 import { AddressZero } from '@ethersproject/constants'
+import { ContractFactory } from '@harmony-js/contract'
 import { Harmony } from '@harmony-js/core'
-// import { ChainID, ChainType } from '@harmony-js/utils'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { BaseToken } from './base-token'
 import { TEST_ADDRESS_1, TESTING_ABI, EMPTY_TEST_ADDRESS, TEST_ACCOUNT_2 } from './tests/constants'
-// HARMONY_TESTNET
 
 class TestToken extends BaseToken {}
 
 describe('Base Token Provider', () => {
-  // const client = new Harmony(HARMONY_TESTNET, {
-  //   chainType: ChainType.Harmony,
-  //   chainId: ChainID.HmyTestnet,
-  // })
   let provider: TestToken
   use(chaiAsPromised)
 
   beforeEach(async () => {
-    const client = sinon.createStubInstance(Harmony, {
-      createContract: sinon.stub().returns()
-    })
-    // client.contracts.createContract(TESTING_ABI)
+    const client = sinon.createStubInstance(Harmony)
+    client.contracts = sinon.createStubInstance(ContractFactory)
     provider = new TestToken('', TESTING_ABI, client)
   })
 
