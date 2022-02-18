@@ -71,7 +71,7 @@ export abstract class BaseToken {
   }
 
   async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
-    if (!addressOwner && !addressOperator) {
+    if (!addressOwner || !addressOperator) {
       throw new Error('You must provide an addressOwner and an addressOperator')
     }
 
@@ -96,6 +96,7 @@ export abstract class BaseToken {
    */
   setSignerByPrivateKey(privateKey: string, type: string): void {
     if (!privateKey) throw new BaseError('You must provide a privateKey', type, -1, privateKey)
+    if (!type) throw new BaseError('You must provide a type', 'No provided type', -1, privateKey)
 
     const wallet: Wallet = this.baseContract.wallet
     const account = wallet.addByPrivateKey(privateKey)
