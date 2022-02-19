@@ -29,7 +29,7 @@ export abstract class BaseToken {
     this.baseContract = this.client.contracts.createContract(abi, address)
   }
 
-  async _getBalance(address: string, id?: BigNumberish): Promise<number> {
+  protected async _getBalance(address: string, id?: BigNumberish): Promise<number> {
     if (!address) {
       throw new Error('You have to provide an address')
     }
@@ -54,11 +54,24 @@ export abstract class BaseToken {
   }
 
   async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
-    throw new Error('setApprovalForAll is not implemented yet')
+    if (!addressOperator) {
+      throw new Error('You must provide an addressOperator')
+    }
+
+    try {
+      return await this.baseContract.methods.setApprovalForAll(addressOperator, approved).call()
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'setApprovalForAll',
+        params: { addressOperator, approved },
+        error,
+      })
+    }
+    // throw new Error('setApprovalForAll is not implemented yet')
   }
 
   async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
-    if (!addressOwner && !addressOperator) {
+    if (!addressOwner || !addressOperator) {
       throw new Error('You must provide an addressOwner and an addressOperator')
     }
 
@@ -83,6 +96,7 @@ export abstract class BaseToken {
    */
   setSignerByPrivateKey(privateKey: string, type: string): void {
     if (!privateKey) throw new BaseError('You must provide a privateKey', type, -1, privateKey)
+    if (!type) throw new BaseError('You must provide a type', 'No provided type', -1, privateKey)
 
     const wallet: Wallet = this.baseContract.wallet
     const account = wallet.addByPrivateKey(privateKey)
