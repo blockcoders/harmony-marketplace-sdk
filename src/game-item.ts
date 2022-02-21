@@ -29,7 +29,7 @@ export class GameItems extends HRC1155 {
       return silver.toNumber()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'getGold',
+        method: 'getSilver',
         error,
       })
     }
@@ -41,7 +41,7 @@ export class GameItems extends HRC1155 {
       return thors.toNumber()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'getGold',
+        method: 'getThorsHammer',
         error,
       })
     }
@@ -53,7 +53,7 @@ export class GameItems extends HRC1155 {
       return sword.toNumber()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'getGold',
+        method: 'getSword',
         error,
       })
     }
@@ -65,7 +65,7 @@ export class GameItems extends HRC1155 {
       return shield.toNumber()
     } catch (error) {
       return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'getGold',
+        method: 'getShield',
         error,
       })
     }
