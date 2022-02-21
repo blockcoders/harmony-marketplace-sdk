@@ -50,6 +50,18 @@ export class HRC1155 extends BaseToken {
     amounts: BigNumberish[],
     data: any,
   ): Promise<any> {
-    return
+    if (amounts.length !== ids.length) {
+      throw new Error('Amounts and ids must have the same length')
+    }
+    try {
+      const safe = this.contract.methods.safeBatchTransferFrom(fromAddress, toAddress, ids, amounts, data).send()
+      return safe
+    } catch (error) {
+      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
+        method: 'safeBatchTransferFrom',
+        params: { fromAddress, toAddress, ids, amounts, data },
+        error,
+      })
+    }
   }
 }
