@@ -1,65 +1,55 @@
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
-import { Logger } from '@ethersproject/logger'
-import { Contract } from '@harmony-js/contract'
-import { Harmony } from '@harmony-js/core'
-import { BaseToken } from './base-token'
-import { logger } from './logger'
+import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
+import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
+import { Transaction } from '@harmony-js/transaction'
+import BN from 'bn.js'
+import { BaseToken, ContractError } from './base-token'
+import { AddressZero } from './constants'
+import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
 
 export class HRC1155 extends BaseToken {
-  private contract: Contract
-  constructor(address: string, abi: any, private harmonyClient: Harmony) {
-    super(address, abi, harmonyClient)
-    this.contract = this.harmonyClient.contracts.createContract(abi, address)
+  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
+    super(address, abi, provider, options)
   }
 
-  async balanceOf(address: string, id: BigNumberish): Promise<number> {
-    return await this._getBalance(address, id)
+  public async balanceOf(address: string, id: BNish, txOptions?: ITransactionOptions): Promise<BN> {
+    return this._getBalance(address, id, txOptions)
   }
 
-  async balanceOfBatch(accounts: string[], ids: BigNumberish[]): Promise<number[]> {
+  public async balanceOfBatch(accounts: string[], ids: BNish[], txOptions?: ITransactionOptions): Promise<BN[]> {
     if (accounts.length !== ids.length) {
-      throw new Error('Accounts and ids must have the same length')
+      throw new ContractError('Accounts and ids must have the same length', 'balanceOfBatch')
     }
 
-    try {
-      const balances = await this.contract.methods.balanceOfBatch(accounts, ids).call()
-      return balances.map((amount: BigNumber) => amount.toNumber())
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'balanceOfBatch',
-        params: { accounts, ids },
-        error,
-      })
-    }
+    return this.call<BN[]>('balanceOfBatch', [accounts, ids], txOptions)
   }
 
-  async safeTransferFrom(
-    fromAddress: string,
-    toAddress: string,
-    id: BigNumberish,
-    amount: BigNumberish,
+  public async safeTransferFrom(
+    from: string,
+    to: string,
+    id: BNish,
+    amount: BNish,
     data: any,
-  ): Promise<any> {
-    this.checkNotBeZeroAddress(toAddress)
-    try {
-      const transfer = await this.contract.methods.safeTransferFrom(fromAddress, toAddress, id, amount, data).call()
-      return transfer
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'safeTransferFrom',
-        params: { fromAddress, toAddress, id, amount, data },
-        error,
-      })
+    txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
+    if (to === AddressZero) {
+      throw new ContractError(`The to cannot be the ${AddressZero}`, 'safeTransferFrom')
     }
+
+    return this.send('safeTransferFrom', [from, to, id, amount, data], txOptions)
   }
 
-  async safeBatchTransferFrom(
-    fromAddress: string,
-    toAddress: string,
-    ids: string[],
-    amounts: number[],
+  public async safeBatchTransferFrom(
+    from: string,
+    to: string,
+    ids: BNish[],
+    amounts: BNish[],
     data: any,
+    txOptions?: ITransactionOptions,
   ): Promise<any> {
-    return
+    if (amounts.length !== ids.length) {
+      throw new ContractError('amounts and ids must have the same length', 'safeBatchTransferFrom')
+    }
+
+    return this.send('safeBatchTransferFrom', [from, to, ids, amounts, data], txOptions)
   }
 }
