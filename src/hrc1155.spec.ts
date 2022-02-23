@@ -16,7 +16,7 @@ import {
 } from './tests/constants'
 import { ABI } from './tests/contracts/HR1155/abi'
 
-describe('HRC1155 Contract Interface', () => {
+describe.only('HRC1155 Contract Interface', () => {
   use(chaiAsPromised)
 
   let contract: HRC1155

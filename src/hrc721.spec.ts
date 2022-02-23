@@ -11,15 +11,16 @@ import {
   HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
   TEST_ACCOUNT_1,
-  RESULT_ORIGIN_ADDRESS,
   TEST_ACCOUNT_2,
   TEST_ACCOUNT_3,
   EMPTY_TEST_ADDRESS,
   HRC721_TOKEN_GOLD,
+  TEST_ADDRESS_2,
+  TX_OPTIONS,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HR721/abi'
 
-describe.only('HRC721 Contract Interface', () => {
+describe('HRC721 Contract Interface', () => {
   use(chaiAsPromised)
 
   let contract: HRC721
@@ -40,7 +41,7 @@ describe.only('HRC721 Contract Interface', () => {
 
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_1)
+      const balance = await contract.balanceOf(TEST_ADDRESS_1, TX_OPTIONS)
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
@@ -55,19 +56,19 @@ describe.only('HRC721 Contract Interface', () => {
 
   describe('ownerOf', () => {
     it('should return the owner of the tokenId token', async () => {
-      const owner = await contract.ownerOf('1')
+      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
-      expect(owner.toLowerCase()).to.be.equals(TEST_ADDRESS_1.toLowerCase())
+      expect(owner).to.be.equals(TEST_ADDRESS_1)
     })
 
     it('should return the origin address of the tokenId token if the token has no owner', async () => {
-      const owner = await contract.ownerOf('0')
+      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(RESULT_ORIGIN_ADDRESS)
+      expect(owner).to.be.equals(TEST_ADDRESS_1)
     })
 
     it('should throw an error if tokenId is a non existent token', async () => {
@@ -81,21 +82,38 @@ describe.only('HRC721 Contract Interface', () => {
 
   describe('transferFrom', () => {
     it('should throw if there is no signer', () => {
-      expect(contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_1, '1')).to.be.rejectedWith(Error)
+      expect(contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_1, HRC721_TOKEN_GOLD)).to.be.rejectedWith(Error)
     })
 
-    it.only('should transfer the ownership of a token from one address to another', async () => {
-      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD)
+    it('should transfer the ownership of a token from one address to another', async () => {
+      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
 
-      const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
-      const receiverAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address !== owner)
-      if (!ownerAccount || !receiverAccount) throw new Error('Owner or receiver not found')
+      expect(owner).to.equal(TEST_ADDRESS_1)
+      expect(owner).to.not.equal(TEST_ADDRESS_2)
 
-      contract.setSignerByPrivateKey(ownerAccount.privateKey)
-      const result = await contract.transferFrom(ownerAccount.address, receiverAccount.address, '5')
+      const result = await contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, HRC721_TOKEN_GOLD, TX_OPTIONS)
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result.receipt?.blockHash).to.be.string
+
+      const newOwner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+
+      expect(newOwner).to.equal(TEST_ADDRESS_2)
+      expect(newOwner).to.not.equal(TEST_ADDRESS_1)
+
+      // change the caller to the new owner
+      contract.setSignerByPrivateKey(TEST_ACCOUNT_2.privateKey)
+
+      // return the token
+      const result2 = await contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, HRC721_TOKEN_GOLD, TX_OPTIONS)
+
+      expect(result2.txStatus).to.eq(TxStatus.CONFIRMED)
+      expect(result2.receipt?.blockHash).to.be.string
+
+      const oldOwner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+
+      expect(oldOwner).to.equal(TEST_ADDRESS_1)
+      expect(oldOwner).to.not.equal(TEST_ADDRESS_2)
     })
   })
 
@@ -105,7 +123,7 @@ describe.only('HRC721 Contract Interface', () => {
     })
 
     it('should transfer the ownership of a token from one address to another', async () => {
-      const owner = await contract.ownerOf('5')
+      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
       expect(owner).to.be.oneOf([TEST_ACCOUNT_2.address, TEST_ACCOUNT_3.address])
 
       const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
@@ -123,7 +141,7 @@ describe.only('HRC721 Contract Interface', () => {
   // TODO: add more tests when the approve function works
   describe('getApproved', () => {
     it('should return the account approved for tokenId token', async () => {
-      const approved = await contract.getApproved('1')
+      const approved = await contract.getApproved(HRC721_TOKEN_GOLD, TX_OPTIONS)
 
       expect(approved).to.not.be.null
       expect(approved).to.not.be.undefined
@@ -137,7 +155,7 @@ describe.only('HRC721 Contract Interface', () => {
 
   describe('isApprovedForAll', () => {
     it('should return a boolean value if the operator is allowed to manage all of the assets of owner', async () => {
-      const approved = await contract.isApprovedForAll(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS)
+      const approved = await contract.isApprovedForAll(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TX_OPTIONS)
 
       expect(approved).to.not.be.null
       expect(approved).to.not.be.undefined

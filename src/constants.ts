@@ -2,7 +2,8 @@ import { ChainID, ChainType } from '@harmony-js/utils'
 import { HarmonyRpcConfig, HarmonyShards } from './interfaces'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
-export const DEFAULT_GAS_PRICE = '100'
+export const DEFAULT_GAS_PRICE = '1' // 1 Gwei
+export const DEFAULT_GAS_LIMIT = '21000'
 export const HARMONY_RPC_SHARD_0: HarmonyRpcConfig = {
   url: 'https://api.harmony.one',
   chainId: ChainID.HmyMainnet,

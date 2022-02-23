@@ -1,4 +1,5 @@
 import { Wallet } from '@harmony-js/account'
+import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
@@ -6,7 +7,7 @@ import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
 
-export type BNish = BN | ArrayLike<number> | bigint | string | number
+export type BNish = BN | Arrayish | bigint | number
 
 export interface ITransactionOptions {
   gasLimit?: number | string

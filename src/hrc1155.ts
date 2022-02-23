@@ -45,7 +45,7 @@ export class HRC1155 extends BaseToken {
     amounts: BNish[],
     data: any,
     txOptions?: ITransactionOptions,
-  ): Promise<any> {
+  ): Promise<Transaction> {
     if (amounts.length !== ids.length) {
       throw new ContractError('amounts and ids must have the same length', 'safeBatchTransferFrom')
     }

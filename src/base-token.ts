@@ -10,6 +10,7 @@ import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
+import { isBNish } from './utils'
 
 class Contract extends BaseContract {
   public readonly wallet: Wallet
@@ -76,30 +77,31 @@ export abstract class BaseToken {
 
   protected async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
     const options = await this.estimateGas(method, args, txOptions)
-    console.log(options)
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
     if (!response.transaction) {
       throw new ContractError('Invalid transaction response', method)
     }
 
-    console.log(response.transaction)
-
     return response.transaction
   }
 
-  protected async _getBalance(address: string, id: BNish | null, txOptions?: ITransactionOptions): Promise<BN> {
+  protected async _getBalance(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     if (!address || address === AddressZero) {
       throw new ContractError('Invalid address provided', '_getBalance')
     }
 
     const args: any[] = [address]
 
-    if (id !== null) {
+    if (isBNish(id)) {
       args.push(id)
     }
 
     return this.call<BN>('balanceOf', args, txOptions)
+  }
+
+  protected sanitizeAddress(address: string): string {
+    return address.toLowerCase()
   }
 
   public async setApprovalForAll(
@@ -127,11 +129,23 @@ export abstract class BaseToken {
   }
 
   public setSignerByPrivateKey(privateKey: string): Account {
-    return this._contract.wallet.addByPrivateKey(privateKey)
+    const account = this._contract.wallet.addByPrivateKey(privateKey)
+
+    if (account.address) {
+      this._contract.wallet.setSigner(account.address)
+    }
+
+    return account
   }
 
   public setSignerByMnemonic(mnemonic: string, index = 0): Account {
-    return this._contract.wallet.addByMnemonic(mnemonic, index)
+    const account = this._contract.wallet.addByMnemonic(mnemonic, index)
+
+    if (account.address) {
+      this._contract.wallet.setSigner(account.address)
+    }
+
+    return account
   }
 
   public setSignerByKey(key: Key | PrivateKey | MnemonicKey): void {

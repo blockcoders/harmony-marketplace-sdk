@@ -4,6 +4,7 @@ import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { BaseToken, ContractError } from './base-token'
 import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
+import { isBNish } from './utils'
 
 export class HRC721 extends BaseToken {
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
@@ -11,15 +12,17 @@ export class HRC721 extends BaseToken {
   }
 
   public async balanceOf(address: string, txOptions?: ITransactionOptions): Promise<BN> {
-    return await this._getBalance(address, null, txOptions)
+    return await this._getBalance(address, undefined, txOptions)
   }
 
   public async ownerOf(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
-    if (!tokenId) {
+    if (!isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'ownerOf')
     }
 
-    return this.call<string>('ownerOf', [tokenId], txOptions)
+    const address = await this.call<string>('ownerOf', [tokenId], txOptions)
+
+    return this.sanitizeAddress(address)
   }
 
   public async safeTransferFrom(
@@ -52,10 +55,12 @@ export class HRC721 extends BaseToken {
   }
 
   public async getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
-    if (!tokenId) {
+    if (!isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'getApproved')
     }
 
-    return this.call<string>('getApproved', [tokenId], txOptions)
+    const address = await this.call<string>('getApproved', [tokenId], txOptions)
+
+    return this.sanitizeAddress(address)
   }
 }
