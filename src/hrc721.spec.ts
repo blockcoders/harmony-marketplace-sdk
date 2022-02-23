@@ -18,7 +18,7 @@ import {
   TEST_ADDRESS_2,
   TX_OPTIONS,
 } from './tests/constants'
-import { ABI } from './tests/contracts/HR721/abi'
+import { ABI } from './tests/contracts/HRC721/abi'
 
 describe('HRC721 Contract Interface', () => {
   use(chaiAsPromised)

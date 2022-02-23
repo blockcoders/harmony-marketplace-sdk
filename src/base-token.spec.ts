@@ -8,7 +8,7 @@ import { AddressZero } from './constants'
 import { BNish, HarmonyShards, ITransactionOptions } from './interfaces'
 import { PrivateKey } from './private-key'
 import { TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TEST_ACCOUNT_2, TEST_ACCOUNT_1 } from './tests/constants'
-import { ABI } from './tests/contracts/HR721/abi'
+import { ABI } from './tests/contracts/HRC721/abi'
 
 class TestToken extends BaseToken {
   constructor() {

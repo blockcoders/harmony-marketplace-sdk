@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/blockcoders/harmony-marketplace-sdk/badge.svg?branch=main)](https://coveralls.io/github/blockcoders/harmony-marketplace-sdk?branch=main)
 [![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/harmony-marketplace-sdk)](https://snyk.io/test/github/blockcoders/harmony-marketplace-sdk)
 
-Harmony Marketplace SDK provides a collection of interfaces to interact with HR721, HR1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
+Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
 
 Currently under developement 🤓
 
@@ -120,9 +120,63 @@ const key = new Key(new HttpProvider(HarmonyShards.SHARD_0))
 key.addByPrivateKey('45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e')
 ```
 
+## Base Token
+
+The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
+
+### Common Methods
+
+This methods are common for [HRC721](#hrc721-api) and [HRC1155](#hrc1155-api).
+
+#### setApprovalForAll
+
+Approve or remove operator as an operator for the caller.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, BaseToken } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+class TestNFT extends BaseToken {}
+
+// A contract instance
+const contract = new TestNFT('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.setApprovalForAll('0x...01', true)
+```
+
+#### isApprovedForAll
+
+Returns if the operator is allowed to manage all of the assets of owner.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, BaseToken } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+class TestNFT extends BaseToken {}
+
+// A contract instance
+const contract = new TestNFT('0x...00', ABI, wallet)
+
+// returns a boolean.
+const approved = await contract.isApprovedForAll('0x...01', '0x...02')
+```
+
 ## HRC721 API
 
-The `HRC721` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts.
+The `HRC721` implements the abstract class [Base Token](#base-token).
 
 ### Initializing
 
@@ -221,7 +275,7 @@ const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', '0x')
 
 #### transferFrom
 
-Transfers tokenId token from an address to another. Usage of this method is discouraged, use [safeTransferFrom](#safe-transfer-from) whenever possible.
+Transfers tokenId token from an address to another. Usage of this method is discouraged, use [safeTransferFrom](#safetransferfrom) whenever possible.
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -280,48 +334,6 @@ const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns an address.
 const address = await contract.getApproved('1')
-```
-
-#### setApprovalForAll
-
-Approve or remove operator as an operator for the caller.
-
-```ts
-import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC721('0x...00', ABI, wallet)
-
-// returns a Harmony Transaction instance.
-const tx = await contract.setApprovalForAll('0x...01', true)
-```
-
-#### isApprovedForAll
-
-Returns if the operator is allowed to manage all of the assets of owner.
-
-```ts
-import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC721('0x...00', ABI, wallet)
-
-// returns a boolean.
-const approved = await contract.isApprovedForAll('0x...01', '0x...02')
 ```
 
 ## HRC1155 API
@@ -383,7 +395,7 @@ const balance = await contract.balanceOf('0x...01', '1')
 
 #### balanceOfBatch
 
-Batched version of [balanceOf](#balance-of).
+Batched version of [balanceOf](#balanceof).
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -400,48 +412,6 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns an array of BN instance.
 const balances = await contract.balanceOfBatch(['0x...01', '0x...02'], ['1', '2'])
-```
-
-#### setApprovalForAll
-
-Grants or revokes permission to operator to transfer the caller’s tokens.
-
-```ts
-import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC1155('0x...00', ABI, wallet)
-
-// returns a Harmony Transaction instance.
-const tx = await contract.setApprovalForAll('0x...01', true)
-```
-
-#### isApprovedForAll
-
-Returns true if operator is approved to transfer account's tokens.
-
-```ts
-import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC1155('0x...00', ABI, wallet)
-
-// returns a boolean.
-const approved = await contract.isApprovedForAll('0x...01', '0x...02')
 ```
 
 #### safeTransferFrom
@@ -467,7 +437,7 @@ const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', 1, '0x')
 
 #### safeBatchTransferFrom
 
-Batched version of [safeTransferFrom](#safe-transfer-from).
+Batched version of [safeTransferFrom](#safetransferfrom).
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
