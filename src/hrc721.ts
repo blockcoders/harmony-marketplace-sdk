@@ -1,118 +1,66 @@
-import { BigNumberish } from '@ethersproject/bignumber'
-import { Logger } from '@ethersproject/logger'
-import { Contract } from '@harmony-js/contract'
-import { Harmony } from '@harmony-js/core'
+import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
+import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
-import { Unit } from '@harmony-js/utils'
-import { hexToNumber } from '@harmony-js/utils'
-import { BaseToken } from './base-token'
-import { ITransactionOptions } from './interfaces'
-import { logger } from './logger'
-
-const DEFAULT_GAS_PRICE = new Unit('100').asGwei().toHex()
+import BN from 'bn.js'
+import { BaseToken, ContractError } from './base-token'
+import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
+import { isBNish } from './utils'
 
 export class HRC721 extends BaseToken {
-  private contract: Contract
-  constructor(address: string, abi: any, private harmonyClient: Harmony) {
-    super(address, abi, harmonyClient)
-    this.contract = this.harmonyClient.contracts.createContract(abi, address)
+  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
+    super(address, abi, provider, options)
   }
 
-  async balanceOf(address: string): Promise<number> {
-    return await this._getBalance(address)
+  public async balanceOf(address: string, txOptions?: ITransactionOptions): Promise<BN> {
+    return await this.getBalance(address, undefined, txOptions)
   }
 
-  async ownerOf(tokenId: BigNumberish): Promise<string> {
-    if (!tokenId) {
-      throw new Error('You must provide a tokenId')
+  public async ownerOf(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
+    if (!isBNish(tokenId)) {
+      throw new ContractError('You must provide a tokenId', 'ownerOf')
     }
-    try {
-      return await this.contract.methods.ownerOf(tokenId).call()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'ownerOf',
-        params: tokenId,
-        error,
-      })
-    }
+
+    const address = await this.call<string>('ownerOf', [tokenId], txOptions)
+
+    return this.sanitizeAddress(address)
   }
 
-  async safeTransferFrom(
-    fromAddress: string,
-    toAddress: string,
-    tokenId: BigNumberish,
-    options: ITransactionOptions = {
-      gasPrice: DEFAULT_GAS_PRICE,
-    },
+  public async safeTransferFrom(
+    from: string,
+    to: string,
+    tokenId: BNish,
+    data?: any,
+    txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    this.checkForSigner('HRC721')
-    const method = this.contract.methods.safeTransferFrom(fromAddress, toAddress, tokenId)
+    const args: any[] = [from, to, tokenId]
 
-    if (!options.gasLimit) {
-      console.log('estimating')
-
-      const gas = await method.estimateGas({ gasPrice: options.gasPrice })
-      options.gasLimit = hexToNumber(gas)
+    if (data) {
+      args.push(data)
     }
 
-    const result = await method.send({
-      gasPrice: options.gasPrice,
-      gasLimit: options.gasLimit,
-    })
-
-    return result.transaction
+    return this.send('safeTransferFrom', args, txOptions)
   }
 
-  async transferFrom(
-    fromAddress: string,
-    toAddress: string,
-    tokenId: BigNumberish,
-    options: ITransactionOptions = {
-      gasPrice: DEFAULT_GAS_PRICE,
-    },
+  public async transferFrom(
+    from: string,
+    to: string,
+    tokenId: BNish,
+    txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    this.checkForSigner('HRC721')
-    const method = this.contract.methods.transferFrom(fromAddress, toAddress, tokenId)
-
-    if (!options.gasLimit) {
-      const gas = await method.estimateGas({ gasPrice: options.gasPrice })
-      options.gasLimit = hexToNumber(gas)
-    }
-
-    const result = await method.send({
-      gasPrice: options.gasPrice,
-      gasLimit: options.gasLimit,
-    })
-
-    return result.transaction
+    return this.send('transferFrom', [from, to, tokenId], txOptions)
   }
 
-  async approve(toAddress: string, tokenId: BigNumberish): Promise<any> {
-    return
+  public async approve(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
+    return this.send('approve', [to, tokenId], txOptions)
   }
 
-  async getApproved(tokenId: BigNumberish): Promise<string> {
-    if (!tokenId) {
-      throw new Error('You must provide a tokenId')
+  public async getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
+    if (!isBNish(tokenId)) {
+      throw new ContractError('You must provide a tokenId', 'getApproved')
     }
 
-    try {
-      return await this.contract.methods.getApproved(tokenId).call()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'getApproved',
-        params: tokenId,
-        error,
-      })
-    }
-  }
+    const address = await this.call<string>('getApproved', [tokenId], txOptions)
 
-  async safeTransferFromWithData(
-    fromAddress: string,
-    toAddress: string,
-    tokenId: BigNumberish,
-    data: any,
-  ): Promise<any> {
-    return
+    return this.sanitizeAddress(address)
   }
 }
