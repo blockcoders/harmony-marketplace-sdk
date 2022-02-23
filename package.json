@@ -1,7 +1,7 @@
 {
   "name": "harmony-marketplace-sdk",
-  "version": "1.0.0",
-  "description": "Harmony Marketplace SDK",
+  "version": "0.1.0-beta.1",
+  "description": "Harmony Marketplace SDK provides a collection of interfaces to interact with HR721, HR1155 and any Smart Contracts that extends those standards.",
   "author": "Blockcoders <engineering@blockcoders.io>",
   "license": "MIT",
   "readmeFilename": "README.md",
