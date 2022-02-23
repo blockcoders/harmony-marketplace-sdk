@@ -30,6 +30,10 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prepublishOnly": "npm run lint:ci && npm run test && npm run clean && npm run build-all"
   },
+  "precommit": [
+    "lint:ci",
+    "test:cov"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blockcoders/harmony-marketplace-sdk.git"
