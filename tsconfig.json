@@ -30,6 +30,6 @@
     "noEmitOnError": true,
     "preserveSymlinks": true,
     "preserveWatchOutput": true,
-    "pretty": false
+    "pretty": false,
   }
 }

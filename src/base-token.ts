@@ -1,125 +1,154 @@
-import { BigNumber, BigNumberish, isBigNumberish } from '@ethersproject/bignumber/lib/bignumber'
-import { Zero, AddressZero } from '@ethersproject/constants'
-import { Logger } from '@ethersproject/logger'
-import { Wallet } from '@harmony-js/account'
-import { Contract } from '@harmony-js/contract'
-import { Harmony } from '@harmony-js/core'
-import { logger } from './logger'
-export class BaseError extends Error {
-  public readonly type: string
-  public readonly code: number
-  public readonly data: string
+import { Account, Wallet } from '@harmony-js/account'
+import { Contract as BaseContract } from '@harmony-js/contract'
+import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
+import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
+import { Transaction } from '@harmony-js/transaction'
+import { hexToNumber, Unit } from '@harmony-js/utils'
+import BN from 'bn.js'
+import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
+import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
+import { Key } from './key'
+import { MnemonicKey } from './mnemonic-key'
+import { PrivateKey } from './private-key'
+import { isBNish } from './utils'
 
-  constructor(message: string, type: string, code: number, data: string) {
+class Contract extends BaseContract {
+  public readonly wallet: Wallet
+
+  constructor(abi: AbiItemModel[], address: string, provider: ContractProviderType, options?: ContractOptions) {
+    super(abi, address, options, provider)
+
+    this.wallet = provider
+  }
+}
+
+export class ContractError extends Error {
+  public readonly type: string
+
+  constructor(message: string, type: string) {
     super(message)
-    this.name = BaseError.name
+    this.name = ContractError.name
     this.type = type
-    this.code = code
-    this.data = data
 
     Error.captureStackTrace(this, this.constructor)
   }
 }
 
 export abstract class BaseToken {
-  private baseContract: Contract
-  private isSignerSet = false
+  private readonly _contract: Contract
 
-  constructor(address: string, abi: any, private client: Harmony) {
-    this.baseContract = this.client.contracts.createContract(abi, address)
+  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
+    this._contract = new Contract(abi, address, provider, options)
   }
 
-  protected async _getBalance(address: string, id?: BigNumberish): Promise<number> {
-    if (!address) {
-      throw new Error('You have to provide an address')
-    }
+  public get contract(): Contract {
+    return this._contract
+  }
 
-    this.checkNotBeZeroAddress(address)
+  public get address(): string {
+    return this._contract.address
+  }
 
-    try {
-      let balance: BigNumber = Zero
-      if (!isBigNumberish(id)) {
-        balance = await this.baseContract.methods.balanceOf(address).call()
-        return balance.toNumber()
-      }
+  protected async estimateGas(
+    method: string,
+    args: any[] = [],
+    options: ITransactionOptions = {
+      gasPrice: DEFAULT_GAS_PRICE,
+    },
+  ): Promise<ITransactionOptions> {
+    let gasLimit = options.gasLimit
 
-      balance = await this.baseContract.methods.balanceOf(address, id).call()
-      return balance.toNumber()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        params: { address, id },
-        error,
+    if (!gasLimit) {
+      const hexValue = await this._contract.methods[method](...args).estimateGas({
+        gasPrice: new Unit(options.gasPrice).asGwei().toHex(),
       })
+      gasLimit = hexToNumber(hexValue)
     }
+
+    return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
   }
 
-  async setApprovalForAll(addressOperator: string, approved: boolean): Promise<any> {
+  protected async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
+    const options = await this.estimateGas(method, args, txOptions)
+    const result: any = await this._contract.methods[method](...args).call(options)
+
+    return result as T
+  }
+
+  protected async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
+    const options = await this.estimateGas(method, args, txOptions)
+    const response: BaseContract = await this._contract.methods[method](...args).send(options)
+
+    if (!response.transaction) {
+      throw new ContractError('Invalid transaction response', method)
+    }
+
+    return response.transaction
+  }
+
+  protected async getBalance(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
+    if (!address || address === AddressZero) {
+      throw new ContractError('Invalid address provided', '_getBalance')
+    }
+
+    const args: any[] = [address]
+
+    if (isBNish(id)) {
+      args.push(id)
+    }
+
+    return this.call<BN>('balanceOf', args, txOptions)
+  }
+
+  protected sanitizeAddress(address: string): string {
+    return address.toLowerCase()
+  }
+
+  public async setApprovalForAll(
+    addressOperator: string,
+    approved: boolean,
+    txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
     if (!addressOperator) {
       throw new Error('You must provide an addressOperator')
     }
 
-    try {
-      return await this.baseContract.methods.setApprovalForAll(addressOperator, approved).call()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'setApprovalForAll',
-        params: { addressOperator, approved },
-        error,
-      })
-    }
-    // throw new Error('setApprovalForAll is not implemented yet')
+    return this.send('setApprovalForAll', [addressOperator, approved], txOptions)
   }
 
-  async isApprovedForAll(addressOwner: string, addressOperator: string): Promise<boolean> {
-    if (!addressOwner || !addressOperator) {
-      throw new Error('You must provide an addressOwner and an addressOperator')
+  public async isApprovedForAll(owner: string, operator: string, txOptions?: ITransactionOptions): Promise<boolean> {
+    if (!owner || owner === AddressZero) {
+      throw new ContractError('Invalid owner provided', 'isApprovedForAll')
     }
 
-    this.checkNotBeZeroAddress(addressOwner, addressOperator)
-
-    try {
-      return await this.baseContract.methods.isApprovedForAll(addressOwner, addressOperator).call()
-    } catch (error) {
-      return logger.throwError('bad result from backend', Logger.errors.SERVER_ERROR, {
-        method: 'isApprovedForAll',
-        params: { addressOwner, addressOperator },
-        error,
-      })
+    if (!operator || operator === AddressZero) {
+      throw new ContractError('Invalid operator provided', 'isApprovedForAll')
     }
+
+    return this.call('isApprovedForAll', [owner, operator], txOptions)
   }
 
-  /**
-   * Will set the signer in order to execute transactions
-   *
-   * @param {string} privateKey
-   * @memberof HRC721
-   */
-  setSignerByPrivateKey(privateKey: string, type: string): void {
-    if (!privateKey) throw new BaseError('You must provide a privateKey', type, -1, privateKey)
-    if (!type) throw new BaseError('You must provide a type', 'No provided type', -1, privateKey)
+  public setSignerByPrivateKey(privateKey: string): Account {
+    const account = this._contract.wallet.addByPrivateKey(privateKey)
 
-    const wallet: Wallet = this.baseContract.wallet
-    const account = wallet.addByPrivateKey(privateKey)
-
-    if (!account.address) throw new BaseError('You must provide a valid privateKey', type, -1, privateKey)
-
-    wallet.setSigner(account.address)
-    this.isSignerSet = true
-  }
-
-  checkForSigner(type: string): void {
-    if (!this.isSignerSet)
-      throw new BaseError(
-        'You must set the signer before executing transactions. Call setSignerByPrivateKey',
-        type,
-        -1,
-        '',
-      )
-  }
-
-  checkNotBeZeroAddress(firstAddress: string, secondAddress?: string) {
-    if (firstAddress === AddressZero || (secondAddress && secondAddress === AddressZero)) {
-      throw new Error('You have to provide a non zero address')
+    if (account.address) {
+      this._contract.wallet.setSigner(account.address)
     }
+
+    return account
+  }
+
+  public setSignerByMnemonic(mnemonic: string, index = 0): Account {
+    const account = this._contract.wallet.addByMnemonic(mnemonic, index)
+
+    if (account.address) {
+      this._contract.wallet.setSigner(account.address)
+    }
+
+    return account
+  }
+
+  public setSignerByKey(key: Key | PrivateKey | MnemonicKey): void {
+    this._contract.connect(key)
   }
 }
