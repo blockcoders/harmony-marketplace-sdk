@@ -5,7 +5,7 @@ import { HARMONY_SHARDS } from './constants'
 import { HarmonyRpcConfig, HarmonyShards, RpcProviderType } from './interfaces'
 
 /**
- * Implementation of the Wallet that not use any pk or mnemonic.
+ * Implementation of the Wallet that does not use any pk or mnemonic.
  */
 export class Key extends Wallet {
   constructor(url: RpcProviderType, chainId = ChainID.HmyMainnet) {
