@@ -7,7 +7,7 @@ export const TEST_ADDRESS_3 = '0x264F47C0E2fb1B587F6fa270862F3CBc68460B75'.toLow
 
 export const TEST_ACCOUNT_1 = {
   address: TEST_ADDRESS_1,
-  privateKey: '0xdc0ab9fc02cb694853c939037c986a792bdd779fe481c0767d7551ad45d45b39'.toLowerCase(),
+  privateKey: 'dc0ab9fc02cb694853c939037c986a792bdd779fe481c0767d7551ad45d45b39'.toLowerCase(),
 }
 export const TEST_ACCOUNT_2 = {
   address: TEST_ADDRESS_2,
@@ -19,7 +19,7 @@ export const TEST_ACCOUNT_3 = {
 }
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const HRC721_CONTRACT_ADDRESS = '0xF00373c538cca8ac7f2290ffFA425c32459ef10b'.toLowerCase()
-export const HRC1155_CONTRACT_ADDRESS = '0x7354e6ec08c96f9552974c8d076210df54a480ee'.toLowerCase()
+export const HRC1155_CONTRACT_ADDRESS = '0xD59AF020E36F710e8fB1e42e05cE48CF6b86D4B4'.toLowerCase()
 export const HRC721_TOKEN_GOLD = 0
 export const HRC721_TOKEN_SILVER = 1
 export const HRC721_TOKEN_THORS_HAMMER = 2

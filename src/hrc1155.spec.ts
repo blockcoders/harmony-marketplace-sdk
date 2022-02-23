@@ -1,3 +1,4 @@
+import { TxStatus } from '@harmony-js/transaction'
 import { ChainID } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
@@ -13,10 +14,11 @@ import {
   EMPTY_TEST_ADDRESS,
   TEST_ADDRESS_2,
   HRC721_TOKEN_GOLD,
+  TX_OPTIONS,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HR1155/abi'
 
-describe.only('HRC1155 Contract Interface', () => {
+describe('HRC1155 Contract Interface', () => {
   use(chaiAsPromised)
 
   let contract: HRC1155
@@ -107,13 +109,30 @@ describe.only('HRC1155 Contract Interface', () => {
 
   describe('safeTransferFrom', async () => {
     it('should transfer amount tokens of the specified id from one address to another', async () => {
-      // const approved = await provider.setApprovalForAll(TEST_ACCOUNT_1.address, true)
-      // provider.setSignerByPrivateKey(TEST_ACCOUNT_2.privateKey, 'HRC1155')
-      const transfer = await contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, HRC721_TOKEN_GOLD, 1, '0x')
-      console.log(transfer)
-      // expect(transfer).to.exist
-      // expect(transfer).to.not.be.null
-      // expect(transfer).to.not.be.undefined
+      const balance = await contract.balanceOf(TEST_ADDRESS_2, HRC721_TOKEN_GOLD.toString())
+
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).to.be.an.instanceof(BN)
+
+      const result = await contract.safeTransferFrom(
+        TEST_ADDRESS_1,
+        TEST_ADDRESS_2,
+        HRC721_TOKEN_GOLD,
+        1,
+        '0x',
+        TX_OPTIONS,
+      )
+
+      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
+      expect(result.receipt?.blockHash).to.be.string
+
+      const newBalance = await contract.balanceOf(TEST_ADDRESS_2, HRC721_TOKEN_GOLD.toString())
+
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(balance).to.be.an.instanceof(BN)
+      expect(newBalance.gt(balance)).to.be.true
     })
 
     it('should thow an error if sender address is not provided', async () => {
