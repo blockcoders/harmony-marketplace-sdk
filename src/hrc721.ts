@@ -12,7 +12,7 @@ export class HRC721 extends BaseToken {
   }
 
   public async balanceOf(address: string, txOptions?: ITransactionOptions): Promise<BN> {
-    return await this._getBalance(address, undefined, txOptions)
+    return await this.getBalance(address, undefined, txOptions)
   }
 
   public async ownerOf(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {

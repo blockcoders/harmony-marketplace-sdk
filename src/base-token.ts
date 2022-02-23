@@ -86,7 +86,7 @@ export abstract class BaseToken {
     return response.transaction
   }
 
-  protected async _getBalance(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
+  protected async getBalance(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     if (!address || address === AddressZero) {
       throw new ContractError('Invalid address provided', '_getBalance')
     }
@@ -118,11 +118,11 @@ export abstract class BaseToken {
 
   public async isApprovedForAll(owner: string, operator: string, txOptions?: ITransactionOptions): Promise<boolean> {
     if (!owner || owner === AddressZero) {
-      throw new Error('Invalid owner provided')
+      throw new ContractError('Invalid owner provided', 'isApprovedForAll')
     }
 
     if (!operator || operator === AddressZero) {
-      throw new Error('Invalid operator provided')
+      throw new ContractError('Invalid operator provided', 'isApprovedForAll')
     }
 
     return this.call('isApprovedForAll', [owner, operator], txOptions)

@@ -12,7 +12,7 @@ export class HRC1155 extends BaseToken {
   }
 
   public async balanceOf(address: string, id: BNish, txOptions?: ITransactionOptions): Promise<BN> {
-    return this._getBalance(address, id, txOptions)
+    return this.getBalance(address, id, txOptions)
   }
 
   public async balanceOfBatch(accounts: string[], ids: BNish[], txOptions?: ITransactionOptions): Promise<BN[]> {
