@@ -1,0 +1,1 @@
+{"version":3,"file":"private-key.d.ts","sourceRoot":"","sources":["../src/private-key.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,mBAAmB,CAAA;AAC3C,OAAO,EAAE,eAAe,EAAE,MAAM,cAAc,CAAA;AAC9C,OAAO,EAAE,GAAG,EAAE,MAAM,OAAO,CAAA;AAK3B,qBAAa,UAAW,SAAQ,GAAG;gBACrB,GAAG,EAAE,eAAe,EAAE,UAAU,EAAE,MAAM,EAAE,OAAO,CAAC,EAAE,OAAO;CAKxE"}
