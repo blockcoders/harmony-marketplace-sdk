@@ -338,7 +338,7 @@ const address = await contract.getApproved('1')
 
 ## HRC1155 API
 
-The `HRC1155` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts.
+The `HRC1155` implements the abstract class [Base Token](#base-token).
 
 ### Initializing
 
