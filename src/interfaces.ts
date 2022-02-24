@@ -34,3 +34,15 @@ export enum HarmonyShards {
 export type RpcProviderType = string | HttpProvider | WSProvider | HarmonyShards
 
 export type ContractProviderType = Wallet | Key | PrivateKey | MnemonicKey
+
+export interface MnemonicOptions {
+  /**
+   * Space-separated list of words for the mnemonic key.
+   */
+  mnemonic?: string
+
+  /**
+   * BIP44 index number
+   */
+  index?: number
+}

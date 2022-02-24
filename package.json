@@ -1,7 +1,7 @@
 {
   "name": "harmony-marketplace-sdk",
-  "version": "1.0.0",
-  "description": "Harmony Marketplace SDK",
+  "version": "0.1.0-beta.1",
+  "description": "Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards..",
   "author": "Blockcoders <engineering@blockcoders.io>",
   "license": "MIT",
   "readmeFilename": "README.md",
@@ -30,6 +30,10 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prepublishOnly": "npm run lint:ci && npm run test && npm run clean && npm run build-all"
   },
+  "precommit": [
+    "lint:ci",
+    "test:cov"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blockcoders/harmony-marketplace-sdk.git"
@@ -39,8 +43,8 @@
     "marketplace",
     "blockchain",
     "nft",
-    "hr721",
-    "hr1155",
+    "hrc721",
+    "hrc1155",
     "harmony-sdk",
     "one"
   ],
@@ -63,6 +67,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "mocha": "^9.2.0",
+    "nyc": "^15.1.0",
     "pre-commit": "^1.2.2",
     "prettier": "^2.5.1",
     "sinon": "^13.0.1",
