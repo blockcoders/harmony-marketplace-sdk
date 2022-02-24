@@ -129,3 +129,8 @@ dist
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Builds
+lib.esm/
+lib.esnext/
+lib/
