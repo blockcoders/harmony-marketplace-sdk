@@ -1,14 +1,7 @@
-import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
-import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import BN from 'bn.js'
 import { HRC1155 } from './hrc1155'
-import { ContractProviderType } from './interfaces'
 
 export class GameItems extends HRC1155 {
-  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
-    super(address, abi, provider, options)
-  }
-
   async getGold(): Promise<number> {
     const gold = await this.call<BN>('GOLD')
     return gold.toNumber()

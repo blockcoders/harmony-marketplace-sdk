@@ -4,18 +4,25 @@ import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { GameItems } from './game-item'
 import { HarmonyShards } from './interfaces'
-import { PrivateKey } from './private-key'
-import { HRC1155_CONTRACT_ADDRESS, TEST_ACCOUNT_1 } from './tests/constants'
+import { Key } from './key'
+import {
+  HRC1155_CONTRACT_ADDRESS,
+  TOKEN_GOLD,
+  TOKEN_SILVER,
+  TOKEN_THORS_HAMMER,
+  TOKEN_SWORD,
+  TOKEN_SHIELD,
+} from './tests/constants'
 import { ABI } from './tests/contracts/GameItems/abi'
 
 describe('Game Item Provider', () => {
   use(chaiAsPromised)
 
   let contract: GameItems
-  let provider: PrivateKey
+  let provider: Key
 
   before(() => {
-    provider = new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_ACCOUNT_1.privateKey, ChainID.HmyTestnet)
+    provider = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyTestnet)
     contract = new GameItems(HRC1155_CONTRACT_ADDRESS, ABI, provider)
   })
 
@@ -33,7 +40,7 @@ describe('Game Item Provider', () => {
       expect(gold).to.exist
       expect(gold).to.not.be.null
       expect(gold).to.not.undefined
-      expect(gold).to.be.equals(0)
+      expect(gold).to.be.equals(TOKEN_GOLD)
     })
 
     it('should throw an error if something went wrong', async () => {
@@ -47,7 +54,7 @@ describe('Game Item Provider', () => {
       expect(silver).to.exist
       expect(silver).to.not.be.null
       expect(silver).to.not.undefined
-      expect(silver).to.be.equals(1)
+      expect(silver).to.be.equals(TOKEN_SILVER)
     })
 
     it('should throw an error if something went wrong', async () => {
@@ -61,7 +68,7 @@ describe('Game Item Provider', () => {
       expect(thors).to.exist
       expect(thors).to.not.be.null
       expect(thors).to.not.undefined
-      expect(thors).to.be.equals(2)
+      expect(thors).to.be.equals(TOKEN_THORS_HAMMER)
     })
 
     it('should throw an error if something went wrong', async () => {
@@ -75,7 +82,7 @@ describe('Game Item Provider', () => {
       expect(sword).to.exist
       expect(sword).to.not.be.null
       expect(sword).to.not.undefined
-      expect(sword).to.be.equals(3)
+      expect(sword).to.be.equals(TOKEN_SWORD)
     })
 
     it('should throw an error if something went wrong', async () => {
@@ -89,7 +96,7 @@ describe('Game Item Provider', () => {
       expect(shield).to.exist
       expect(shield).to.not.be.null
       expect(shield).to.not.undefined
-      expect(shield).to.be.equals(4)
+      expect(shield).to.be.equals(TOKEN_SHIELD)
     })
 
     it('should throw an error if something went wrong', async () => {
