@@ -73,7 +73,7 @@ describe('HRC1155 Contract Interface', () => {
   describe('balanceOfBatch', () => {
     it('should return multiple balances in the specified account with id as a number', async () => {
       const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], [1, 2])
-      expect(balance).to.exist
+
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).length(2)
@@ -81,7 +81,7 @@ describe('HRC1155 Contract Interface', () => {
 
     it('should return multiple balances in the specified account with id as a string', async () => {
       const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['1', '2'])
-      expect(balance).to.exist
+
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).length(2)
@@ -89,7 +89,7 @@ describe('HRC1155 Contract Interface', () => {
 
     it('should return multiple balances in the specified account with id as a byte', async () => {
       const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['00000001', '00000010'])
-      expect(balance).to.exist
+
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).length(2)
@@ -163,7 +163,6 @@ describe('HRC1155 Contract Interface', () => {
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
-      expect(balance).to.be.exist
 
       const result = await contract.safeBatchTransferFrom(
         TEST_ADDRESS_1,
@@ -181,7 +180,6 @@ describe('HRC1155 Contract Interface', () => {
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
-      expect(balance).to.be.exist
       expect(parseInt(newBalance[0].toString())).to.be.lt(parseInt(balance[0].toString()))
     })
 
