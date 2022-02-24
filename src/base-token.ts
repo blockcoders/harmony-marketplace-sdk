@@ -131,6 +131,7 @@ export abstract class BaseToken {
   public setSignerByPrivateKey(privateKey: string): Account {
     const account = this._contract.wallet.addByPrivateKey(privateKey)
 
+    // Force the new account as defaultSigner
     if (account.address) {
       this._contract.wallet.setSigner(account.address)
     }
@@ -141,6 +142,7 @@ export abstract class BaseToken {
   public setSignerByMnemonic(mnemonic: string, index = 0): Account {
     const account = this._contract.wallet.addByMnemonic(mnemonic, index)
 
+    // Force the new account as defaultSigner
     if (account.address) {
       this._contract.wallet.setSigner(account.address)
     }
