@@ -1,1 +1,0 @@
-{"version":3,"file":"private-key.js","sourceRoot":"","sources":["../src/private-key.ts"],"names":[],"mappings":";;;AAEA,+BAA2B;AAK3B,MAAa,UAAW,SAAQ,SAAG;IACjC,YAAY,GAAoB,EAAE,UAAkB,EAAE,OAAiB;QACrE,KAAK,CAAC,GAAG,EAAE,OAAO,CAAC,CAAA;QAEnB,IAAI,CAAC,eAAe,CAAC,UAAU,CAAC,CAAA;IAClC,CAAC;CACF;AAND,gCAMC"}
