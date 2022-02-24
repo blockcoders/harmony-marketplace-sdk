@@ -155,7 +155,7 @@ describe('HRC1155 Contract Interface', () => {
   })
 
   describe('safeBatchTransferFrom', async () => {
-    it('should transfer amount tokens of the specified id from one address to another', async () => {
+    it.skip('should transfer amount tokens of the specified id from one address to another', async () => {
       const balance = await contract.balanceOfBatch(
         [TEST_ADDRESS_1, TEST_ADDRESS_2],
         [TOKEN_GOLD.toString(), TOKEN_SILVER.toString()],
