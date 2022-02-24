@@ -16,7 +16,7 @@ import {
   HRC721_TOKEN_GOLD,
   TX_OPTIONS,
 } from './tests/constants'
-import { ABI } from './tests/contracts/HR1155/abi'
+import { ABI } from './tests/contracts/HRC1155/abi'
 
 describe('HRC1155 Contract Interface', () => {
   use(chaiAsPromised)

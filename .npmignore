@@ -11,3 +11,7 @@ src/
 .travis.yml
 tsconfig.build.json
 tsconfig.json
+.nyc_output/
+.nvmrc
+.editorconfig
+.nycrc
