@@ -41,14 +41,6 @@ export abstract class BaseToken {
     this._contract = new Contract(abi, address, provider, options)
   }
 
-  public get contract(): Contract {
-    return this._contract
-  }
-
-  public get address(): string {
-    return this._contract.address
-  }
-
   protected async estimateGas(
     method: string,
     args: any[] = [],

@@ -23,7 +23,7 @@
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
     "build": "tsc --build ./tsconfig.json",
     "build-all": "npm run build-cjs && npm run build-esnext && npm run build-esm",
-    "build-cjs": "tsc -p tsconfig.json --outDir lib -t es5 -m commonjs",
+    "build-cjs": "tsc -p tsconfig.json --outDir lib -t es3 -m commonjs",
     "build-esnext": "tsc -p tsconfig.json --outDir lib.esnext -t es2015 -m commonjs",
     "build-esm": "tsc -p tsconfig.json --outDir lib.esm -t es2015 -m es2015",
     "lint:ci": "eslint \"{src,apps,libs,test}/**/*.ts\"",
