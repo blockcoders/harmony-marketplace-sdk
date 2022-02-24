@@ -20,11 +20,11 @@ export const TEST_ACCOUNT_3 = {
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const HRC721_CONTRACT_ADDRESS = '0xF00373c538cca8ac7f2290ffFA425c32459ef10b'.toLowerCase()
 export const HRC1155_CONTRACT_ADDRESS = '0xD59AF020E36F710e8fB1e42e05cE48CF6b86D4B4'.toLowerCase()
-export const HRC721_TOKEN_GOLD = 0
-export const HRC721_TOKEN_SILVER = 1
-export const HRC721_TOKEN_THORS_HAMMER = 2
-export const HRC721_TOKEN_SWORD = 3
-export const HRC721_TOKEN_SHIELD = 4
+export const TOKEN_GOLD = 0
+export const TOKEN_SILVER = 1
+export const TOKEN_THORS_HAMMER = 2
+export const TOKEN_SWORD = 3
+export const TOKEN_SHIELD = 4
 export const TX_OPTIONS: ITransactionOptions = {
   gasLimit: '5000000',
   gasPrice: '100',
