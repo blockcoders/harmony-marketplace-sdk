@@ -14,6 +14,7 @@ import {
   EMPTY_TEST_ADDRESS,
   TEST_ADDRESS_2,
   TOKEN_GOLD,
+  TOKEN_SILVER,
   TX_OPTIONS,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC1155/abi'
@@ -72,7 +73,7 @@ describe('HRC1155 Contract Interface', () => {
   describe('balanceOfBatch', () => {
     it('should return multiple balances in the specified account with id as a number', async () => {
       const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], [1, 2])
-      expect(balance).to.exist
+
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).length(2)
@@ -80,7 +81,7 @@ describe('HRC1155 Contract Interface', () => {
 
     it('should return multiple balances in the specified account with id as a string', async () => {
       const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['1', '2'])
-      expect(balance).to.exist
+
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).length(2)
@@ -88,7 +89,7 @@ describe('HRC1155 Contract Interface', () => {
 
     it('should return multiple balances in the specified account with id as a byte', async () => {
       const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['00000001', '00000010'])
-      expect(balance).to.exist
+
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).length(2)
@@ -150,6 +151,66 @@ describe('HRC1155 Contract Interface', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(contract.safeTransferFrom('', '', 0, 0, '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('safeBatchTransferFrom', async () => {
+    it.skip('should transfer amount tokens of the specified id from one address to another', async () => {
+      const balance = await contract.balanceOfBatch(
+        [TEST_ADDRESS_1, TEST_ADDRESS_2],
+        [TOKEN_GOLD.toString(), TOKEN_SILVER.toString()],
+      )
+
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+
+      const result = await contract.safeBatchTransferFrom(
+        TEST_ADDRESS_1,
+        TEST_ADDRESS_2,
+        [TOKEN_GOLD, TOKEN_SILVER],
+        [1, 2],
+        '0x',
+        TX_OPTIONS,
+      )
+
+      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
+      expect(result.receipt?.blockHash).to.be.string
+
+      const newBalance = await contract.balanceOfBatch([TEST_ADDRESS_2, TEST_ADDRESS_1], [TOKEN_GOLD, TOKEN_SILVER])
+
+      expect(balance).to.not.be.null
+      expect(balance).to.not.be.undefined
+      expect(parseInt(newBalance[0].toString())).to.be.lt(parseInt(balance[0].toString()))
+    })
+
+    it('should thow an error if sender address is not provided', async () => {
+      expect(contract.safeBatchTransferFrom('', TEST_ADDRESS_1, [TOKEN_GOLD], [10], '0x')).to.be.rejectedWith(Error)
+    })
+
+    it('should thow an error if receiver address is not provided', async () => {
+      expect(contract.safeBatchTransferFrom(TEST_ADDRESS_1, '', [TOKEN_GOLD], [10], '0x')).to.be.rejectedWith(Error)
+    })
+
+    it('should thow an error if token ids are not provided', async () => {
+      expect(contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [], [10], '0x')).to.be.rejectedWith(
+        Error,
+      )
+    })
+
+    it('should thow an error if amounts are not provided', async () => {
+      expect(
+        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [TOKEN_GOLD], [], '0x'),
+      ).to.be.rejectedWith(Error)
+    })
+
+    it('should thow an error if data is not provided', async () => {
+      expect(
+        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [TOKEN_GOLD], [10], ''),
+      ).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(contract.safeBatchTransferFrom('', '', [], [], '')).to.be.rejectedWith(Error)
     })
   })
 })
