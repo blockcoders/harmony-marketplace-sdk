@@ -1,3 +1,4 @@
+import { Wallet } from '@harmony-js/account'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
@@ -7,6 +8,14 @@ import { Key } from './key'
 
 describe('Key Class', () => {
   let instance: Key
+
+  it('should be an instance of Wallet', async () => {
+    instance = new Key(HARMONY_RPC_SHARD_0_TESTNET.url)
+
+    expect(instance).to.not.be.null
+    expect(instance).to.not.be.undefined
+    expect(instance).to.be.instanceOf(Wallet)
+  })
 
   it('should instance correctly the key class using url as a string with chain id', async () => {
     instance = new Key(HARMONY_RPC_SHARD_0_TESTNET.url, ChainID.HmyTestnet)
