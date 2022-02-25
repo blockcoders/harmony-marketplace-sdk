@@ -13,7 +13,7 @@ import {
   TEST_ACCOUNT_1,
   EMPTY_TEST_ADDRESS,
   TEST_ADDRESS_2,
-  HRC721_TOKEN_GOLD,
+  TOKEN_GOLD,
   TX_OPTIONS,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC1155/abi'
@@ -39,7 +39,7 @@ describe('HRC1155 Contract Interface', () => {
 
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account with id as a number', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_1, HRC721_TOKEN_GOLD)
+      const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD)
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
@@ -48,7 +48,7 @@ describe('HRC1155 Contract Interface', () => {
     })
 
     it('should get the number of tokens in the specified account with id as a string', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_1, HRC721_TOKEN_GOLD.toString())
+      const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD.toString())
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
@@ -107,27 +107,20 @@ describe('HRC1155 Contract Interface', () => {
     })
   })
 
-  describe('safeTransferFrom', async () => {
+  describe.skip('safeTransferFrom', async () => {
     it('should transfer amount tokens of the specified id from one address to another', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_2, HRC721_TOKEN_GOLD.toString())
+      const balance = await contract.balanceOf(TEST_ADDRESS_2, TOKEN_GOLD.toString())
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
       expect(balance).to.be.an.instanceof(BN)
 
-      const result = await contract.safeTransferFrom(
-        TEST_ADDRESS_1,
-        TEST_ADDRESS_2,
-        HRC721_TOKEN_GOLD,
-        1,
-        '0x',
-        TX_OPTIONS,
-      )
+      const result = await contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, 1, '0x', TX_OPTIONS)
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result.receipt?.blockHash).to.be.string
 
-      const newBalance = await contract.balanceOf(TEST_ADDRESS_2, HRC721_TOKEN_GOLD.toString())
+      const newBalance = await contract.balanceOf(TEST_ADDRESS_2, TOKEN_GOLD.toString())
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
