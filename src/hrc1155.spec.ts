@@ -108,8 +108,8 @@ describe('HRC1155 Contract Interface', () => {
     })
   })
 
-  describe('safeTransferFrom', async () => {
-    it.skip('should transfer amount tokens of the specified id from one address to another', async () => {
+  describe.skip('safeTransferFrom', async () => {
+    it('should transfer amount tokens of the specified id from one address to another', async () => {
       const balance = await contract.balanceOf(TEST_ADDRESS_2, TOKEN_GOLD.toString())
 
       expect(balance).to.not.be.null
