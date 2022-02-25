@@ -14,7 +14,7 @@ import {
   TEST_ACCOUNT_2,
   TEST_ACCOUNT_3,
   EMPTY_TEST_ADDRESS,
-  HRC721_TOKEN_GOLD,
+  TOKEN_GOLD,
   TEST_ADDRESS_2,
   TX_OPTIONS,
 } from './tests/constants'
@@ -56,7 +56,7 @@ describe('HRC721 Contract Interface', () => {
 
   describe('ownerOf', () => {
     it('should return the owner of the tokenId token', async () => {
-      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
@@ -64,7 +64,7 @@ describe('HRC721 Contract Interface', () => {
     })
 
     it('should return the owner of the tokenId token with tokenId as a string', async () => {
-      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD.toString(), TX_OPTIONS)
+      const owner = await contract.ownerOf(TOKEN_GOLD.toString(), TX_OPTIONS)
       expect(owner).to.exist
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
@@ -72,7 +72,7 @@ describe('HRC721 Contract Interface', () => {
     })
 
     it('should return the origin address of the tokenId token if the token has no owner', async () => {
-      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
@@ -90,21 +90,21 @@ describe('HRC721 Contract Interface', () => {
 
   describe('transferFrom', () => {
     it('should throw if there is no signer', () => {
-      expect(contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_1, HRC721_TOKEN_GOLD)).to.be.rejectedWith(Error)
+      expect(contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_1, TOKEN_GOLD)).to.be.rejectedWith(Error)
     })
 
     it.skip('should transfer the ownership of a token from one address to another', async () => {
-      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
       expect(owner).to.equal(TEST_ADDRESS_1)
       expect(owner).to.not.equal(TEST_ADDRESS_2)
 
-      const result = await contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const result = await contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, TX_OPTIONS)
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result.receipt?.blockHash).to.be.string
 
-      const newOwner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const newOwner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
       expect(newOwner).to.equal(TEST_ADDRESS_2)
       expect(newOwner).to.not.equal(TEST_ADDRESS_1)
@@ -113,12 +113,12 @@ describe('HRC721 Contract Interface', () => {
       contract.setSignerByPrivateKey(TEST_ACCOUNT_2.privateKey)
 
       // return the token
-      const result2 = await contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const result2 = await contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
 
       expect(result2.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result2.receipt?.blockHash).to.be.string
 
-      const oldOwner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const oldOwner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
       expect(oldOwner).to.equal(TEST_ADDRESS_1)
       expect(oldOwner).to.not.equal(TEST_ADDRESS_2)
@@ -131,7 +131,7 @@ describe('HRC721 Contract Interface', () => {
     })
 
     it('should transfer the ownership of a token from one address to another', async () => {
-      const owner = await contract.ownerOf(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
       expect(owner).to.be.oneOf([TEST_ACCOUNT_2.address, TEST_ACCOUNT_3.address])
 
       const ownerAccount = [TEST_ACCOUNT_2, TEST_ACCOUNT_3].find((account) => account.address === owner)
@@ -149,7 +149,7 @@ describe('HRC721 Contract Interface', () => {
   // TODO: add more tests when the approve function works
   describe('getApproved', () => {
     it('should return the account approved for tokenId token', async () => {
-      const approved = await contract.getApproved(HRC721_TOKEN_GOLD, TX_OPTIONS)
+      const approved = await contract.getApproved(TOKEN_GOLD, TX_OPTIONS)
 
       expect(approved).to.not.be.null
       expect(approved).to.not.be.undefined
