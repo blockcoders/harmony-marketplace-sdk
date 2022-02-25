@@ -65,7 +65,7 @@ describe('HRC721 Contract Interface', () => {
 
     it('should return the owner of the tokenId token with tokenId as a string', async () => {
       const owner = await contract.ownerOf(TOKEN_GOLD.toString(), TX_OPTIONS)
-      expect(owner).to.exist
+
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
       expect(owner).to.be.equals(TEST_ADDRESS_1)
