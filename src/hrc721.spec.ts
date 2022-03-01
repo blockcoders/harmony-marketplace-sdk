@@ -1,22 +1,18 @@
 import { TxStatus } from '@harmony-js/transaction'
-import { ChainID } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { HRC721 } from './hrc721'
-import { HarmonyShards } from './interfaces'
-import { PrivateKey } from './private-key'
 import {
   HRC721_CONTRACT_ADDRESS,
-  TEST_ADDRESS_1,
   TEST_ACCOUNT_1,
   TEST_ACCOUNT_2,
   TEST_ACCOUNT_3,
   EMPTY_TEST_ADDRESS,
   TOKEN_GOLD,
-  TEST_ADDRESS_2,
   TX_OPTIONS,
+  PROVIDER_TEST_1,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC721/abi'
 
@@ -24,11 +20,9 @@ describe('HRC721 Contract Interface', () => {
   use(chaiAsPromised)
 
   let contract: HRC721
-  let provider: PrivateKey
 
   before(() => {
-    provider = new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_ACCOUNT_1.privateKey, ChainID.HmyTestnet)
-    contract = new HRC721(HRC721_CONTRACT_ADDRESS, ABI, provider)
+    contract = new HRC721(HRC721_CONTRACT_ADDRESS, ABI, PROVIDER_TEST_1)
   })
 
   afterEach(async () => {
@@ -36,12 +30,12 @@ describe('HRC721 Contract Interface', () => {
   })
 
   it('should be defined', () => {
-    expect(provider).to.not.be.undefined
+    expect(PROVIDER_TEST_1).to.not.be.undefined
   })
 
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_1, TX_OPTIONS)
+      const balance = await contract.balanceOf(TEST_ACCOUNT_1.address, TX_OPTIONS)
 
       expect(balance).to.not.be.null
       expect(balance).to.not.be.undefined
@@ -60,7 +54,7 @@ describe('HRC721 Contract Interface', () => {
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(TEST_ADDRESS_1)
+      expect(owner).to.be.equals(TEST_ACCOUNT_1.address)
     })
 
     it('should return the owner of the tokenId token with tokenId as a string', async () => {
@@ -68,7 +62,7 @@ describe('HRC721 Contract Interface', () => {
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(TEST_ADDRESS_1)
+      expect(owner).to.be.equals(TEST_ACCOUNT_1.address)
     })
 
     it('should return the origin address of the tokenId token if the token has no owner', async () => {
@@ -76,7 +70,7 @@ describe('HRC721 Contract Interface', () => {
 
       expect(owner).to.not.be.null
       expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(TEST_ADDRESS_1)
+      expect(owner).to.be.equals(TEST_ACCOUNT_1.address)
     })
 
     it('should throw an error if tokenId is a non existent token', async () => {
@@ -89,45 +83,50 @@ describe('HRC721 Contract Interface', () => {
   })
 
   describe('transferFrom', () => {
-    it('should throw if there is no signer', () => {
-      expect(contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_1, TOKEN_GOLD)).to.be.rejectedWith(Error)
+    it('should throw an error if there is no signer', () => {
+      expect(contract.transferFrom('', TEST_ACCOUNT_1.address, TOKEN_GOLD)).to.be.rejectedWith(Error)
     })
 
     it.skip('should transfer the ownership of a token from one address to another', async () => {
       const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
-      expect(owner).to.equal(TEST_ADDRESS_1)
-      expect(owner).to.not.equal(TEST_ADDRESS_2)
+      expect(owner).to.equal(TEST_ACCOUNT_1.address)
+      expect(owner).to.not.equal(TEST_ACCOUNT_2.address)
 
-      const result = await contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, TX_OPTIONS)
+      const result = await contract.transferFrom(TEST_ACCOUNT_1.address, TEST_ACCOUNT_2.address, TOKEN_GOLD, TX_OPTIONS)
 
       expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result.receipt?.blockHash).to.be.string
 
       const newOwner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
-      expect(newOwner).to.equal(TEST_ADDRESS_2)
-      expect(newOwner).to.not.equal(TEST_ADDRESS_1)
+      expect(newOwner).to.equal(TEST_ACCOUNT_2.address)
+      expect(newOwner).to.not.equal(TEST_ACCOUNT_1.address)
 
       // change the caller to the new owner
       contract.setSignerByPrivateKey(TEST_ACCOUNT_2.privateKey)
 
       // return the token
-      const result2 = await contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+      const result2 = await contract.transferFrom(
+        TEST_ACCOUNT_2.address,
+        TEST_ACCOUNT_1.address,
+        TOKEN_GOLD,
+        TX_OPTIONS,
+      )
 
       expect(result2.txStatus).to.eq(TxStatus.CONFIRMED)
       expect(result2.receipt?.blockHash).to.be.string
 
       const oldOwner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
-      expect(oldOwner).to.equal(TEST_ADDRESS_1)
-      expect(oldOwner).to.not.equal(TEST_ADDRESS_2)
+      expect(oldOwner).to.equal(TEST_ACCOUNT_1.address)
+      expect(oldOwner).to.not.equal(TEST_ACCOUNT_2.address)
     })
   })
 
   describe.skip('safeTransferFrom', () => {
     it('should throw if there is no signer', () => {
-      expect(contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_1, '1')).to.be.rejectedWith(Error)
+      expect(contract.safeTransferFrom(TEST_ACCOUNT_1.address, TEST_ACCOUNT_1.address, '1')).to.be.rejectedWith(Error)
     })
 
     it('should transfer the ownership of a token from one address to another', async () => {
@@ -163,7 +162,7 @@ describe('HRC721 Contract Interface', () => {
 
   describe('isApprovedForAll', () => {
     it('should return a boolean value if the operator is allowed to manage all of the assets of owner', async () => {
-      const approved = await contract.isApprovedForAll(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TX_OPTIONS)
+      const approved = await contract.isApprovedForAll(TEST_ACCOUNT_1.address, EMPTY_TEST_ADDRESS, TX_OPTIONS)
 
       expect(approved).to.not.be.null
       expect(approved).to.not.be.undefined
@@ -175,7 +174,7 @@ describe('HRC721 Contract Interface', () => {
     })
 
     it('should throw an error if addressOperator is not provided', async () => {
-      expect(contract.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
+      expect(contract.isApprovedForAll(TEST_ACCOUNT_1.address, '')).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if params are not provided', async () => {
