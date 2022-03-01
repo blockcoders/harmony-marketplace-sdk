@@ -4,7 +4,7 @@ export const HARMONY_TESTNET = 'https://api.s0.b.hmny.io/'
 export const TEST_ADDRESS_1 = '0x7c61c8f282aeaae3e0476d0533d21dc42c5aa146'.toLowerCase()
 export const TEST_ADDRESS_2 = '0xc57DE96E7ADd6D0fc6BdF51758Fd90b111f89b79'.toLowerCase()
 export const TEST_ADDRESS_3 = '0x264F47C0E2fb1B587F6fa270862F3CBc68460B75'.toLowerCase()
-export const TEST_ADDRESS_4 = '0xe8f887475466f6a232f428f038b9ada36dc3582d'.toLocaleLowerCase()
+export const TEST_ADDRESS_4 = '0xe8f887475466f6a232f428f038b9ada36dc3582d'.toLowerCase()
 
 export const TEST_ACCOUNT_1 = {
   address: TEST_ADDRESS_1,
