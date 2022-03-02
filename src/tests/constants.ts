@@ -6,63 +6,48 @@ import 'dotenv/config'
 
 export const HARMONY_TESTNET = 'https://api.s0.b.hmny.io/'
 
-const TEST_PK_1 = process.env.TEST_PK_1 ?? ''
+export const TEST_PK_1 = process.env.TEST_PK_1 ?? ''
+export const TEST_SEED = process.env.TEST_SEED ?? ''
+const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
+const TEST_PK_3 = process.env.TEST_PK_3 ?? ''
 
 if (!TEST_PK_1) {
-  throw new Error('TEST_PK_1 must have a value')
+  throw new Error('TEST_PK_1 must be defined')
 }
 
-const TEST_SEED_1 = process.env.TEST_SEED_1 ?? ''
-
-if (!TEST_SEED_1) {
-  throw new Error('TEST_SEED_1 must have a value')
+if (!TEST_SEED) {
+  throw new Error('TEST_SEED must be defined')
 }
 
-export const PROVIDER_TEST_1: PrivateKey = new PrivateKey(
+if (!TEST_PK_2) {
+  throw new Error('TEST_PK_2 must be defined')
+}
+
+if (!TEST_PK_3) {
+  throw new Error('TEST_PK_3 must be defined')
+}
+
+export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
   HarmonyShards.SHARD_0_TESTNET,
   TEST_PK_1.toLowerCase(),
   ChainID.HmyTestnet,
 )
 
-export const TEST_ACCOUNT_1 = {
-  address: PROVIDER_TEST_1.accounts[0].toLowerCase(),
-  privateKey: TEST_PK_1.toLowerCase(),
-  mnemonic: TEST_SEED_1.toLowerCase(),
-}
-
-const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
-
-if (!TEST_PK_2) {
-  throw new Error('TEST_PK_2 must have a value')
-}
-
-export const PROVIDER_TEST_2: PrivateKey = new PrivateKey(
+export const WALLET_PROVIDER_TEST_2: PrivateKey = new PrivateKey(
   HarmonyShards.SHARD_0_TESTNET,
   TEST_PK_2.toLowerCase(),
   ChainID.HmyTestnet,
 )
 
-export const TEST_ACCOUNT_2 = {
-  address: PROVIDER_TEST_2.accounts[0].toLowerCase(),
-  privateKey: TEST_PK_2.toLowerCase(),
-}
-
-const TEST_PK_3 = process.env.TEST_PK_3 ?? ''
-
-if (!TEST_PK_3) {
-  throw new Error('TEST_PK_3 must have a value')
-}
-
-const PROVIDER_TEST_3: PrivateKey = new PrivateKey(
+export const WALLET_PROVIDER_TEST_3: PrivateKey = new PrivateKey(
   HarmonyShards.SHARD_0_TESTNET,
   TEST_PK_3.toLowerCase(),
   ChainID.HmyTestnet,
 )
 
-export const TEST_ACCOUNT_3 = {
-  address: PROVIDER_TEST_3.accounts[0].toLowerCase(),
-  privateKey: TEST_PK_3.toLowerCase(),
-}
+export const TEST_ADDRESS_1 = WALLET_PROVIDER_TEST_1.accounts[0].toLowerCase()
+export const TEST_ADDRESS_2 = WALLET_PROVIDER_TEST_2.accounts[0].toLowerCase()
+export const TEST_ADDRESS_3 = WALLET_PROVIDER_TEST_3.accounts[0].toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const HRC721_CONTRACT_ADDRESS = '0xF00373c538cca8ac7f2290ffFA425c32459ef10b'.toLowerCase()
