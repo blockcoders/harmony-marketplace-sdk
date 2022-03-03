@@ -49,10 +49,10 @@ export interface MnemonicOptions {
   /**
    * Default path for HD wallet. 1023 by default
    */
-  defaultPath?: string
+  derivationPath?: string
 
   /**
    * Number of addresses
    */
-  addresses?: number
+  numberOfAddresses?: number
 }

@@ -1,6 +1,6 @@
 import { Wallet, HDNode } from '@harmony-js/account'
 import { bip39, hdkey } from '@harmony-js/crypto'
-import { ChainID, HDPath, ChainType } from '@harmony-js/utils'
+import { ChainID, HDPath } from '@harmony-js/utils'
 import { MnemonicOptions, RpcProviderType } from './interfaces'
 import { Key } from './key'
 
@@ -17,28 +17,25 @@ export class MnemonicKey extends Key {
       mnemonic = Wallet.generateMnemonic()
     }
 
-    this._addByMnemonic(mnemonic, options.index || 0, options.defaultPath, options.addresses)
+    this._addByMnemonic(mnemonic, options)
   }
 
-  private _addByMnemonic(phrase: string, index = 0, defaultPath = '1023', addresses = 1) {
+  private _addByMnemonic(
+    phrase: string,
+    { index = 0, derivationPath = HDPath, numberOfAddresses = 1 }: MnemonicOptions,
+  ) {
     if (!HDNode.isValidMnemonic(phrase)) {
       throw new Error(`Invalid mnemonic phrase: ${phrase}`)
     }
-    const privateKeys: string[] = []
 
     const seed = bip39.mnemonicToSeed(phrase)
     const hdKey = hdkey.fromMasterSeed(seed)
-    const path = this.messenger.chainType === ChainType.Harmony ? '1023' : defaultPath
 
-    for (let i = 0; i < addresses; i++) {
+    for (let i = 0; i < numberOfAddresses; i++) {
       const childKey =
-        path !== '1023' || index !== 0
-          ? hdKey.derive(`m/44'/${path}'/0'/0/${index + i}`)
-          : hdKey.derive(`${HDPath}${index}`)
-      const privateKey = `0x${childKey.privateKey.toString('hex')}`
-      privateKeys.push(privateKey)
+        index !== 0 ? hdKey.derive(`${derivationPath}${index + i}`) : hdKey.derive(`${derivationPath}${index}`)
+      const address = `0x${childKey.privateKey.toString('hex')}`
+      this.addByPrivateKey(address)
     }
-
-    return this.addByPrivateKey(privateKeys[0])
   }
 }
