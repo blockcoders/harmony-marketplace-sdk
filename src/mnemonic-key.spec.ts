@@ -11,6 +11,9 @@ describe('Mnemonic Key Class', () => {
   it('should be an instance of Key', () => {
     instance = new MnemonicKey(HARMONY_RPC_SHARD_0_TESTNET.url, {
       mnemonic: TEST_ACCOUNT_4.mnemonic,
+      index: 1,
+      defaultPath: '60',
+      addresses: 3,
     })
 
     expect(instance).to.not.be.null
@@ -23,6 +26,8 @@ describe('Mnemonic Key Class', () => {
       HARMONY_RPC_SHARD_0_TESTNET.url,
       {
         mnemonic: TEST_ACCOUNT_4.mnemonic,
+        defaultPath: '1023',
+        addresses: 1,
       },
       ChainID.HmyTestnet,
     )
