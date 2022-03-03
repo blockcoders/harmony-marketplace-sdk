@@ -32,10 +32,9 @@ export class MnemonicKey extends Key {
     const hdKey = hdkey.fromMasterSeed(seed)
 
     for (let i = 0; i < numberOfAddresses; i++) {
-      const childKey =
-        index !== 0 ? hdKey.derive(`${derivationPath}${index + i}`) : hdKey.derive(`${derivationPath}${index}`)
-      const address = `0x${childKey.privateKey.toString('hex')}`
-      this.addByPrivateKey(address)
+      const childKey = hdKey.derive(`${derivationPath}${index + i}`)
+      const privateKey = childKey.privateKey.toString('hex')
+      this.addByPrivateKey(privateKey)
     }
   }
 }

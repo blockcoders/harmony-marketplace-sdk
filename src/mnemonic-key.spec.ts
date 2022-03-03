@@ -48,6 +48,22 @@ describe('Mnemonic Key Class', () => {
     expect(instance.signer?.privateKey).to.exist
   })
 
+  it('should get five accounts for one mnemonic key', () => {
+    instance = new MnemonicKey(
+      HARMONY_RPC_SHARD_0_TESTNET.url,
+      {
+        mnemonic: TEST_ACCOUNT_4.mnemonic,
+        numberOfAddresses: 5,
+      },
+      ChainID.HmyTestnet,
+    )
+
+    expect(instance).to.not.be.null
+    expect(instance).to.not.be.undefined
+    expect(instance.accounts).to.be.exist
+    expect(instance.accounts.length).to.be.equal(5)
+  })
+
   it('should throw an error if mnemonic key is not valid', () => {
     try {
       new MnemonicKey(
