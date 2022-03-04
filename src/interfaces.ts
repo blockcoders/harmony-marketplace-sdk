@@ -45,4 +45,14 @@ export interface MnemonicOptions {
    * BIP44 index number
    */
   index?: number
+
+  /**
+   * Default path for HD wallet. 1023 by default
+   */
+  derivationPath?: string
+
+  /**
+   * Number of addresses
+   */
+  numberOfAddresses?: number
 }
