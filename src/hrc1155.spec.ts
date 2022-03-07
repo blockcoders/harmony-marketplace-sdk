@@ -33,7 +33,7 @@ describe('HRC1155 Contract Interface', () => {
     expect(contract).to.not.be.undefined
   })
 
-  describe('balanceOf', () => {
+  describe.skip('balanceOf', () => {
     it('should get the number of tokens in the specified account with id as a number', async () => {
       const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD)
 

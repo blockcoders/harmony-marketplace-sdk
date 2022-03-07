@@ -35,7 +35,7 @@ describe('HRC721 Contract Interface', () => {
     expect(WALLET_PROVIDER_TEST_1).to.not.be.undefined
   })
 
-  describe('balanceOf', () => {
+  describe.skip('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
       const balance = await contract.balanceOf(TEST_ADDRESS_1, TX_OPTIONS)
 
@@ -50,7 +50,7 @@ describe('HRC721 Contract Interface', () => {
     })
   })
 
-  describe('ownerOf', () => {
+  describe.skip('ownerOf', () => {
     it('should return the owner of the tokenId token', async () => {
       const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
