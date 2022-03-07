@@ -1,3 +1,5 @@
+import { Transaction } from '@harmony-js/transaction'
+import BN from 'bn.js'
 import { ITransactionOptions } from 'src/interfaces'
 
 export const HARMONY_TESTNET = 'https://api.s0.b.hmny.io/'
@@ -35,3 +37,38 @@ export const TX_OPTIONS: ITransactionOptions = {
   gasLimit: '5000000',
   gasPrice: '100',
 }
+
+export const FAKE_BALANCE_HRC721 = new Promise<BN>((resolve) => {
+  resolve(new BN(11))
+})
+
+export const FAKE_OWNER_HRC721 = new Promise<string>((resolve) => {
+  resolve(TEST_ADDRESS_1)
+})
+
+export const FAKE_APPROVED_HRC721 = new Promise<string>((resolve) => {
+  resolve('0x0000000000000000000000000000000000000000')
+})
+
+export const FAKE_IS_APPROVED_HRC721 = new Promise<boolean>((resolve) => {
+  resolve(false)
+})
+
+export const FAKE_TX_HRC721 = new Promise<Transaction>((resolve) => {
+  resolve(
+    new Transaction({
+      shardID: 0,
+      from: 'one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a',
+      to: '0xF00373c538cca8ac7f2290ffFA425c32459ef10b',
+      gasPrice: '100000000000',
+      gasLimit: '5000000',
+      toShardID: 0,
+      nonce: 165,
+      chainId: 2,
+    }),
+  )
+})
+
+export const FAKE_BALANCE_HRC1155 = new Promise<BN>((resolve) => {
+  resolve(new BN('999999999999999999999889'))
+})

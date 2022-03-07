@@ -16,6 +16,7 @@ import {
   TOKEN_GOLD,
   TOKEN_SILVER,
   TX_OPTIONS,
+  FAKE_BALANCE_HRC1155,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC1155/abi'
 
@@ -40,12 +41,14 @@ describe('HRC1155 Contract Interface', () => {
 
   describe('balanceOf', () => {
     it('should get the number of tokens in the specified account with id as a number', async () => {
+      const mockedBalance = await FAKE_BALANCE_HRC1155
+      const stub = sinon.stub(contract, 'balanceOf').withArgs(TEST_ADDRESS_1, TOKEN_GOLD)
+      stub.resolves().returns(FAKE_BALANCE_HRC1155)
+
       const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD)
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).to.be.an.instanceof(BN)
-      expect(balance.gt(new BN(0))).to.be.true
+      expect(stub.calledOnce).to.be.true
+      expect(balance).to.be.equals(mockedBalance)
     })
 
     it('should get the number of tokens in the specified account with id as a string', async () => {
