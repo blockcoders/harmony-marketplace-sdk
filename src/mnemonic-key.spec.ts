@@ -3,14 +3,14 @@ import { expect } from 'chai'
 import { HARMONY_RPC_SHARD_0_TESTNET } from './constants'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
-import { TEST_ACCOUNT_4 } from './tests/constants'
+import { TEST_SEED } from './tests/constants'
 
 describe('Mnemonic Key Class', () => {
   let instance: MnemonicKey
 
   it('should be an instance of Key', () => {
     instance = new MnemonicKey(HARMONY_RPC_SHARD_0_TESTNET.url, {
-      mnemonic: TEST_ACCOUNT_4.mnemonic,
+      mnemonic: TEST_SEED,
       index: 1,
       derivationPath: "m/44'/30'/0'/0/",
       numberOfAddresses: 3,
@@ -25,7 +25,7 @@ describe('Mnemonic Key Class', () => {
     instance = new MnemonicKey(
       HARMONY_RPC_SHARD_0_TESTNET.url,
       {
-        mnemonic: TEST_ACCOUNT_4.mnemonic,
+        mnemonic: TEST_SEED,
         derivationPath: HDPath,
         numberOfAddresses: 1,
         index: 0,
@@ -35,9 +35,7 @@ describe('Mnemonic Key Class', () => {
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
-    expect(instance.signer).to.exist
-    expect(instance.signer?.privateKey).to.exist
-    expect(instance.signer?.privateKey).to.be.equal(TEST_ACCOUNT_4.privateKey)
+    expect(instance.signer?.privateKey).to.not.be.null
   })
 
   it('should return a default mnemonic key if object is empty', () => {
@@ -52,7 +50,7 @@ describe('Mnemonic Key Class', () => {
     instance = new MnemonicKey(
       HARMONY_RPC_SHARD_0_TESTNET.url,
       {
-        mnemonic: TEST_ACCOUNT_4.mnemonic,
+        mnemonic: TEST_SEED,
         numberOfAddresses: 5,
       },
       ChainID.HmyTestnet,

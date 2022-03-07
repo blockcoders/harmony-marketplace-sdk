@@ -7,12 +7,12 @@ import { BaseToken } from './base-token'
 import { AddressZero } from './constants'
 import { BNish, HarmonyShards, ITransactionOptions } from './interfaces'
 import { PrivateKey } from './private-key'
-import { TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TEST_ACCOUNT_2, TEST_ACCOUNT_1 } from './tests/constants'
+import { TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TEST_ADDRESS_2, TEST_PK_1 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC721/abi'
 
 class TestToken extends BaseToken {
   constructor() {
-    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_ACCOUNT_1.privateKey, ChainID.HmyTestnet))
+    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyTestnet))
   }
 
   public async balanceOf(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
@@ -109,9 +109,9 @@ describe('Base Token Provider', () => {
 
     it('should throw an error if type is not provided', async () => {
       const stub = sinon.stub(BaseToken.prototype, 'setSignerByPrivateKey')
-      stub.withArgs(TEST_ACCOUNT_2.privateKey).onCall(0).rejects()
+      stub.withArgs(TEST_ADDRESS_2).onCall(0).rejects()
 
-      expect(contract.setSignerByPrivateKey(TEST_ACCOUNT_2.privateKey)).to.be.rejectedWith(Error)
+      expect(contract.setSignerByPrivateKey(TEST_ADDRESS_2)).to.be.rejectedWith(Error)
     })
   })
 })
