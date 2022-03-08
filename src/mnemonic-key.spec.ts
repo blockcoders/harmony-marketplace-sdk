@@ -1,4 +1,4 @@
-import { ChainID, HDPath } from '@harmony-js/utils'
+import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
 import { HARMONY_RPC_SHARD_0_TESTNET } from './constants'
 import { Key } from './key'
@@ -11,9 +11,6 @@ describe('Mnemonic Key Class', () => {
   it('should be an instance of Key', () => {
     instance = new MnemonicKey(HARMONY_RPC_SHARD_0_TESTNET.url, {
       mnemonic: TEST_SEED,
-      index: 1,
-      derivationPath: "m/44'/30'/0'/0/",
-      numberOfAddresses: 3,
     })
 
     expect(instance).to.not.be.null
@@ -26,8 +23,6 @@ describe('Mnemonic Key Class', () => {
       HARMONY_RPC_SHARD_0_TESTNET.url,
       {
         mnemonic: TEST_SEED,
-        derivationPath: HDPath,
-        numberOfAddresses: 1,
         index: 0,
       },
       ChainID.HmyTestnet,
@@ -44,22 +39,6 @@ describe('Mnemonic Key Class', () => {
     expect(instance).to.not.be.undefined
     expect(instance.signer).to.exist
     expect(instance.signer?.privateKey).to.exist
-  })
-
-  it('should get five accounts for one mnemonic key', () => {
-    instance = new MnemonicKey(
-      HARMONY_RPC_SHARD_0_TESTNET.url,
-      {
-        mnemonic: TEST_SEED,
-        numberOfAddresses: 5,
-      },
-      ChainID.HmyTestnet,
-    )
-
-    expect(instance).to.not.be.null
-    expect(instance).to.not.be.undefined
-    expect(instance.accounts).to.be.exist
-    expect(instance.accounts.length).to.be.equal(5)
   })
 
   it('should throw an error if mnemonic key is not valid', () => {
