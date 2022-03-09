@@ -1,6 +1,6 @@
-import 'dotenv/config'
-
+import { Transaction } from '@harmony-js/transaction'
 import { ChainID } from '@harmony-js/utils'
+import 'dotenv/config'
 import { ITransactionOptions } from 'src/interfaces'
 import { HarmonyShards } from '../interfaces'
 import { MnemonicKey } from '../mnemonic-key'
@@ -43,8 +43,6 @@ export const TEST_ADDRESS_1 = WALLET_PROVIDER_TEST_1.accounts[0].toLowerCase()
 export const TEST_ADDRESS_2 = WALLET_PROVIDER_TEST_2.accounts[0].toLowerCase()
 export const TEST_ADDRESS_3 = WALLET_PROVIDER_TEST_3.accounts[0].toLowerCase()
 
-console.log(TEST_ADDRESS_1, TEST_ADDRESS_2, TEST_ADDRESS_3)
-
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const HRC721_CONTRACT_ADDRESS = '0xF00373c538cca8ac7f2290ffFA425c32459ef10b'.toLowerCase()
 export const HRC1155_CONTRACT_ADDRESS = '0xD59AF020E36F710e8fB1e42e05cE48CF6b86D4B4'.toLowerCase()
@@ -57,3 +55,16 @@ export const TX_OPTIONS: ITransactionOptions = {
   gasLimit: '5000000',
   gasPrice: '100',
 }
+
+export const FAKE_TX_HRC721 = new Transaction({
+  shardID: 0,
+  from: 'one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a',
+  to: '0xF00373c538cca8ac7f2290ffFA425c32459ef10b',
+  gasPrice: '100000000000',
+  gasLimit: '5000000',
+  toShardID: 0,
+  nonce: 165,
+  chainId: 2,
+})
+
+export const FAKE_BALANCE_HRC1155 = '999999999999999999999889'

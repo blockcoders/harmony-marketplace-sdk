@@ -1,20 +1,18 @@
-import { TxStatus } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
+import { AddressZero } from './constants'
 import { HRC721 } from './hrc721'
 import {
   HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
   TEST_ADDRESS_2,
-  TEST_ADDRESS_3,
   EMPTY_TEST_ADDRESS,
   TOKEN_GOLD,
   TX_OPTIONS,
   WALLET_PROVIDER_TEST_1,
-  WALLET_PROVIDER_TEST_2,
-  WALLET_PROVIDER_TEST_3,
+  TOKEN_SWORD,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC721/abi'
 
@@ -35,148 +33,203 @@ describe('HRC721 Contract Interface', () => {
     expect(WALLET_PROVIDER_TEST_1).to.not.be.undefined
   })
 
-  describe.skip('balanceOf', () => {
+  describe('balanceOf', () => {
     it('should get the number of tokens in the specified account', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('balanceOf', [TEST_ADDRESS_1], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(new BN(11)))
+
       const balance = await contract.balanceOf(TEST_ADDRESS_1, TX_OPTIONS)
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).to.be.an.instanceof(BN)
-      expect(balance.gt(new BN(0))).to.be.true
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(balance).to.be.equals(await stub.returnValues[0])
     })
 
     it('should throw an error if address is not provided', async () => {
-      expect(contract.balanceOf('')).to.be.rejectedWith(Error)
+      expect(contract.balanceOf('', TX_OPTIONS)).to.be.rejectedWith(Error)
     })
   })
 
-  describe.skip('ownerOf', () => {
+  describe('ownerOf', () => {
     it('should return the owner of the tokenId token', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('ownerOf', [TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(TEST_ADDRESS_1))
+
       const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
 
-      expect(owner).to.not.be.null
-      expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(TEST_ADDRESS_1)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(owner).to.be.equals(await stub.returnValues[0])
     })
 
     it('should return the owner of the tokenId token with tokenId as a string', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('ownerOf', [TOKEN_GOLD.toString()], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(TEST_ADDRESS_1))
+
       const owner = await contract.ownerOf(TOKEN_GOLD.toString(), TX_OPTIONS)
 
-      expect(owner).to.not.be.null
-      expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(TEST_ADDRESS_1)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(owner).to.be.equals(await stub.returnValues[0])
     })
 
     it('should return the origin address of the tokenId token if the token has no owner', async () => {
-      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
+      const stub = sinon.stub(contract, 'call').withArgs('ownerOf', [TOKEN_SWORD], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(TEST_ADDRESS_1))
 
-      expect(owner).to.not.be.null
-      expect(owner).to.not.be.undefined
-      expect(owner).to.be.equals(TEST_ADDRESS_1)
+      const owner = await contract.ownerOf(TOKEN_SWORD, TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(owner).to.be.equals(await stub.returnValues[0])
     })
 
     it('should throw an error if tokenId is a non existent token', async () => {
-      expect(contract.ownerOf('6')).to.be.rejectedWith(Error)
+      expect(contract.ownerOf(6, TX_OPTIONS)).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if tokenId is not provided', async () => {
       expect(contract.ownerOf('')).to.be.rejectedWith(Error)
     })
+
+    it('should throw an error if txOptions is not provided', async () => {
+      expect(contract.ownerOf(TOKEN_GOLD)).to.be.rejectedWith(Error)
+    })
   })
 
   describe('transferFrom', () => {
-    it('should throw an error if there is no signer', () => {
-      expect(contract.transferFrom('', TEST_ADDRESS_1, TOKEN_GOLD)).to.be.rejectedWith(Error)
-    })
-
-    it.skip('should transfer the ownership of a token from one address to another', async () => {
-      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
-
-      expect(owner).to.equal(TEST_ADDRESS_1)
-      expect(owner).to.not.equal(TEST_ADDRESS_2)
-
-      const result = await contract.transferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, TX_OPTIONS)
-
-      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
-      expect(result.receipt?.blockHash).to.be.string
-
-      const newOwner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
-
-      expect(newOwner).to.equal(TEST_ADDRESS_2)
-      expect(newOwner).to.not.equal(TEST_ADDRESS_1)
-
-      // change the caller to the new owner
-      contract.setSignerByPrivateKey(TEST_ADDRESS_2)
-
-      // return the token
-      const result2 = await contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
-
-      expect(result2.txStatus).to.eq(TxStatus.CONFIRMED)
-      expect(result2.receipt?.blockHash).to.be.string
-
-      const oldOwner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
-
-      expect(oldOwner).to.equal(TEST_ADDRESS_1)
-      expect(oldOwner).to.not.equal(TEST_ADDRESS_2)
-    })
-  })
-
-  describe.skip('safeTransferFrom', () => {
-    it('should throw if there is no signer', () => {
-      expect(contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, '1')).to.be.rejectedWith(Error)
-    })
-
     it('should transfer the ownership of a token from one address to another', async () => {
-      const owner = await contract.ownerOf(TOKEN_GOLD, TX_OPTIONS)
-      expect(owner).to.be.oneOf([TEST_ADDRESS_2, TEST_ADDRESS_3])
+      const stub = sinon.stub(contract, 'send')
+      stub.withArgs('transferFrom', [TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS).onFirstCall().resolves()
 
-      const ownerAccount = [WALLET_PROVIDER_TEST_2, WALLET_PROVIDER_TEST_3].find(
-        (account) => account.accounts[0] === owner,
-      )
-      const receiverAccount = [WALLET_PROVIDER_TEST_2, WALLET_PROVIDER_TEST_3].find(
-        (account) => account.accounts[0] !== owner,
-      )
-      if (!ownerAccount || !receiverAccount) throw new Error('Account not found')
+      await contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
 
-      const ownerPk = ownerAccount.signer?.privateKey || ''
-      contract.setSignerByPrivateKey(ownerPk)
-      const result = await contract.safeTransferFrom(ownerAccount.accounts[0], receiverAccount.accounts[0], '5')
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
 
-      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
-      expect(result.receipt?.blockHash).to.be.string
+    it('should throw an error if there is no signer', () => {
+      expect(contract.transferFrom('', TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if there is no receiver', () => {
+      expect(contract.transferFrom(TEST_ADDRESS_2, '', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if there is no tokenId', () => {
+      expect(contract.transferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
     })
   })
 
-  // TODO: add more tests when the approve function works
+  describe('safeTransferFrom', () => {
+    it('should transfer the ownership of a token from one address to another with data', async () => {
+      const stub = sinon
+        .stub(contract, 'send')
+        .withArgs('safeTransferFrom', [TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, '0x'], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, '0x', TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should transfer the ownership of a token from one address to another without data', async () => {
+      const stub = sinon
+        .stub(contract, 'send')
+        .withArgs('safeTransferFrom', [TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, '', TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw if there is no signer', () => {
+      expect(contract.safeTransferFrom('', TEST_ADDRESS_2, TOKEN_GOLD, '0x', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw if there is no receiver', () => {
+      expect(contract.safeTransferFrom(TEST_ADDRESS_1, '', TOKEN_GOLD, '0x', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw if there is no tokenId', () => {
+      expect(contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+  })
+
   describe('getApproved', () => {
-    it('should return the account approved for tokenId token', async () => {
+    it('should return the account approved for tokenId token with txOptions', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('getApproved', [TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(AddressZero))
+
       const approved = await contract.getApproved(TOKEN_GOLD, TX_OPTIONS)
 
-      expect(approved).to.not.be.null
-      expect(approved).to.not.be.undefined
-      expect(approved).to.be.equals('0x0000000000000000000000000000000000000000')
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(approved).to.be.equals(await stub.returnValues[0])
+    })
+
+    it('should return the account approved for tokenId token without txOptions', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('getApproved', [TOKEN_GOLD])
+      stub.resolves().returns(Promise.resolve(AddressZero))
+
+      const approved = await contract.getApproved(TOKEN_GOLD)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(approved).to.be.equals(await stub.returnValues[0])
     })
 
     it('should throw an error if tokenId is not provided', async () => {
-      expect(contract.getApproved('')).to.be.rejectedWith(Error)
+      expect(contract.getApproved('', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if tokenId is invalid', async () => {
+      expect(contract.getApproved(6, TX_OPTIONS)).to.be.rejectedWith(Error)
     })
   })
 
   describe('isApprovedForAll', () => {
-    it('should return a boolean value if the operator is allowed to manage all of the assets of owner', async () => {
+    it('should return a boolean value if the operator is allowed to manage all of the assets of owner with txOptions', async () => {
+      const stub = sinon
+        .stub(contract, 'call')
+        .withArgs('isApprovedForAll', [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(false))
+
       const approved = await contract.isApprovedForAll(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, TX_OPTIONS)
 
-      expect(approved).to.not.be.null
-      expect(approved).to.not.be.undefined
-      expect(approved).to.be.equals(false)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(approved).to.be.equals(await stub.returnValues[0])
+    })
+
+    it('should return a boolean value if the operator is allowed to manage all of the assets of owner without txOptions', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('isApprovedForAll', [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS])
+      stub.resolves().returns(Promise.resolve(false))
+
+      const approved = await contract.isApprovedForAll(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(approved).to.be.equals(await stub.returnValues[0])
     })
 
     it('should throw an error if addressOwner is not provided', async () => {
-      expect(contract.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
+      expect(contract.isApprovedForAll('', EMPTY_TEST_ADDRESS, TX_OPTIONS)).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if addressOperator is not provided', async () => {
-      expect(contract.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
+      expect(contract.isApprovedForAll(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOwner is zero-address', async () => {
+      expect(contract.isApprovedForAll(AddressZero, EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOperator is zero-address', async () => {
+      expect(contract.isApprovedForAll(TEST_ADDRESS_1, AddressZero)).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if params are not provided', async () => {
@@ -185,8 +238,56 @@ describe('HRC721 Contract Interface', () => {
   })
 
   describe('setApprovalForAll', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('setApprovalForAll', [TEST_ADDRESS_1, true], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.setApprovalForAll(TEST_ADDRESS_1, true, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if addressOperator is not provided', async () => {
+      expect(contract.setApprovalForAll('', true, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if approved is not provided', async () => {
+      expect(contract.setApprovalForAll(TEST_ADDRESS_1, false, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if txOptions are not provided', async () => {
+      expect(contract.setApprovalForAll(TEST_ADDRESS_1, true)).to.be.rejectedWith(Error)
+    })
+
     it('should throw an error if params are not provided', async () => {
       expect(contract.setApprovalForAll('', false)).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('approve', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('approve', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.approve(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if to is not provided', async () => {
+      expect(contract.approve('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(contract.approve(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if txOptions are not provided', async () => {
+      expect(contract.approve(TEST_ADDRESS_1, TOKEN_GOLD)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(contract.approve('', '')).to.be.rejectedWith(Error)
     })
   })
 })

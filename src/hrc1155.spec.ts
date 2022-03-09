@@ -1,8 +1,7 @@
-import { TxStatus } from '@harmony-js/transaction'
-import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
+import { AddressZero } from './constants'
 import { HRC1155 } from './hrc1155'
 import {
   HRC1155_CONTRACT_ADDRESS,
@@ -12,6 +11,7 @@ import {
   TOKEN_GOLD,
   TOKEN_SILVER,
   TX_OPTIONS,
+  FAKE_BALANCE_HRC1155,
   WALLET_PROVIDER_TEST_1,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC1155/abi'
@@ -33,64 +33,118 @@ describe('HRC1155 Contract Interface', () => {
     expect(contract).to.not.be.undefined
   })
 
-  describe.skip('balanceOf', () => {
+  describe('balanceOf', () => {
     it('should get the number of tokens in the specified account with id as a number', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD)
+      const stub = sinon.stub(contract, 'call').withArgs('balanceOf', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(FAKE_BALANCE_HRC1155))
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).to.be.an.instanceof(BN)
-      expect(balance.gt(new BN(0))).to.be.true
+      const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(balance).to.be.equals(await stub.returnValues[0])
     })
 
     it('should get the number of tokens in the specified account with id as a string', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD.toString())
+      const stub = sinon
+        .stub(contract, 'call')
+        .withArgs('balanceOf', [TEST_ADDRESS_1, TOKEN_GOLD.toString()], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(FAKE_BALANCE_HRC1155))
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).to.be.an.instanceof(BN)
-      expect(balance.gt(new BN(0))).to.be.true
+      const balance = await contract.balanceOf(TEST_ADDRESS_1, TOKEN_GOLD.toString(), TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(balance).to.be.equals(await stub.returnValues[0])
     })
 
     it('should throw an error if address is not provided', async () => {
-      expect(contract.balanceOf('', 1)).to.be.rejectedWith(Error)
+      expect(contract.balanceOf('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if id is not provided', async () => {
-      expect(contract.balanceOf(TEST_ADDRESS_1, 0)).to.be.rejectedWith(Error)
+      expect(contract.balanceOf(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if params are not provided', async () => {
-      expect(contract.balanceOf('', 0)).to.be.rejectedWith(Error)
+      expect(contract.balanceOf('', '')).to.be.rejectedWith(Error)
     })
   })
 
   describe('balanceOfBatch', () => {
     it('should return multiple balances in the specified account with id as a number', async () => {
-      const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], [1, 2])
+      const stub = sinon.stub(contract, 'call').withArgs(
+        'balanceOfBatch',
+        [
+          [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS],
+          [TOKEN_GOLD, TOKEN_SILVER],
+        ],
+        TX_OPTIONS,
+      )
+      stub.resolves().returns(Promise.resolve(FAKE_BALANCE_HRC1155))
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).length(2)
+      const balance = await contract.balanceOfBatch(
+        [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS],
+        [TOKEN_GOLD, TOKEN_SILVER],
+        TX_OPTIONS,
+      )
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(balance).to.be.equals(await stub.returnValues[0])
     })
 
     it('should return multiple balances in the specified account with id as a string', async () => {
-      const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['1', '2'])
+      const stub = sinon.stub(contract, 'call').withArgs(
+        'balanceOfBatch',
+        [
+          [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS],
+          [TOKEN_GOLD.toString(), TOKEN_SILVER.toString()],
+        ],
+        TX_OPTIONS,
+      )
+      stub.resolves().returns(Promise.resolve(FAKE_BALANCE_HRC1155))
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).length(2)
+      const balance = await contract.balanceOfBatch(
+        [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS],
+        [TOKEN_GOLD.toString(), TOKEN_SILVER.toString()],
+        TX_OPTIONS,
+      )
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(balance).to.be.equals(await stub.returnValues[0])
     })
 
     it('should return multiple balances in the specified account with id as a byte', async () => {
-      const balance = await contract.balanceOfBatch([TEST_ADDRESS_1, EMPTY_TEST_ADDRESS], ['00000001', '00000010'])
+      const stub = sinon.stub(contract, 'call').withArgs(
+        'balanceOfBatch',
+        [
+          [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS],
+          ['00000001', '00000010'],
+        ],
+        TX_OPTIONS,
+      )
+      stub.resolves().returns(Promise.resolve(FAKE_BALANCE_HRC1155))
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).length(2)
+      const balance = await contract.balanceOfBatch(
+        [TEST_ADDRESS_1, EMPTY_TEST_ADDRESS],
+        ['00000001', '00000010'],
+        TX_OPTIONS,
+      )
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(balance).to.be.equals(await stub.returnValues[0])
     })
 
     it('should throw an error if ids is not provided', async () => {
+      const stub = sinon.stub(contract, 'call')
+      stub
+        .withArgs('balanceOfBatch', [[], [1, 2]])
+        .onFirstCall()
+        .rejects()
+
       expect(contract.balanceOfBatch([], [1, 2])).to.be.rejectedWith(Error)
     })
 
@@ -103,45 +157,52 @@ describe('HRC1155 Contract Interface', () => {
     })
   })
 
-  describe.skip('safeTransferFrom', async () => {
+  describe('safeTransferFrom', async () => {
     it('should transfer amount tokens of the specified id from one address to another', async () => {
-      const balance = await contract.balanceOf(TEST_ADDRESS_2, TOKEN_GOLD.toString())
+      const stub = sinon
+        .stub(contract, 'send')
+        .withArgs('safeTransferFrom', [TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, 10, '0x'], TX_OPTIONS)
+      stub.resolves()
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).to.be.an.instanceof(BN)
+      await contract.safeTransferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, 10, '0x', TX_OPTIONS)
 
-      const result = await contract.safeTransferFrom(TEST_ADDRESS_1, TEST_ADDRESS_2, TOKEN_GOLD, 1, '0x', TX_OPTIONS)
-
-      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
-      expect(result.receipt?.blockHash).to.be.string
-
-      const newBalance = await contract.balanceOf(TEST_ADDRESS_2, TOKEN_GOLD.toString())
-
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(balance).to.be.an.instanceof(BN)
-      expect(newBalance.gt(balance)).to.be.true
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
     })
 
     it('should thow an error if sender address is not provided', async () => {
-      expect(contract.safeTransferFrom('', TEST_ADDRESS_1, 1, 10, '0x')).to.be.rejectedWith(Error)
+      const stub = sinon
+        .stub(contract, 'send')
+        .withArgs('safeTransferFrom', ['', TEST_ADDRESS_1, TOKEN_GOLD, 10, '0x'], TX_OPTIONS)
+      stub.rejects()
+
+      expect(contract.safeTransferFrom('', TEST_ADDRESS_1, 1, 10, '0x', TX_OPTIONS)).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if receiver address is not provided', async () => {
-      expect(contract.safeTransferFrom(TEST_ADDRESS_1, '', 1, 10, '0x')).to.be.rejectedWith(Error)
+      expect(contract.safeTransferFrom(TEST_ADDRESS_2, '', TOKEN_GOLD, 10, '0x', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should thow an error if to address is zero-address', async () => {
+      expect(
+        contract.safeTransferFrom(TEST_ADDRESS_2, AddressZero, TOKEN_GOLD, 10, '0x', TX_OPTIONS),
+      ).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if token id is not provided', async () => {
-      expect(contract.safeTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, '', 10, '0x')).to.be.rejectedWith(Error)
+      expect(contract.safeTransferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, '', 10, '0x')).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if amount is not provided', async () => {
-      expect(contract.safeTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, 1, '', '0x')).to.be.rejectedWith(Error)
+      expect(
+        contract.safeTransferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, 0, '0x', TX_OPTIONS),
+      ).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if data is not provided', async () => {
-      expect(contract.safeTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, 1, 10, '')).to.be.rejectedWith(Error)
+      expect(
+        contract.safeTransferFrom(TEST_ADDRESS_2, TEST_ADDRESS_1, TOKEN_GOLD, 10, '', TX_OPTIONS),
+      ).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if params are not provided', async () => {
@@ -150,57 +211,56 @@ describe('HRC1155 Contract Interface', () => {
   })
 
   describe('safeBatchTransferFrom', async () => {
-    it.skip('should transfer amount tokens of the specified id from one address to another', async () => {
-      const balance = await contract.balanceOfBatch(
-        [TEST_ADDRESS_1, TEST_ADDRESS_2],
-        [TOKEN_GOLD.toString(), TOKEN_SILVER.toString()],
-      )
+    it('should transfer amount tokens of the specified id from one address to another', async () => {
+      const stub = sinon
+        .stub(contract, 'send')
+        .withArgs(
+          'safeBatchTransferFrom',
+          [TEST_ADDRESS_1, TEST_ADDRESS_2, [TOKEN_GOLD, TOKEN_SILVER], [10, 20], '0x'],
+          TX_OPTIONS,
+        )
+      stub.resolves()
 
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-
-      const result = await contract.safeBatchTransferFrom(
+      await contract.safeBatchTransferFrom(
         TEST_ADDRESS_1,
         TEST_ADDRESS_2,
         [TOKEN_GOLD, TOKEN_SILVER],
-        [1, 2],
+        [10, 20],
         '0x',
         TX_OPTIONS,
       )
 
-      expect(result.txStatus).to.eq(TxStatus.CONFIRMED)
-      expect(result.receipt?.blockHash).to.be.string
-
-      const newBalance = await contract.balanceOfBatch([TEST_ADDRESS_2, TEST_ADDRESS_1], [TOKEN_GOLD, TOKEN_SILVER])
-
-      expect(balance).to.not.be.null
-      expect(balance).to.not.be.undefined
-      expect(parseInt(newBalance[0].toString())).to.be.lt(parseInt(balance[0].toString()))
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
     })
 
     it('should thow an error if sender address is not provided', async () => {
-      expect(contract.safeBatchTransferFrom('', TEST_ADDRESS_1, [TOKEN_GOLD], [10], '0x')).to.be.rejectedWith(Error)
+      expect(
+        contract.safeBatchTransferFrom('', TEST_ADDRESS_1, [TOKEN_GOLD], [10], '0x', TX_OPTIONS),
+      ).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if receiver address is not provided', async () => {
-      expect(contract.safeBatchTransferFrom(TEST_ADDRESS_1, '', [TOKEN_GOLD], [10], '0x')).to.be.rejectedWith(Error)
+      expect(
+        contract.safeBatchTransferFrom(TEST_ADDRESS_1, '', [TOKEN_GOLD], [10], '0x', TX_OPTIONS),
+      ).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if token ids are not provided', async () => {
-      expect(contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [], [10], '0x')).to.be.rejectedWith(
-        Error,
-      )
+      expect(
+        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [], [10], '0x', TX_OPTIONS),
+      ).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if amounts are not provided', async () => {
       expect(
-        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [TOKEN_GOLD], [], '0x'),
+        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [TOKEN_GOLD], [], '0x', TX_OPTIONS),
       ).to.be.rejectedWith(Error)
     })
 
     it('should thow an error if data is not provided', async () => {
       expect(
-        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [TOKEN_GOLD], [10], ''),
+        contract.safeBatchTransferFrom(TEST_ADDRESS_1, EMPTY_TEST_ADDRESS, [TOKEN_GOLD], [10], '', TX_OPTIONS),
       ).to.be.rejectedWith(Error)
     })
 

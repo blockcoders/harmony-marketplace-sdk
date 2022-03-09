@@ -60,14 +60,14 @@ export abstract class BaseToken {
     return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
   }
 
-  protected async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
+  public async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
     const options = await this.estimateGas(method, args, txOptions)
     const result: any = await this._contract.methods[method](...args).call(options)
 
     return result as T
   }
 
-  protected async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
+  public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
     const options = await this.estimateGas(method, args, txOptions)
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
