@@ -24,7 +24,7 @@ export class HDKey extends Key {
     } = options
 
     this.hdNode = new HDNode(
-      this.messenger.provider,
+      this.messenger.provider.url,
       mnemonic,
       index,
       numberOfAddresses,
@@ -76,7 +76,7 @@ export class HDKey extends Key {
     return this.hdNode.getAddress(idx)
   }
 
-  public getAddresses() {
+  public getAddresses(): string[] {
     return this.hdNode.getAddresses()
   }
 }

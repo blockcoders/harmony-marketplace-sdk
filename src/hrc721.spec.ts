@@ -30,7 +30,7 @@ describe('HRC721 Contract Interface', () => {
   })
 
   it('should be defined', () => {
-    expect(WALLET_PROVIDER_TEST_1).to.not.be.undefined
+    expect(contract).to.not.be.undefined
   })
 
   describe('balanceOf', () => {
