@@ -1,7 +1,7 @@
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID } from '@harmony-js/utils'
 import 'dotenv/config'
-import { ITransactionOptions } from 'src/interfaces'
+import { ITransactionOptions, HDOptions } from 'src/interfaces'
 import { HarmonyShards } from '../interfaces'
 import { MnemonicKey } from '../mnemonic-key'
 import { PrivateKey } from '../private-key'
@@ -68,3 +68,9 @@ export const FAKE_TX_HRC721 = new Transaction({
 })
 
 export const FAKE_BALANCE_HRC1155 = '999999999999999999999889'
+
+export const options: HDOptions = {
+  numberOfAddresses: 1,
+  gasPrice: '100',
+  gasLimit: '5000000',
+}
