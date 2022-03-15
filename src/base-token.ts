@@ -160,35 +160,35 @@ export abstract class BaseToken {
 
     await bridgeSDK.init(configs.testnet)
 
-    const tokenInfo = BaseToken.getBridgeTokenInfo(options?.tokenInfo)
+    const tokenInfo = BaseToken.getBridgeTokenInfo(options.tokenInfo)
 
     const bridgeParams = { ...options, ...tokenInfo }
 
-    options?.type === EXCHANGE_MODE.ETH_TO_ONE
-      ? await bridgeSDK.addEthWallet(options?.ethAddress)
-      : await bridgeSDK.addOneWallet(options?.oneAddress)
+    options.type === EXCHANGE_MODE.ETH_TO_ONE
+      ? await bridgeSDK.addEthWallet(options.ethAddress)
+      : await bridgeSDK.addOneWallet(options.oneAddress)
 
     await bridgeSDK.sendToken(bridgeParams)
   }
 
   private static getBridgeTokenInfo(info: TokenInfo): BridgeTokenInfo {
     const tokenInfo: BridgeTokenInfo = {}
-    switch (info?.contractToken) {
+    switch (info.contractToken) {
       case 'erc20':
-        tokenInfo.erc20Address = info?.tokenAddress
+        tokenInfo.erc20Address = info.tokenAddress
         break
       case 'hrc20':
-        tokenInfo.hrc20Address = info?.tokenAddress
+        tokenInfo.hrc20Address = info.tokenAddress
         break
       case 'erc1155':
-        tokenInfo.erc1155Address = info?.tokenAddress
+        tokenInfo.erc1155Address = info.tokenAddress
         tokenInfo.erc1155TokenId = info?.tokenId
         break
       case 'hrc721':
-        tokenInfo.hrc721Address = info?.tokenAddress
+        tokenInfo.hrc721Address = info.tokenAddress
         break
       case 'hrc1155':
-        tokenInfo.hrc1155Address = info?.tokenAddress
+        tokenInfo.hrc1155Address = info.tokenAddress
         tokenInfo.hrc1155TokenId = info?.tokenId
         break
       default:
