@@ -5,6 +5,8 @@ import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
+import { BridgeSDK, TOKEN, EXCHANGE_MODE, NETWORK_TYPE } from 'bridge-sdk'
+import configs from 'bridge-sdk/lib/configs'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
 import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
 import { Key } from './key'
@@ -144,5 +146,34 @@ export abstract class BaseToken {
 
   public setSignerByKey(key: Key | PrivateKey | MnemonicKey): void {
     this._contract.connect(key)
+  }
+
+  public async bridgeToken(
+    oneAddress: string,
+    ethAddress: string,
+    network: NETWORK_TYPE = NETWORK_TYPE.BINANCE,
+    type: EXCHANGE_MODE,
+    token: TOKEN,
+    amount: number,
+  ): Promise<void> {
+    const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off
+
+    await bridgeSDK.init(configs.testnet)
+
+    type === EXCHANGE_MODE.ETH_TO_ONE
+      ? await bridgeSDK.addEthWallet('0xxxxxx')
+      : await bridgeSDK.addOneWallet('0xxxxxxx')
+
+    await bridgeSDK.sendToken({
+      type,
+      token,
+      network,
+      amount,
+      //erc1155TokenId: '1',
+      //erc1155Address: '0x35889EB854f5B1beB779161D565Af5921f528757',
+      //hrc20Address: '0x5a7759ac1df3573692c6e6cedcf5b7aad035441e',
+      oneAddress,
+      ethAddress,
+    })
   }
 }
