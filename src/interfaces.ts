@@ -3,6 +3,7 @@ import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
+import { NETWORK_TYPE, EXCHANGE_MODE, TOKEN } from 'bridge-sdk'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -55,4 +56,19 @@ export interface HDOptions extends MnemonicOptions {
   shardId?: number
   gasLimit?: string
   gasPrice?: string
+}
+
+interface TokenInfo {
+  contractToken: string
+  tokenAddress: string
+  tokenId?: BN
+}
+export interface BridgeParams {
+  oneAddress: string
+  ethAddress: string
+  network: NETWORK_TYPE
+  type: EXCHANGE_MODE
+  token: TOKEN
+  amount: number
+  tokenInfo: TokenInfo
 }
