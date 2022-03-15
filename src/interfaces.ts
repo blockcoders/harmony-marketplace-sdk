@@ -59,7 +59,7 @@ export interface HDOptions extends MnemonicOptions {
 }
 
 export interface TokenInfo {
-  contractToken: "erc20" | "hrc20" | "erc1155" | "hrc721" | "hrc1155"
+  contractToken: 'erc20' | 'hrc20' | 'erc1155' | 'hrc721' | 'hrc1155'
   tokenAddress: string
   tokenId?: string
 }
@@ -75,11 +75,11 @@ export interface BridgeParams {
 }
 
 export interface BridgeTokenInfo {
-  erc20Address?: string,
-  hrc20Address?: string,
-  erc1155Address?: string,
-  erc1155TokenId?: any,
-  hrc721Address?: string,
-  hrc1155Address?: string,
-  hrc1155TokenId?: any,
+  erc20Address?: string
+  hrc20Address?: string
+  erc1155Address?: string
+  erc1155TokenId?: any
+  hrc721Address?: string
+  hrc1155Address?: string
+  hrc1155TokenId?: any
 }

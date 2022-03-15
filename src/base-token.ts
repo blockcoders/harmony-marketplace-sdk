@@ -5,10 +5,17 @@ import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { BridgeSDK, TOKEN, EXCHANGE_MODE, NETWORK_TYPE } from 'bridge-sdk'
+import { BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
 import configs from 'bridge-sdk/lib/configs'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
-import { BNish, BridgeParams, BridgeTokenInfo, ContractProviderType, ITransactionOptions, TokenInfo } from './interfaces'
+import {
+  BNish,
+  BridgeParams,
+  BridgeTokenInfo,
+  ContractProviderType,
+  ITransactionOptions,
+  TokenInfo,
+} from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -155,7 +162,7 @@ export abstract class BaseToken {
 
     const tokenInfo = BaseToken.getBridgeTokenInfo(options?.tokenInfo)
 
-    const bridgeParams = {...options, ...tokenInfo}
+    const bridgeParams = { ...options, ...tokenInfo }
 
     options?.type === EXCHANGE_MODE.ETH_TO_ONE
       ? await bridgeSDK.addEthWallet('0xxxxxx')
@@ -165,28 +172,28 @@ export abstract class BaseToken {
   }
 
   private static getBridgeTokenInfo(info: TokenInfo): BridgeTokenInfo {
-    let tokenInfo: BridgeTokenInfo = {}
+    const tokenInfo: BridgeTokenInfo = {}
     switch (info?.contractToken) {
-      case "erc20":
+      case 'erc20':
         tokenInfo.erc20Address = info?.tokenAddress
-        break;
-      case "hrc20":
+        break
+      case 'hrc20':
         tokenInfo.hrc20Address = info?.tokenAddress
-        break;
-      case "erc1155":
+        break
+      case 'erc1155':
         tokenInfo.erc1155Address = info?.tokenAddress
         tokenInfo.erc1155TokenId = info?.tokenId
-        break;
-      case "hrc721":
+        break
+      case 'hrc721':
         tokenInfo.hrc721Address = info?.tokenAddress
-        break;
-      case "hrc1155":
+        break
+      case 'hrc1155':
         tokenInfo.hrc1155Address = info?.tokenAddress
         tokenInfo.hrc1155TokenId = info?.tokenId
-        break;
+        break
       default:
-        break;
+        break
     }
-    return tokenInfo;
+    return tokenInfo
   }
 }
