@@ -8,7 +8,7 @@ import BN from 'bn.js'
 import { BridgeSDK, TOKEN, EXCHANGE_MODE, NETWORK_TYPE } from 'bridge-sdk'
 import configs from 'bridge-sdk/lib/configs'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
-import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
+import { BNish, BridgeParams, BridgeTokenInfo, ContractProviderType, ITransactionOptions, TokenInfo } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -148,32 +148,45 @@ export abstract class BaseToken {
     this._contract.connect(key)
   }
 
-  public async bridgeToken(
-    oneAddress: string,
-    ethAddress: string,
-    network: NETWORK_TYPE = NETWORK_TYPE.BINANCE,
-    type: EXCHANGE_MODE,
-    token: TOKEN,
-    amount: number,
-  ): Promise<void> {
+  public async bridgeToken(options: BridgeParams): Promise<void> {
     const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off
 
     await bridgeSDK.init(configs.testnet)
 
-    type === EXCHANGE_MODE.ETH_TO_ONE
+    const tokenInfo = BaseToken.getBridgeTokenInfo(options?.tokenInfo)
+
+    const bridgeParams = {...options, ...tokenInfo}
+
+    options?.type === EXCHANGE_MODE.ETH_TO_ONE
       ? await bridgeSDK.addEthWallet('0xxxxxx')
       : await bridgeSDK.addOneWallet('0xxxxxxx')
 
-    await bridgeSDK.sendToken({
-      type,
-      token,
-      network,
-      amount,
-      //erc1155TokenId: '1',
-      //erc1155Address: '0x35889EB854f5B1beB779161D565Af5921f528757',
-      //hrc20Address: '0x5a7759ac1df3573692c6e6cedcf5b7aad035441e',
-      oneAddress,
-      ethAddress,
-    })
+    await bridgeSDK.sendToken(bridgeParams)
+  }
+
+  private static getBridgeTokenInfo(info: TokenInfo): BridgeTokenInfo {
+    let tokenInfo: BridgeTokenInfo = {}
+    switch (info?.contractToken) {
+      case "erc20":
+        tokenInfo.erc20Address = info?.tokenAddress
+        break;
+      case "hrc20":
+        tokenInfo.hrc20Address = info?.tokenAddress
+        break;
+      case "erc1155":
+        tokenInfo.erc1155Address = info?.tokenAddress
+        tokenInfo.erc1155TokenId = info?.tokenId
+        break;
+      case "hrc721":
+        tokenInfo.hrc721Address = info?.tokenAddress
+        break;
+      case "hrc1155":
+        tokenInfo.hrc1155Address = info?.tokenAddress
+        tokenInfo.hrc1155TokenId = info?.tokenId
+        break;
+      default:
+        break;
+    }
+    return tokenInfo;
   }
 }
