@@ -165,8 +165,8 @@ export abstract class BaseToken {
     const bridgeParams = { ...options, ...tokenInfo }
 
     options?.type === EXCHANGE_MODE.ETH_TO_ONE
-      ? await bridgeSDK.addEthWallet('0xxxxxx')
-      : await bridgeSDK.addOneWallet('0xxxxxxx')
+      ? await bridgeSDK.addEthWallet(options?.ethAddress)
+      : await bridgeSDK.addOneWallet(options?.oneAddress)
 
     await bridgeSDK.sendToken(bridgeParams)
   }
