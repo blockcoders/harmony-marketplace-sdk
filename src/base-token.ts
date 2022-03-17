@@ -6,7 +6,7 @@ import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
-import configs from 'bridge-sdk/lib/configs'
+import { testnet } from 'bridge-sdk/lib/configs'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
 import {
   BNish,
@@ -155,20 +155,27 @@ export abstract class BaseToken {
     this._contract.connect(key)
   }
 
-  public async bridgeToken(options: BridgeParams): Promise<void> {
+  public async bridgeToken(options: BridgeParams, walletPK: string): Promise<void> {
     const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off
 
-    await bridgeSDK.init(configs.testnet)
+    await bridgeSDK.init(testnet)
 
-    const tokenInfo = BaseToken.getBridgeTokenInfo(options.tokenInfo)
+    await bridgeSDK.addOneWallet(walletPK)
+    try {
+      let tokenInfo = {}
+      if (!!options?.tokenInfo) {
+        tokenInfo = BaseToken.getBridgeTokenInfo(options.tokenInfo)
+      }
 
-    const bridgeParams = { ...options, ...tokenInfo }
+      const bridgeParams = { ...options, ...tokenInfo }
 
-    options.type === EXCHANGE_MODE.ETH_TO_ONE
-      ? await bridgeSDK.addEthWallet(options.ethAddress)
-      : await bridgeSDK.addOneWallet(options.oneAddress)
-
-    await bridgeSDK.sendToken(bridgeParams)
+      options.type === EXCHANGE_MODE.ETH_TO_ONE
+        ? await bridgeSDK.addEthWallet(walletPK)
+        : await bridgeSDK.addOneWallet(walletPK)
+      await bridgeSDK.sendToken(bridgeParams, (id) => console.log(id))
+    } catch (e: any) {
+      console.log('Error: ', e.message)
+    }
   }
 
   private static getBridgeTokenInfo(info: TokenInfo): BridgeTokenInfo {

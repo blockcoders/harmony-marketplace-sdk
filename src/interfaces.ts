@@ -70,7 +70,7 @@ export interface BridgeParams {
   type: EXCHANGE_MODE
   token: TOKEN
   amount: number
-  tokenInfo: TokenInfo
+  tokenInfo?: TokenInfo
   maxWaitingTime?: number
 }
 
