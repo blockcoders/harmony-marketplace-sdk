@@ -174,7 +174,7 @@ export abstract class BaseToken {
         : await bridgeSDK.addOneWallet(walletPK)
       await bridgeSDK.sendToken(bridgeParams, (id) => console.log(id))
     } catch (e: any) {
-      console.log('Error: ', e.message)
+      console.log('Error: ', e)
     }
   }
 
