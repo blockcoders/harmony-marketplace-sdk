@@ -156,6 +156,22 @@ export abstract class BaseToken {
   }
 
   public async bridgeToken(options: BridgeParams, walletPK: string): Promise<void> {
+    if (!options.ethAddress) {
+      throw new Error('ethAddress is required')
+    }
+
+    if (!options.oneAddress) {
+      throw new Error('oneAddress is required')
+    }
+
+    if (options.amount === 0) {
+      throw new Error('amount must be greater than zero')
+    }
+
+    if (!walletPK) {
+      throw new Error('walletPK is required')
+    }
+
     const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off
 
     await bridgeSDK.init(testnet)
