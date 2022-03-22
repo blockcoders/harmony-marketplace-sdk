@@ -1,7 +1,7 @@
 import { Account } from '@harmony-js/account'
 import { ChainID } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { EXCHANGE_MODE, NETWORK_TYPE, TOKEN } from 'bridge-sdk'
+/*import { EXCHANGE_MODE, NETWORK_TYPE, TOKEN } from 'bridge-sdk'*/
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
@@ -197,7 +197,7 @@ describe('Base Token Provider', () => {
     })
   })
 
-  describe.only('bridgeToken', () => {
+  /*describe('bridgeToken', () => {
     const PK = '0xae7eb3a0d2dc10f332ea0156e6a942d2db0d7765351c312c98663fbec3f36712'
     const M_PK = '0x05f1e68452b809de284575b342e887e01c6d1aa0c719ee6ef4299e70bded3561'
     it('one to eth', async () => {
@@ -223,14 +223,29 @@ describe('Base Token Provider', () => {
           type: EXCHANGE_MODE.ETH_TO_ONE,
           token: TOKEN.ONE,
           amount: 10,
-          /*tokenInfo: {
-            contractToken: 'erc20',
-            tokenAddress: '0x7ecD5a768add5c4B620c17d169F91c537ceC8b4C',
-          },*/
         },
         M_PK,
       )
       Promise.resolve()
     })
-  })
+    it('erc1155', async () => {
+      await contract.bridgeToken(
+        {
+          ethAddress: '0x3C6914F9276Ecc1d31f9C57b9906CfA1F55Bd97A',
+          oneAddress: 'one1mwhtsd264qk4yacxy53hy37jfryzwvxg6hlxw8',
+          network: NETWORK_TYPE.ETHEREUM,
+          type: EXCHANGE_MODE.ONE_TO_ETH,
+          token: TOKEN.ERC1155,
+          amount: 1,
+          tokenInfo: {
+            contractToken: 'erc1155',
+            tokenAddress: '0x35889EB854f5B1beB779161D565Af5921f528757',
+            tokenId: '1',
+          },
+        },
+        PK,
+      )
+      Promise.resolve()
+    })
+  })*/
 })

@@ -5,16 +5,16 @@ import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
-import { testnet } from 'bridge-sdk/lib/configs'
+///import { testnet } from 'bridge-sdk/lib/configs'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
+//import BridgeERC721 from './hmy_managers/BridgeERC721'
 import {
   BNish,
-  BridgeParams,
+  /*BridgeParams,
   BridgeTokenInfo,
+  TokenInfo,*/
   ContractProviderType,
   ITransactionOptions,
-  TokenInfo,
 } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
@@ -154,7 +154,7 @@ export abstract class BaseToken {
   public setSignerByKey(key: Key | PrivateKey | MnemonicKey): void {
     this._contract.connect(key)
   }
-
+  /*
   public async bridgeToken(options: BridgeParams, walletPK: string): Promise<void> {
     if (!options.ethAddress) {
       throw new Error('ethAddress is required')
@@ -172,23 +172,14 @@ export abstract class BaseToken {
       throw new Error('walletPK is required')
     }
 
-    const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off
-
-    await bridgeSDK.init(testnet)
-
-    await bridgeSDK.addOneWallet(walletPK)
     try {
       let tokenInfo = {}
       if (!!options?.tokenInfo) {
         tokenInfo = BaseToken.getBridgeTokenInfo(options.tokenInfo)
       }
-
       const bridgeParams = { ...options, ...tokenInfo }
-
-      options.type === EXCHANGE_MODE.ETH_TO_ONE
-        ? await bridgeSDK.addEthWallet(walletPK)
-        : await bridgeSDK.addOneWallet(walletPK)
-      await bridgeSDK.sendToken(bridgeParams, (id) => console.log(id))
+      const ERC721Bridge = new BridgeERC721(testnet.hmyClient)
+      await ERC721Bridge.sendToken(bridgeParams, walletPK)
     } catch (e: any) {
       console.log('Error: ', e)
     }
@@ -218,5 +209,5 @@ export abstract class BaseToken {
         break
     }
     return tokenInfo
-  }
+  }*/
 }
