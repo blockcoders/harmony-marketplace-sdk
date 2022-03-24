@@ -478,7 +478,7 @@ const name = await contract.name() // Blockcoders NFT
 
 The `HRC1155` implements the abstract class [Base Token](#base-token).
 
-**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc1155) will look for specfy list of functions and events to identify HRC1155 tokens. You can validate if the bytecode of your HRC1155 is valid [here](https://explorer.harmony.one/tools/checkHrc).
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc1155) will look for s specific list of functions and events to identify HRC1155 tokens. You can validate if the bytecode of your HRC1155 is valid [here](https://explorer.harmony.one/tools/checkHrc).
 
 Expected Methods:
 | Method | Description |
