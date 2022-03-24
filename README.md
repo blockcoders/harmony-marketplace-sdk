@@ -683,7 +683,7 @@ Contributions welcome! See [Contributing](CONTRIBUTING.md).
 
 ## Collaborators
 
-- [**Jose Ramirez**](https://github.com/0xslipk), [Twitter](https://twitter.com/0xslipk0)
+- [**Jose Ramirez**](https://github.com/0xslipk)
 - [**Brian Zuker**](https://github.com/bzuker)
 - [**Ana Riera**](https://github.com/AnnRiera)
 
