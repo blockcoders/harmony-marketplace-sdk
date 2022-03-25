@@ -18,7 +18,7 @@ import {
   TOKEN_GOLD,
   TEST_SEED,
 } from './tests/constants'
-import { ABI } from './tests/contracts/HRC721/abi'
+import { ABI } from './tests/contracts/TestToken/abi'
 
 class TestToken extends BaseToken {
   constructor() {
