@@ -12,7 +12,7 @@ import { testnet, mainnet } from 'bridge-sdk/lib/configs'
 import { abi as ERC721HmyManager } from './ERC721HmyManager'
 import { abi as HmyDeposit } from './HmyDeposit'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
-import { BNish, BridgeParams, ContractProviderType, ITransactionOptions, TokenInfo } from './interfaces'
+import { BNish, BridgeParams, ContractProviderType, ITransactionOptions } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -74,7 +74,9 @@ export abstract class BaseToken {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
+    console.log('SEND: ', { method, args, txOptions })
     const options = await this.estimateGas(method, args, txOptions)
+
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
     if (!response.transaction) {
@@ -110,6 +112,7 @@ export abstract class BaseToken {
     if (!addressOperator) {
       throw new Error('You must provide an addressOperator')
     }
+    console.log({ addressOperator, approved })
 
     return this.send('setApprovalForAll', [addressOperator, approved], txOptions)
   }
@@ -207,15 +210,14 @@ export abstract class BaseToken {
         ERC721HmyManager,
         initParams.hmyClient.contracts.erc721Manager,
       )
+      console.log(hmyManagerContract)
       const depositContract = hmy.contracts.createContract(HmyDeposit, initParams.hmyClient.contracts.depositManager)
-      console.log({ hmyManagerContract, depositContract })
       await hmy.wallet.addByPrivateKey(walletPK)
 
       const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
       if (tokenInfo === undefined) {
         throw Error('You must provide token address and token id')
       }
-      console.log(type, token, amount, oneAddress, ethAddress, tokenInfo)
       const operation = await bridgeSDK.createOperation({
         type,
         token,
@@ -223,13 +225,11 @@ export abstract class BaseToken {
         oneAddress,
         ethAddress,
       })
-      console.log(operation)
 
       const depositAmount = operation?.operation?.actions[0]?.depositAmount
       if (depositAmount === undefined) {
         throw Error(`deposit amount cannot be undefined ${operation}`)
       }
-      console.log(depositAmount)
 
       await this.bridgeDeposit(depositContract, depositAmount, async (transactionHash: string) => {
         console.log('Deposit hash: ', transactionHash)
@@ -242,7 +242,6 @@ export abstract class BaseToken {
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
 
-      // Uncomment this when deposit works
       this.bridgeApproval(initParams.hmyClient.contracts.erc721Manager, true, async (transactionHash: string) => {
         console.log('Approve hash: ', transactionHash)
 
@@ -251,7 +250,7 @@ export abstract class BaseToken {
           transactionHash,
         })
       })
-
+      /*
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 
       const recipient = hmy.crypto.getAddress(ethAddress).checksum
@@ -266,7 +265,7 @@ export abstract class BaseToken {
 
       await operation.waitActionComplete(ACTION_TYPE.burnToken)
 
-      await operation.waitOperationComplete()
+      await operation.waitOperationComplete()*/
     } catch (e: any) {
       console.log('Error: ', e.message)
     }
@@ -282,6 +281,8 @@ export abstract class BaseToken {
       try {
         console.log('APPROVE', { addressOperator, txOptions })
         const response = await this.setApprovalForAll(addressOperator, approved, txOptions)
+        console.log('RESPONSE: ', response)
+
         if (response?.id === undefined) {
           throw Error('Transaction must have an id')
         }
@@ -310,7 +311,7 @@ export abstract class BaseToken {
     })
   }
 
-  private async bridgeBurnToken(
+  /*private async bridgeBurnToken(
     managerContract: Contract,
     tokenInfo: TokenInfo,
     recipient: string,
@@ -330,5 +331,5 @@ export abstract class BaseToken {
         reject(e)
       }
     })
-  }
+  }*/
 }

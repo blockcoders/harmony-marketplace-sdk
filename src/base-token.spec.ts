@@ -210,9 +210,9 @@ describe('Base Token Provider', () => {
           amount: 10,
           isMainnet: false,
           tokenInfo: {
-            tokenAddress: "",
-            tokenId: "0"
-          }
+            tokenAddress: '',
+            tokenId: '0',
+          },
         },
         PK,
       )
