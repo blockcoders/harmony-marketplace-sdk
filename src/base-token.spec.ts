@@ -208,7 +208,11 @@ describe('Base Token Provider', () => {
           type: EXCHANGE_MODE.ONE_TO_ETH,
           token: TOKEN.ONE,
           amount: 10,
-          isMainnet: false
+          isMainnet: false,
+          tokenInfo: {
+            tokenAddress: "",
+            tokenId: "0"
+          }
         },
         PK,
       )

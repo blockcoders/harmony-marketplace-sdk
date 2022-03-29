@@ -7,19 +7,12 @@ import { Transaction } from '@harmony-js/transaction'
 import { ChainType, hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { ACTION_TYPE, BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
-import { testnet, mainnet } from 'bridge-sdk/lib/configs'
-import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
 import { withDecimals } from 'bridge-sdk/lib/blockchain/utils'
+import { testnet, mainnet } from 'bridge-sdk/lib/configs'
 import { abi as ERC721HmyManager } from './ERC721HmyManager'
 import { abi as HmyDeposit } from './HmyDeposit'
-import {
-  BNish,
-  BridgeParams,
-  BridgeTokenInfo,
-  ContractProviderType,
-  ITransactionOptions,
-  TokenInfo,
-} from './interfaces'
+import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
+import { BNish, BridgeParams, ContractProviderType, ITransactionOptions, TokenInfo } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -210,17 +203,18 @@ export abstract class BaseToken {
         chainType: ChainType.Harmony,
         chainId: Number(chainId),
       })
-      const hmyManagerContract = hmy.contracts.createContract(ERC721HmyManager)
+      const hmyManagerContract = hmy.contracts.createContract(
+        ERC721HmyManager,
+        initParams.hmyClient.contracts.erc721Manager,
+      )
       const depositContract = hmy.contracts.createContract(HmyDeposit, initParams.hmyClient.contracts.depositManager)
       console.log({ hmyManagerContract, depositContract })
       await hmy.wallet.addByPrivateKey(walletPK)
 
-      let tokenInfo = {}
-      if (!!options?.tokenInfo) {
-        tokenInfo = BaseToken.getBridgeTokenInfo(options.tokenInfo)
+      const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
+      if (tokenInfo === undefined) {
+        throw Error('You must provide token address and token id')
       }
-
-      const { type, token, amount, oneAddress, ethAddress } = options || {}
       console.log(type, token, amount, oneAddress, ethAddress, tokenInfo)
       const operation = await bridgeSDK.createOperation({
         type,
@@ -248,8 +242,8 @@ export abstract class BaseToken {
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
 
-      // Uncomment this when deposit works 
-      /*this.bridgeApproval(addressOperator, true, async (transactionHash: string) => {
+      // Uncomment this when deposit works
+      this.bridgeApproval(initParams.hmyClient.contracts.erc721Manager, true, async (transactionHash: string) => {
         console.log('Approve hash: ', transactionHash)
 
         await operation.confirmAction({
@@ -258,13 +252,27 @@ export abstract class BaseToken {
         })
       })
 
-      await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)*/
+      await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
+
+      const recipient = hmy.crypto.getAddress(ethAddress).checksum
+      await this.bridgeBurnToken(hmyManagerContract, tokenInfo, recipient, async (transactionHash) => {
+        console.log('burnToken hash: ', transactionHash)
+
+        await operation.confirmAction({
+          actionType: ACTION_TYPE.burnToken,
+          transactionHash,
+        })
+      })
+
+      await operation.waitActionComplete(ACTION_TYPE.burnToken)
+
+      await operation.waitOperationComplete()
     } catch (e: any) {
       console.log('Error: ', e.message)
     }
   }
 
-  /*private async bridgeApproval(
+  private async bridgeApproval(
     addressOperator: string,
     approved: boolean,
     sendTxCallback: (tx: string) => void,
@@ -284,7 +292,7 @@ export abstract class BaseToken {
         reject(e)
       }
     })
-  }*/
+  }
 
   private async bridgeDeposit(depositContract: Contract, amount: number, sendTxCallback: (tx: string) => void) {
     return new Promise(async (resolve, reject) => {
@@ -302,29 +310,25 @@ export abstract class BaseToken {
     })
   }
 
-  private static getBridgeTokenInfo(info: TokenInfo): BridgeTokenInfo {
-    const tokenInfo: BridgeTokenInfo = {}
-    switch (info.contractToken) {
-      case 'erc20':
-        tokenInfo.erc20Address = info.tokenAddress
-        break
-      case 'hrc20':
-        tokenInfo.hrc20Address = info.tokenAddress
-        break
-      case 'erc1155':
-        tokenInfo.erc1155Address = info.tokenAddress
-        tokenInfo.erc1155TokenId = info?.tokenId
-        break
-      case 'hrc721':
-        tokenInfo.hrc721Address = info.tokenAddress
-        break
-      case 'hrc1155':
-        tokenInfo.hrc1155Address = info.tokenAddress
-        tokenInfo.hrc1155TokenId = info?.tokenId
-        break
-      default:
-        break
-    }
-    return tokenInfo
+  private async bridgeBurnToken(
+    managerContract: Contract,
+    tokenInfo: TokenInfo,
+    recipient: string,
+    sendTxCallback?: (hash: string) => void,
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log('BURN', { managerContract })
+
+        const response = await managerContract.methods
+          .burnToken(tokenInfo.tokenAddress, tokenInfo.tokenId, recipient)
+          .send({ gasPrice: 30000000000, gasLimit: 6721900 })
+          .on('transactionHash', sendTxCallback)
+        resolve(response)
+      } catch (e) {
+        console.log('ERROR: ', e)
+        reject(e)
+      }
+    })
   }
 }
