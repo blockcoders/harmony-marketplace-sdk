@@ -2,12 +2,16 @@ import { Account, Wallet } from '@harmony-js/account'
 import { Contract as BaseContract } from '@harmony-js/contract'
 import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
+import { Harmony } from '@harmony-js/core'
 import { Transaction } from '@harmony-js/transaction'
-import { hexToNumber, Unit } from '@harmony-js/utils'
+import { ChainType, hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
-import { testnet } from 'bridge-sdk/lib/configs'
+import { ACTION_TYPE, BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
+import { testnet, mainnet } from 'bridge-sdk/lib/configs'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
+import { withDecimals } from 'bridge-sdk/lib/blockchain/utils'
+import { abi as ERC721HmyManager } from './ERC721HmyManager'
+import { abi as HmyDeposit } from './HmyDeposit'
 import {
   BNish,
   BridgeParams,
@@ -174,24 +178,128 @@ export abstract class BaseToken {
 
     const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off
 
-    await bridgeSDK.init(testnet)
+    const initParams = options?.isMainnet ? mainnet : testnet
+    await bridgeSDK.init(initParams)
+    if (options.type === EXCHANGE_MODE.ETH_TO_ONE) {
+      await this.ethToOne(options, bridgeSDK, walletPK, initParams)
+    } else {
+      await this.oneToEth(options, bridgeSDK, walletPK, initParams)
+    }
+  }
 
-    await bridgeSDK.addOneWallet(walletPK)
+  private async ethToOne(
+    options: BridgeParams,
+    bridgeSDK: BridgeSDK,
+    walletPK: string,
+    initParams: typeof testnet | typeof mainnet,
+  ) {
+    throw new Error(`Error not implemented yet ${options}, ${bridgeSDK}, ${walletPK}, ${initParams}`)
+  }
+
+  private async oneToEth(
+    options: BridgeParams,
+    bridgeSDK: BridgeSDK,
+    walletPK: string,
+    initParams: typeof testnet | typeof mainnet,
+  ) {
     try {
+      const {
+        hmyClient: { nodeURL, chainId },
+      } = initParams || {}
+      const hmy = new Harmony(nodeURL, {
+        chainType: ChainType.Harmony,
+        chainId: Number(chainId),
+      })
+      const hmyManagerContract = hmy.contracts.createContract(ERC721HmyManager)
+      const depositContract = hmy.contracts.createContract(HmyDeposit, initParams.hmyClient.contracts.depositManager)
+      console.log({ hmyManagerContract, depositContract })
+      await hmy.wallet.addByPrivateKey(walletPK)
+
       let tokenInfo = {}
       if (!!options?.tokenInfo) {
         tokenInfo = BaseToken.getBridgeTokenInfo(options.tokenInfo)
       }
 
-      const bridgeParams = { ...options, ...tokenInfo }
+      const { type, token, amount, oneAddress, ethAddress } = options || {}
+      console.log(type, token, amount, oneAddress, ethAddress, tokenInfo)
+      const operation = await bridgeSDK.createOperation({
+        type,
+        token,
+        amount,
+        oneAddress,
+        ethAddress,
+      })
+      console.log(operation)
 
-      options.type === EXCHANGE_MODE.ETH_TO_ONE
-        ? await bridgeSDK.addEthWallet(walletPK)
-        : await bridgeSDK.addOneWallet(walletPK)
-      await bridgeSDK.sendToken(bridgeParams, (id) => console.log(id))
+      const depositAmount = operation?.operation?.actions[0]?.depositAmount
+      if (depositAmount === undefined) {
+        throw Error(`deposit amount cannot be undefined ${operation}`)
+      }
+      console.log(depositAmount)
+
+      await this.bridgeDeposit(depositContract, depositAmount, async (transactionHash: string) => {
+        console.log('Deposit hash: ', transactionHash)
+
+        await operation.confirmAction({
+          actionType: ACTION_TYPE.depositOne,
+          transactionHash,
+        })
+      })
+
+      await operation.waitActionComplete(ACTION_TYPE.depositOne)
+
+      // Uncomment this when deposit works 
+      /*this.bridgeApproval(addressOperator, true, async (transactionHash: string) => {
+        console.log('Approve hash: ', transactionHash)
+
+        await operation.confirmAction({
+          actionType: ACTION_TYPE.approveHmyManger,
+          transactionHash,
+        })
+      })
+
+      await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)*/
     } catch (e: any) {
       console.log('Error: ', e.message)
     }
+  }
+
+  /*private async bridgeApproval(
+    addressOperator: string,
+    approved: boolean,
+    sendTxCallback: (tx: string) => void,
+    txOptions?: ITransactionOptions | undefined,
+  ): Promise<Transaction> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log('APPROVE', { addressOperator, txOptions })
+        const response = await this.setApprovalForAll(addressOperator, approved, txOptions)
+        if (response?.id === undefined) {
+          throw Error('Transaction must have an id')
+        }
+        sendTxCallback(response.id)
+        resolve(response)
+      } catch (e) {
+        console.log('ERROR: ', e)
+        reject(e)
+      }
+    })
+  }*/
+
+  private async bridgeDeposit(depositContract: Contract, amount: number, sendTxCallback: (tx: string) => void) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log('DEPOSIT', { depositContract, amount })
+        const response = await depositContract.methods
+          .deposit(withDecimals(amount, 18))
+          .send({ gasPrice: 30000000000, gasLimit: 6721900, value: withDecimals(amount, 18) })
+          .on('transactionHash', sendTxCallback)
+        resolve(response)
+      } catch (e) {
+        console.log('ERROR: ', e)
+        reject(e)
+      }
+    })
   }
 
   private static getBridgeTokenInfo(info: TokenInfo): BridgeTokenInfo {
