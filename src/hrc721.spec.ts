@@ -1,4 +1,5 @@
 import BN from 'bn.js'
+import { EXCHANGE_MODE, NETWORK_TYPE, TOKEN } from 'bridge-sdk'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
@@ -288,6 +289,29 @@ describe('HRC721 Contract Interface', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(contract.approve('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe.only('bridgeToken', () => {
+    const PK = '0xae7eb3a0d2dc10f332ea0156e6a942d2db0d7765351c312c98663fbec3f36712'
+    it('one to eth', async () => {
+      await contract.bridgeToken(
+        {
+          ethAddress: '0x3C6914F9276Ecc1d31f9C57b9906CfA1F55Bd97A',
+          oneAddress: 'one1mwhtsd264qk4yacxy53hy37jfryzwvxg6hlxw8',
+          network: NETWORK_TYPE.ETHEREUM,
+          type: EXCHANGE_MODE.ONE_TO_ETH,
+          token: TOKEN.ONE,
+          amount: 10,
+          isMainnet: false,
+          tokenInfo: {
+            tokenAddress: HRC721_CONTRACT_ADDRESS,
+            tokenId: '1',
+          },
+        },
+        PK,
+      )
+      Promise.resolve()
     })
   })
 })

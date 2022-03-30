@@ -12,7 +12,7 @@ import { testnet, mainnet } from 'bridge-sdk/lib/configs'
 import { abi as ERC721HmyManager } from './ERC721HmyManager'
 import { abi as HmyDeposit } from './HmyDeposit'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
-import { BNish, BridgeParams, ContractProviderType, ITransactionOptions } from './interfaces'
+import { BNish, BridgeParams, ContractProviderType, ITransactionOptions, TokenInfo } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -55,14 +55,20 @@ export abstract class BaseToken {
     },
   ): Promise<ITransactionOptions> {
     let gasLimit = options.gasLimit
+    console.log('EG0')
 
     if (!gasLimit) {
-      const hexValue = await this._contract.methods[method](...args).estimateGas({
+      console.log('EG1')
+      const hexValue = await this._contract.methods[method](...args)
+      console.log('EG1.5', hexValue)
+      const b = await hexValue.estimateGas({
         gasPrice: new Unit(options.gasPrice).asGwei().toHex(),
       })
+      console.log('EG2', b)
       gasLimit = hexToNumber(hexValue)
+      console.log('EG3')
     }
-
+    console.log('EG4')
     return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
   }
 
@@ -74,10 +80,11 @@ export abstract class BaseToken {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    console.log('SEND: ', { method, args, txOptions })
+    console.log('SEND0')
     const options = await this.estimateGas(method, args, txOptions)
-
+    console.log('SEND1')
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
+    console.log('SEND2')
 
     if (!response.transaction) {
       throw new ContractError('Invalid transaction response', method)
@@ -112,8 +119,6 @@ export abstract class BaseToken {
     if (!addressOperator) {
       throw new Error('You must provide an addressOperator')
     }
-    console.log({ addressOperator, approved })
-
     return this.send('setApprovalForAll', [addressOperator, approved], txOptions)
   }
 
@@ -210,7 +215,6 @@ export abstract class BaseToken {
         ERC721HmyManager,
         initParams.hmyClient.contracts.erc721Manager,
       )
-      console.log(hmyManagerContract)
       const depositContract = hmy.contracts.createContract(HmyDeposit, initParams.hmyClient.contracts.depositManager)
       await hmy.wallet.addByPrivateKey(walletPK)
 
@@ -250,12 +254,12 @@ export abstract class BaseToken {
           transactionHash,
         })
       })
-      /*
+
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 
       const recipient = hmy.crypto.getAddress(ethAddress).checksum
       await this.bridgeBurnToken(hmyManagerContract, tokenInfo, recipient, async (transactionHash) => {
-        console.log('burnToken hash: ', transactionHash)
+        console.log('Burn hash: ', transactionHash)
 
         await operation.confirmAction({
           actionType: ACTION_TYPE.burnToken,
@@ -265,9 +269,9 @@ export abstract class BaseToken {
 
       await operation.waitActionComplete(ACTION_TYPE.burnToken)
 
-      await operation.waitOperationComplete()*/
+      await operation.waitOperationComplete()
     } catch (e: any) {
-      console.log('Error: ', e.message)
+      console.log('Error: ', e)
     }
   }
 
@@ -279,7 +283,7 @@ export abstract class BaseToken {
   ): Promise<Transaction> {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log('APPROVE', { addressOperator, txOptions })
+        console.log('APPROVE')
         const response = await this.setApprovalForAll(addressOperator, approved, txOptions)
         console.log('RESPONSE: ', response)
 
@@ -289,7 +293,7 @@ export abstract class BaseToken {
         sendTxCallback(response.id)
         resolve(response)
       } catch (e) {
-        console.log('ERROR: ', e)
+        console.log('Error: ', e)
         reject(e)
       }
     })
@@ -298,20 +302,20 @@ export abstract class BaseToken {
   private async bridgeDeposit(depositContract: Contract, amount: number, sendTxCallback: (tx: string) => void) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log('DEPOSIT', { depositContract, amount })
+        console.log('DEPOSIT')
         const response = await depositContract.methods
           .deposit(withDecimals(amount, 18))
           .send({ gasPrice: 30000000000, gasLimit: 6721900, value: withDecimals(amount, 18) })
           .on('transactionHash', sendTxCallback)
         resolve(response)
       } catch (e) {
-        console.log('ERROR: ', e)
+        console.log('Error: ', e)
         reject(e)
       }
     })
   }
 
-  /*private async bridgeBurnToken(
+  private async bridgeBurnToken(
     managerContract: Contract,
     tokenInfo: TokenInfo,
     recipient: string,
@@ -327,9 +331,9 @@ export abstract class BaseToken {
           .on('transactionHash', sendTxCallback)
         resolve(response)
       } catch (e) {
-        console.log('ERROR: ', e)
+        console.log('Error: ', e)
         reject(e)
       }
     })
-  }*/
+  }
 }
