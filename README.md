@@ -120,6 +120,39 @@ const key = new Key(new HttpProvider(HarmonyShards.SHARD_0))
 key.addByPrivateKey('45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e')
 ```
 
+### HD Key
+
+Implementation of a hierarchical deterministic (HD) wallet that uses a mnemonic to generate the derivative addresses.
+
+```ts
+import { HttpProvider, WSProvider } from '@harmony-js/network'
+import { HDKey, HarmonyShards, HARMONY_RPC_SHARD_0_URL, HARMONY_RPC_WS } from 'harmony-marketplace-sdk'
+
+const options = {
+  mnemonic: 'glory seat canal seven erosion asset guilt perfect fluid dice floor unfold',
+  index: 0,
+  numberOfAddresses: 1,
+  shardId: 0,
+  gasLimit: '1000000',
+  gasPrice: '2000000000',
+}
+
+// Using a HttpProvider with a string url.
+const key = new HDKey(new HttpProvider('https://api.harmony.one'), options)
+
+// Using a HttpProvider with a const from Harmony Marketplace SDK.
+const key = new HDKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), options)
+
+// Using a WSProvider with a string url.
+const key = new HDKey(new WSProvider('wss://ws.s0.t.hmny.io'), options)
+
+// Using a HttpProvider with a const from Harmony Marketplace SDK.
+const key = new HDKey(new WSProvider(HARMONY_RPC_WS), options)
+
+// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
+const key = new HDKey(new HttpProvider(HarmonyShards.SHARD_0), options)
+```
+
 ## Base Token
 
 The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
@@ -177,6 +210,29 @@ const approved = await contract.isApprovedForAll('0x...01', '0x...02')
 ## HRC721 API
 
 The `HRC721` implements the abstract class [Base Token](#base-token).
+
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc721) will look for a specific list of functions and events to identify HRC721 tokens. You can validate if the bytecode of your HRC71 is valid [here](https://explorer.harmony.one/tools/checkHrc).
+
+Expected Methods:
+| Method | Description |
+| ------------- | ------------- |
+| transferFrom | Transfers tokenId token from an address to another. |
+| safeTransferFrom | Safely transfers tokenId token from an address to another. |
+| balanceOf | The number of tokens in owner's account. |
+| approve | Gives permission to to to transfer tokenId token to another account. |
+| totalSupply | Total amount of tokens stored by the contract. |
+| ownerOf | The owner of the tokenId token. |
+| tokenURI | The Uniform Resource Identifier (URI) for tokenId token. |
+| symbol | The token collection symbol. |
+| name | The token collection name. |
+
+Expected Events
+| Event | Description |
+| ------------- | ------------- |
+| Transfer | Emitted when a token id is transferred from an address to another. |
+| Approval | Emitted when owner enables approved to manage the tokenId token. |
+
+You can find an example of [HRC721](./src/tests/contracts/HRC721/BlockcodersHRC721.sol) in this address [0x...0a0a](https://explorer.pops.one/address/0xbba5d03304318b8fe765d977081eb392eb170a0a?activeTab=0).
 
 ### Initializing
 
@@ -336,9 +392,111 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const address = await contract.getApproved('1')
 ```
 
+####  totalSupply
+
+Returns the total amount of tokens stored by the contract.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a number value.
+const supply = await contract.totalSupply()
+```
+
+#### tokenURI
+
+Returns the Uniform Resource Identifier (URI) for tokenId token.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a string value.
+const uri = await contract.tokenURI()
+```
+
+#### symbol
+
+Returns the token collection symbol.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a string value.
+const symbol = await contract.symbol() // Blockcoders
+```
+
+#### name
+
+Returns the token collection name.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a string value.
+const name = await contract.name() // Blockcoders NFT
+```
+
 ## HRC1155 API
 
 The `HRC1155` implements the abstract class [Base Token](#base-token).
+
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc1155) will look for s specific list of functions and events to identify HRC1155 tokens. You can validate if the bytecode of your HRC1155 is valid [here](https://explorer.harmony.one/tools/checkHrc).
+
+Expected Methods:
+| Method | Description |
+| ------------- | ------------- |
+| owner | Address of the current owner. |
+| tokenURIPrefix | Token URI prefix |
+| balanceOfBatch | Batched version of balanceOf |
+| contractURI | Contract URI prefix |
+
+Expected Events
+| Event | Description |
+| ------------- | ------------- |
+| TransferSingle | Emitted when a token id are transferred from an address to another by operator. |
+| TransferBatch | Emitted when a token ids are transferred from an address to another by operator. |
+
+You can find an example of [HRC1155](./src/tests/contracts/HRC1155/BlockcodersHRC1155.sol) in this address [0x...b264](https://explorer.pops.one/address/0x16703afb468e4ba88380c2a2fda1aa4c5ec7b264).
 
 ### Initializing
 
@@ -456,6 +614,69 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2'], [1, 1], '0x')
 ```
 
+#### owner
+
+Returns the address of the current owner.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns an address.
+const owner = await contract.owner()
+```
+
+#### tokenURIPrefix
+
+Returns the token URI prefix.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns an string value.
+const uri = await contract.tokenURIPrefix()
+```
+
+#### contractURI
+
+Returns the contract URI prefix.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns an string value.
+const uri = await contract.contractURI()
+```
+
 ## Change Log
 
 See [Changelog](CHANGELOG.md) for more information.
@@ -466,7 +687,7 @@ Contributions welcome! See [Contributing](CONTRIBUTING.md).
 
 ## Collaborators
 
-- [**Jose Ramirez**](https://github.com/jarcodallo), [Twitter](https://twitter.com/jarcodallo), [NPM](https://www.npmjs.com/~jarcodallo)
+- [**Jose Ramirez**](https://github.com/0xslipk)
 - [**Brian Zuker**](https://github.com/bzuker)
 - [**Ana Riera**](https://github.com/AnnRiera)
 

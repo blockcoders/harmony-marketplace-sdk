@@ -60,4 +60,18 @@ export class HRC1155 extends BaseToken {
   ): Promise<Transaction> {
     throw new Error('Method not implemented.')
   }
+
+  public async owner(txOptions?: ITransactionOptions): Promise<string> {
+    const address = await this.call<string>('owner', [], txOptions)
+
+    return this.sanitizeAddress(address)
+  }
+
+  public async tokenURIPrefix(txOptions?: ITransactionOptions): Promise<string> {
+    return this.call<string>('tokenURIPrefix', [], txOptions)
+  }
+
+  public async contractURI(txOptions?: ITransactionOptions): Promise<string> {
+    return this.call<string>('contractURI', [], txOptions)
+  }
 }
