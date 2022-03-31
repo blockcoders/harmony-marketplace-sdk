@@ -12,7 +12,14 @@ import { testnet, mainnet } from 'bridge-sdk/lib/configs'
 import { abi as ERC721HmyManager } from './ERC721HmyManager'
 import { abi as HmyDeposit } from './HmyDeposit'
 import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
-import { BNish, BridgeParams, ContractProviderType, ITransactionOptions, TokenInfo } from './interfaces'
+import {
+  BNish,
+  BridgeApprovalParams,
+  BridgeParams,
+  ContractProviderType,
+  ITransactionOptions,
+  TokenInfo,
+} from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -210,7 +217,7 @@ export abstract class BaseToken {
       await hmy.wallet.addByPrivateKey(walletPK)
 
       const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
-      if (tokenInfo === undefined) {
+      if (tokenInfo === undefined || tokenInfo.tokenId === undefined) {
         throw Error('You must provide token address and token id')
       }
       const operation = await bridgeSDK.createOperation({
@@ -237,14 +244,17 @@ export abstract class BaseToken {
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
 
-      await this.bridgeApproval(initParams.hmyClient.contracts.erc721Manager, true, async (transactionHash: string) => {
-        console.log('Approve hash: ', transactionHash)
+      await this.bridgeApproval(
+        { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId, approved: true },
+        async (transactionHash: string) => {
+          console.log('Approve hash: ', transactionHash)
 
-        await operation.confirmAction({
-          actionType: ACTION_TYPE.approveHmyManger,
-          transactionHash,
-        })
-      })
+          await operation.confirmAction({
+            actionType: ACTION_TYPE.approveHmyManger,
+            transactionHash,
+          })
+        },
+      )
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 
       const recipient = hmy.crypto.getAddress(ethAddress).checksum
@@ -265,27 +275,11 @@ export abstract class BaseToken {
     }
   }
 
-  private async bridgeApproval(
-    addressOperator: string,
-    approved: boolean,
+  protected abstract bridgeApproval(
+    data: BridgeApprovalParams,
     sendTxCallback: (tx: string) => void,
     txOptions?: ITransactionOptions | undefined,
-  ): Promise<Transaction> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const response = await this.setApprovalForAll(addressOperator, approved, txOptions)
-
-        if (response?.id === undefined) {
-          throw Error('Transaction must have an id')
-        }
-        await sendTxCallback(response.id)
-        resolve(response)
-      } catch (e) {
-        console.log('Error: ', e)
-        reject(e)
-      }
-    })
-  }
+  ): Promise<Transaction>
 
   private async bridgeDeposit(depositContract: Contract, amount: number, sendTxCallback: (tx: string) => void) {
     return new Promise(async (resolve, reject) => {

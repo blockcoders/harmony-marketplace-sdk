@@ -301,7 +301,7 @@ describe('HRC721 Contract Interface', () => {
           oneAddress: 'one1mwhtsd264qk4yacxy53hy37jfryzwvxg6hlxw8',
           network: NETWORK_TYPE.ETHEREUM,
           type: EXCHANGE_MODE.ONE_TO_ETH,
-          token: TOKEN.ONE,
+          token: TOKEN.ERC721,
           amount: 10,
           isMainnet: false,
           tokenInfo: {

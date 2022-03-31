@@ -4,7 +4,7 @@ import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { BaseToken, ContractError } from './base-token'
 import { AddressZero } from './constants'
-import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
+import { BNish, BridgeApprovalParams, ContractProviderType, ITransactionOptions } from './interfaces'
 
 export class HRC1155 extends BaseToken {
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
@@ -51,5 +51,13 @@ export class HRC1155 extends BaseToken {
     }
 
     return this.send('safeBatchTransferFrom', [from, to, ids, amounts, data], txOptions)
+  }
+
+  protected bridgeApproval(
+    _data: BridgeApprovalParams,
+    _sendTxCallback: (tx: string) => void,
+    _txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
+    throw new Error('Method not implemented.')
   }
 }

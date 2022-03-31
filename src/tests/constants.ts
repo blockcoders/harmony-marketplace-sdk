@@ -44,7 +44,7 @@ export const TEST_ADDRESS_2 = WALLET_PROVIDER_TEST_2.accounts[0].toLowerCase()
 export const TEST_ADDRESS_3 = WALLET_PROVIDER_TEST_3.accounts[0].toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
-export const HRC721_CONTRACT_ADDRESS = '0xF00373c538cca8ac7f2290ffFA425c32459ef10b'.toLowerCase()
+export const HRC721_CONTRACT_ADDRESS = '0xa25006B0aF77c1d248685205771bdC848Cda53d1'.toLowerCase()
 export const HRC1155_CONTRACT_ADDRESS = '0xD59AF020E36F710e8fB1e42e05cE48CF6b86D4B4'.toLowerCase()
 export const TOKEN_GOLD = 0
 export const TOKEN_SILVER = 1
@@ -59,7 +59,7 @@ export const TX_OPTIONS: ITransactionOptions = {
 export const FAKE_TX_HRC721 = new Transaction({
   shardID: 0,
   from: 'one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a',
-  to: '0xF00373c538cca8ac7f2290ffFA425c32459ef10b',
+  to: '0xa25006B0aF77c1d248685205771bdC848Cda53d1',
   gasPrice: '100000000000',
   gasLimit: '5000000',
   toShardID: 0,

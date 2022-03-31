@@ -1,4 +1,5 @@
 import { Account } from '@harmony-js/account'
+import { Transaction } from '@harmony-js/transaction'
 import { ChainID } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
@@ -6,7 +7,7 @@ import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { BaseToken } from './base-token'
 import { AddressZero, HARMONY_RPC_SHARD_0_TESTNET } from './constants'
-import { BNish, HarmonyShards, ITransactionOptions } from './interfaces'
+import { BNish, BridgeApprovalParams, HarmonyShards, ITransactionOptions } from './interfaces'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
 import {
@@ -24,9 +25,16 @@ class TestToken extends BaseToken {
   constructor() {
     super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyTestnet))
   }
-
   public async balanceOf(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     return this.getBalance(address, id, txOptions)
+  }
+
+  bridgeApproval(
+    _data: BridgeApprovalParams,
+    _sendTxCallback: (tx: string) => void,
+    _txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
+    throw new Error('Method not implemented.')
   }
 }
 

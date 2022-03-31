@@ -3,7 +3,7 @@ import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { BaseToken, ContractError } from './base-token'
-import { BNish, ContractProviderType, ITransactionOptions } from './interfaces'
+import { BNish, BridgeApprovalParams, ContractProviderType, ITransactionOptions } from './interfaces'
 import { isBNish } from './utils'
 
 export class HRC721 extends BaseToken {
@@ -52,6 +52,31 @@ export class HRC721 extends BaseToken {
 
   public async approve(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('approve', [to, tokenId], txOptions)
+  }
+
+  protected bridgeApproval(
+    data: BridgeApprovalParams,
+    sendTxCallback: (tx: string) => void,
+    txOptions?: ITransactionOptions | undefined,
+  ): Promise<Transaction> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { to, tokenId } = data || {}
+        if (!tokenId) {
+          throw Error('tokenId is required')
+        }
+        const response = await this.approve(to, tokenId, txOptions)
+
+        if (response?.id === undefined) {
+          throw Error('Transaction must have an id')
+        }
+        await sendTxCallback(response.id)
+        resolve(response)
+      } catch (e) {
+        console.log('Error: ', e)
+        reject(e)
+      }
+    })
   }
 
   public async getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {

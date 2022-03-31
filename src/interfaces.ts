@@ -74,6 +74,12 @@ export interface BridgeParams {
   maxWaitingTime?: number
 }
 
+export interface BridgeApprovalParams {
+  to: string
+  tokenId?: string
+  approved?: boolean
+}
+
 export interface BridgeTokenInfo {
   erc20Address?: string
   hrc20Address?: string
