@@ -63,4 +63,24 @@ export class HRC721 extends BaseToken {
 
     return this.sanitizeAddress(address)
   }
+
+  public async totalSupply(txOptions?: ITransactionOptions): Promise<number> {
+    return this.call<number>('totalSupply', [], txOptions)
+  }
+
+  public async tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
+    if (!isBNish(tokenId)) {
+      throw new ContractError('You must provide a tokenId', 'tokenURI')
+    }
+
+    return this.call<string>('tokenURI', [tokenId], txOptions)
+  }
+
+  public async symbol(txOptions?: ITransactionOptions): Promise<string> {
+    return this.call<string>('symbol', [], txOptions)
+  }
+
+  public async name(txOptions?: ITransactionOptions): Promise<string> {
+    return this.call<string>('name', [], txOptions)
+  }
 }

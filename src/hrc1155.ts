@@ -52,4 +52,18 @@ export class HRC1155 extends BaseToken {
 
     return this.send('safeBatchTransferFrom', [from, to, ids, amounts, data], txOptions)
   }
+
+  public async owner(txOptions?: ITransactionOptions): Promise<string> {
+    const address = await this.call<string>('owner', [], txOptions)
+
+    return this.sanitizeAddress(address)
+  }
+
+  public async tokenURIPrefix(txOptions?: ITransactionOptions): Promise<string> {
+    return this.call<string>('tokenURIPrefix', [], txOptions)
+  }
+
+  public async contractURI(txOptions?: ITransactionOptions): Promise<string> {
+    return this.call<string>('contractURI', [], txOptions)
+  }
 }
