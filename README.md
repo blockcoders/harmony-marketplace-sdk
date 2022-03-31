@@ -232,6 +232,8 @@ Expected Events
 | Transfer | Emitted when a token id is transferred from an address to another. |
 | Approval | Emitted when owner enables approved to manage the tokenId token. |
 
+You can find an example of [HRC721](./src/tests/contracts/HRC721/BlockcodersHRC721.sol) in this address [0x...0a0a](https://explorer.pops.one/address/0xbba5d03304318b8fe765d977081eb392eb170a0a?activeTab=0).
+
 ### Initializing
 
 ```typescript
@@ -493,6 +495,8 @@ Expected Events
 | ------------- | ------------- |
 | TransferSingle | Emitted when a token id are transferred from an address to another by operator. |
 | TransferBatch | Emitted when a token ids are transferred from an address to another by operator. |
+
+You can find an example of [HRC1155](./src/tests/contracts/HRC1155/BlockcodersHRC1155.sol) in this address [0x...b264](https://explorer.pops.one/address/0x16703afb468e4ba88380c2a2fda1aa4c5ec7b264).
 
 ### Initializing
 
