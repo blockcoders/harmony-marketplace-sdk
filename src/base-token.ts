@@ -73,8 +73,7 @@ export abstract class BaseToken {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    const options = await this.estimateGas(method, args, txOptions)
-    console.log('SEND1', { ...args, options })
+    const options = await this.estimateGas(method, args, txOptions) // { gasPrice: 30000000000, gasLimit: 6721900 }// con estos datos funciona
 
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
@@ -246,7 +245,6 @@ export abstract class BaseToken {
           transactionHash,
         })
       })
-
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 
       const recipient = hmy.crypto.getAddress(ethAddress).checksum
@@ -275,14 +273,12 @@ export abstract class BaseToken {
   ): Promise<Transaction> {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log('APPROVE')
         const response = await this.setApprovalForAll(addressOperator, approved, txOptions)
-        console.log('RESPONSE: ', response)
 
         if (response?.id === undefined) {
           throw Error('Transaction must have an id')
         }
-        sendTxCallback(response.id)
+        await sendTxCallback(response.id)
         resolve(response)
       } catch (e) {
         console.log('Error: ', e)
