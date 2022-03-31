@@ -55,20 +55,13 @@ export abstract class BaseToken {
     },
   ): Promise<ITransactionOptions> {
     let gasLimit = options.gasLimit
-    console.log('EG0')
 
     if (!gasLimit) {
-      console.log('EG1')
-      const hexValue = await this._contract.methods[method](...args)
-      console.log('EG1.5', hexValue)
-      const b = await hexValue.estimateGas({
+      const hexValue = await this._contract.methods[method](...args).estimateGas({
         gasPrice: new Unit(options.gasPrice).asGwei().toHex(),
       })
-      console.log('EG2', b)
       gasLimit = hexToNumber(hexValue)
-      console.log('EG3')
     }
-    console.log('EG4')
     return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
   }
 
@@ -80,11 +73,10 @@ export abstract class BaseToken {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    console.log('SEND0')
     const options = await this.estimateGas(method, args, txOptions)
-    console.log('SEND1')
+    console.log('SEND1', { ...args, options })
+
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
-    console.log('SEND2')
 
     if (!response.transaction) {
       throw new ContractError('Invalid transaction response', method)
@@ -246,7 +238,7 @@ export abstract class BaseToken {
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
 
-      this.bridgeApproval(initParams.hmyClient.contracts.erc721Manager, true, async (transactionHash: string) => {
+      await this.bridgeApproval(initParams.hmyClient.contracts.erc721Manager, true, async (transactionHash: string) => {
         console.log('Approve hash: ', transactionHash)
 
         await operation.confirmAction({
