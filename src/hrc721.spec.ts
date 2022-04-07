@@ -295,6 +295,7 @@ describe('HRC721 Contract Interface', () => {
 
   describe.only('bridgeToken', () => {
     it('one to eth', async () => {
+      console.log(TEST_ADDRESS_1)
       await contract.bridgeToken(
         {
           ethAddress: TEST_ADDRESS_1,
@@ -302,11 +303,11 @@ describe('HRC721 Contract Interface', () => {
           network: NETWORK_TYPE.ETHEREUM,
           type: EXCHANGE_MODE.ONE_TO_ETH,
           token: TOKEN.ERC721,
-          amount: 10,
+          amount: 20,
           isMainnet: false,
           tokenInfo: {
             tokenAddress: HRC721_CONTRACT_ADDRESS,
-            tokenId: '5',
+            tokenId: '11',
           },
         },
         TEST_PK_1,

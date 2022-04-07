@@ -66,7 +66,6 @@ export abstract class BaseToken {
     },
   ): Promise<ITransactionOptions> {
     let gasLimit = options.gasLimit
-    console.log('estimateGas1 ===>', method, args, options)
 
     if (!gasLimit) {
       const hexValue = await this._contract.methods[method](...args).estimateGas({
@@ -74,8 +73,6 @@ export abstract class BaseToken {
       })
       gasLimit = hexToNumber(hexValue)
     }
-
-    console.log('estimateGas ===>', { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit })
     return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
   }
 
@@ -87,10 +84,7 @@ export abstract class BaseToken {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    console.log('approve2 ===>', method, args, txOptions)
     const options = await this.estimateGas(method, args, txOptions)
-    console.log('approve3 ===>', method, args, txOptions)
-
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
     if (!response.transaction) {
@@ -238,8 +232,6 @@ export abstract class BaseToken {
         ethAddress,
       })
 
-      console.log('operation =======>', operation)
-
       const depositAmount = operation?.operation?.actions[0]?.depositAmount
       if (depositAmount === undefined) {
         throw Error(`deposit amount cannot be undefined ${operation}`)
@@ -252,13 +244,9 @@ export abstract class BaseToken {
           actionType: ACTION_TYPE.depositOne,
           transactionHash,
         })
-
-        console.log('pase1 =======>')
       })
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
-
-      console.log('pase2 =======>')
 
       await this.bridgeApproval(
         { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId, approved: true },
@@ -275,7 +263,7 @@ export abstract class BaseToken {
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 
       const recipient = hmy.crypto.getAddress(ethAddress).checksum
-      await this.bridgeBurnToken(hmyManagerContract, tokenInfo, recipient, async (transactionHash) => {
+      await this.bridgeBurnToken(hmyManagerContract, tokenInfo, recipient, txOptions, async (transactionHash) => {
         console.log('Burn hash: ', transactionHash)
 
         await operation.confirmAction({
@@ -318,15 +306,16 @@ export abstract class BaseToken {
     managerContract: Contract,
     tokenInfo: TokenInfo,
     recipient: string,
+    txOptions: ITransactionOptions | undefined,
     sendTxCallback?: (hash: string) => void,
   ) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log('BURN', { managerContract })
+        console.log('BURN', { contractAddress: tokenInfo.tokenAddress, tokenId: tokenInfo.tokenId, recipient, txOptions})
 
         const response = await managerContract.methods
           .burnToken(tokenInfo.tokenAddress, tokenInfo.tokenId, recipient)
-          .send({ gasPrice: 30000000000, gasLimit: 6721900 })
+          .send({ gasPrice: 1000000, gasLimit: 50000000 })
           .on('transactionHash', sendTxCallback)
         resolve(response)
       } catch (e) {
