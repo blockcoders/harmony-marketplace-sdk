@@ -44,7 +44,7 @@ export const TEST_ADDRESS_2 = WALLET_PROVIDER_TEST_2.accounts[0].toLowerCase()
 export const TEST_ADDRESS_3 = WALLET_PROVIDER_TEST_3.accounts[0].toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
-export const HRC721_CONTRACT_ADDRESS = '0xa25006B0aF77c1d248685205771bdC848Cda53d1'.toLowerCase()
+export const HRC721_CONTRACT_ADDRESS = '0x7284afe00b49F9eE6446c279057F2135c28a03A5'.toLowerCase()
 export const HRC1155_CONTRACT_ADDRESS = '0xD59AF020E36F710e8fB1e42e05cE48CF6b86D4B4'.toLowerCase()
 export const TOKEN_GOLD = 0
 export const TOKEN_SILVER = 1

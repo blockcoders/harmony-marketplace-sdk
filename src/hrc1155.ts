@@ -53,14 +53,6 @@ export class HRC1155 extends BaseToken {
     return this.send('safeBatchTransferFrom', [from, to, ids, amounts, data], txOptions)
   }
 
-  protected bridgeApproval(
-    _data: BridgeApprovalParams,
-    _sendTxCallback: (tx: string) => void,
-    _txOptions?: ITransactionOptions,
-  ): Promise<Transaction> {
-    throw new Error('Method not implemented.')
-  }
-
   public async owner(txOptions?: ITransactionOptions): Promise<string> {
     const address = await this.call<string>('owner', [], txOptions)
 
@@ -73,5 +65,13 @@ export class HRC1155 extends BaseToken {
 
   public async contractURI(txOptions?: ITransactionOptions): Promise<string> {
     return this.call<string>('contractURI', [], txOptions)
+  }
+
+  protected bridgeApproval(
+    _data: BridgeApprovalParams,
+    _sendTxCallback: (tx: string) => void,
+    _txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
+    throw new Error('Method not implemented.')
   }
 }

@@ -50,6 +50,10 @@ export class ContractError extends Error {
 export abstract class BaseToken {
   private readonly _contract: Contract
 
+  public get address(): string {
+    return this._contract.address
+  }
+
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
     this._contract = new Contract(abi, address, provider, options)
   }
@@ -62,6 +66,7 @@ export abstract class BaseToken {
     },
   ): Promise<ITransactionOptions> {
     let gasLimit = options.gasLimit
+    console.log('estimateGas1 ===>', method, args, options)
 
     if (!gasLimit) {
       const hexValue = await this._contract.methods[method](...args).estimateGas({
@@ -69,6 +74,8 @@ export abstract class BaseToken {
       })
       gasLimit = hexToNumber(hexValue)
     }
+
+    console.log('estimateGas ===>', { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit })
     return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
   }
 
@@ -80,7 +87,9 @@ export abstract class BaseToken {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    const options = await this.estimateGas(method, args, txOptions) // { gasPrice: 30000000000, gasLimit: 6721900 }// con estos datos funciona
+    console.log('approve2 ===>', method, args, txOptions)
+    const options = await this.estimateGas(method, args, txOptions)
+    console.log('approve3 ===>', method, args, txOptions)
 
     const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
@@ -158,7 +167,7 @@ export abstract class BaseToken {
     this._contract.connect(key)
   }
 
-  public async bridgeToken(options: BridgeParams, walletPK: string): Promise<void> {
+  public async bridgeToken(options: BridgeParams, walletPK: string, txOptions?: ITransactionOptions): Promise<void> {
     if (!options.ethAddress) {
       throw new Error('ethAddress is required')
     }
@@ -182,7 +191,7 @@ export abstract class BaseToken {
     if (options.type === EXCHANGE_MODE.ETH_TO_ONE) {
       await this.ethToOne(options, bridgeSDK, walletPK, initParams)
     } else {
-      await this.oneToEth(options, bridgeSDK, walletPK, initParams)
+      await this.oneToEth(options, bridgeSDK, walletPK, initParams, txOptions)
     }
   }
 
@@ -200,6 +209,7 @@ export abstract class BaseToken {
     bridgeSDK: BridgeSDK,
     walletPK: string,
     initParams: typeof testnet | typeof mainnet,
+    txOptions?: ITransactionOptions,
   ) {
     try {
       const {
@@ -228,6 +238,8 @@ export abstract class BaseToken {
         ethAddress,
       })
 
+      console.log('operation =======>', operation)
+
       const depositAmount = operation?.operation?.actions[0]?.depositAmount
       if (depositAmount === undefined) {
         throw Error(`deposit amount cannot be undefined ${operation}`)
@@ -240,9 +252,13 @@ export abstract class BaseToken {
           actionType: ACTION_TYPE.depositOne,
           transactionHash,
         })
+
+        console.log('pase1 =======>')
       })
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
+
+      console.log('pase2 =======>')
 
       await this.bridgeApproval(
         { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId, approved: true },
@@ -254,6 +270,7 @@ export abstract class BaseToken {
             transactionHash,
           })
         },
+        txOptions,
       )
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 

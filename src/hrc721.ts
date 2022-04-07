@@ -51,6 +51,7 @@ export class HRC721 extends BaseToken {
   }
 
   public async approve(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
+    console.log('approve1 ===>', to, tokenId)
     return this.send('approve', [to, tokenId], txOptions)
   }
 
@@ -65,6 +66,7 @@ export class HRC721 extends BaseToken {
         if (!tokenId) {
           throw Error('tokenId is required')
         }
+        console.log(this.address, to, tokenId, txOptions)
         const response = await this.approve(to, tokenId, txOptions)
 
         if (response?.id === undefined) {
