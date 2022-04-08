@@ -243,7 +243,7 @@ export abstract class BaseToken {
         throw Error(`deposit amount cannot be undefined ${operation}`)
       }
 
-      await this.bridgeDeposit(depositContract, depositAmount, txOptions, async (transactionHash: string) => {
+      await this.bridgeDeposit(depositContract, depositAmount, async (transactionHash: string) => {
         console.log('Deposit hash: ', transactionHash)
 
         await operation.confirmAction({
@@ -303,7 +303,6 @@ export abstract class BaseToken {
   private async bridgeDeposit(
     depositContract: Contract,
     amount: number,
-    txOptions: ITransactionOptions | undefined,
     sendTxCallback: (tx: string) => void,
   ) {
     return new Promise(async (resolve, reject) => {
@@ -311,7 +310,7 @@ export abstract class BaseToken {
         console.log('DEPOSIT')
         const response = await depositContract.methods
           .deposit(withDecimals(amount, 18))
-          .send({ ...txOptions, value: withDecimals(amount, 18) })
+          .send({ gasPrice: 30000000000, gasLimit: 6721900, value: withDecimals(amount, 18) })
           .on('transactionHash', sendTxCallback)
         resolve(response)
       } catch (e) {
