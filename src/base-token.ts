@@ -198,6 +198,7 @@ export abstract class BaseToken {
     throw new Error(`Error not implemented yet ${options}, ${bridgeSDK}, ${walletPK}, ${initParams}`)
   }
 
+  // For now, this should allow the caller to send an ERC721 token from the Harmony Network to the Ethereum Network
   private async oneToEth(
     options: BridgeParams,
     bridgeSDK: BridgeSDK,
@@ -216,6 +217,7 @@ export abstract class BaseToken {
 
       await hmy.wallet.addByPrivateKey(walletPK)
 
+      // Creation of contracts
       const hmyManagerContract = hmy.contracts.createContract(
         ERC721HmyManager,
         initParams.hmyClient.contracts.erc721Manager,
@@ -226,6 +228,7 @@ export abstract class BaseToken {
       if (tokenInfo === undefined || tokenInfo.tokenId === undefined) {
         throw Error('You must provide token address and token id')
       }
+
       const operation = await bridgeSDK.createOperation({
         type,
         token,
@@ -234,6 +237,7 @@ export abstract class BaseToken {
         ethAddress,
       })
 
+      //----------------- Deposit One Step -----------------//
       const depositAmount = operation?.operation?.actions[0]?.depositAmount
       if (depositAmount === undefined) {
         throw Error(`deposit amount cannot be undefined ${operation}`)
@@ -249,9 +253,13 @@ export abstract class BaseToken {
       })
 
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
+      //----------------------------------------------------//
 
+      //----------------- Approve Step -----------------//
       await this.bridgeApproval(
-        { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId, approved: true },
+        // This param will send 'tokenId' property for ERC721 and the 'approved' property
+        //for ERC1155 as the approve step is different for each case
+        { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId },
         txOptions,
         async (transactionHash: string) => {
           console.log('Approve hash: ', transactionHash)
@@ -263,7 +271,9 @@ export abstract class BaseToken {
         },
       )
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
+      //------------------------------------------------//
 
+      //----------------- Burn Step -----------------//
       const recipient = hmy.crypto.getAddress(ethAddress).checksum
       await this.bridgeBurnToken(hmyManagerContract, tokenInfo, recipient, txOptions, async (transactionHash) => {
         console.log('Burn hash: ', transactionHash)
@@ -275,6 +285,7 @@ export abstract class BaseToken {
       })
 
       await operation.waitActionComplete(ACTION_TYPE.burnToken)
+      //--------------------------------------------//
 
       await operation.waitOperationComplete()
     } catch (e: any) {
@@ -282,6 +293,7 @@ export abstract class BaseToken {
     }
   }
 
+  // Implemented at hrc721.ts (hrc1155 is not implemented yet)
   protected abstract bridgeApproval(
     data: BridgeApprovalParams,
     txOptions: ITransactionOptions | undefined,
@@ -326,7 +338,7 @@ export abstract class BaseToken {
         })
 
         const response = await managerContract.methods
-          .burnToken(tokenInfo.tokenAddress, tokenInfo.tokenId, recipient)
+          .burnToken(tokenInfo.tokenAddress, tokenInfo.tokenId, recipient) // tokenAddress is the ERC721 token address
           .send(txOptions)
           .on('transactionHash', sendTxCallback)
         resolve(response)
