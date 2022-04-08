@@ -56,8 +56,8 @@ export class HRC721 extends BaseToken {
 
   protected bridgeApproval(
     data: BridgeApprovalParams,
+    txOptions: ITransactionOptions | undefined,
     sendTxCallback: (tx: string) => void,
-    txOptions?: ITransactionOptions | undefined,
   ): Promise<Transaction> {
     return new Promise(async (resolve, reject) => {
       try {

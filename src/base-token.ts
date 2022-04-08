@@ -213,12 +213,14 @@ export abstract class BaseToken {
         chainType: ChainType.Harmony,
         chainId: Number(chainId),
       })
+
+      await hmy.wallet.addByPrivateKey(walletPK)
+
       const hmyManagerContract = hmy.contracts.createContract(
         ERC721HmyManager,
         initParams.hmyClient.contracts.erc721Manager,
       )
       const depositContract = hmy.contracts.createContract(HmyDeposit, initParams.hmyClient.contracts.depositManager)
-      await hmy.wallet.addByPrivateKey(walletPK)
 
       const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
       if (tokenInfo === undefined || tokenInfo.tokenId === undefined) {
@@ -237,7 +239,7 @@ export abstract class BaseToken {
         throw Error(`deposit amount cannot be undefined ${operation}`)
       }
 
-      await this.bridgeDeposit(depositContract, depositAmount, async (transactionHash: string) => {
+      await this.bridgeDeposit(depositContract, depositAmount, txOptions, async (transactionHash: string) => {
         console.log('Deposit hash: ', transactionHash)
 
         await operation.confirmAction({
@@ -250,6 +252,7 @@ export abstract class BaseToken {
 
       await this.bridgeApproval(
         { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId, approved: true },
+        txOptions,
         async (transactionHash: string) => {
           console.log('Approve hash: ', transactionHash)
 
@@ -258,7 +261,6 @@ export abstract class BaseToken {
             transactionHash,
           })
         },
-        txOptions,
       )
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
 
@@ -282,17 +284,22 @@ export abstract class BaseToken {
 
   protected abstract bridgeApproval(
     data: BridgeApprovalParams,
+    txOptions: ITransactionOptions | undefined,
     sendTxCallback: (tx: string) => void,
-    txOptions?: ITransactionOptions | undefined,
   ): Promise<Transaction>
 
-  private async bridgeDeposit(depositContract: Contract, amount: number, sendTxCallback: (tx: string) => void) {
+  private async bridgeDeposit(
+    depositContract: Contract,
+    amount: number,
+    txOptions: ITransactionOptions | undefined,
+    sendTxCallback: (tx: string) => void,
+  ) {
     return new Promise(async (resolve, reject) => {
       try {
         console.log('DEPOSIT')
         const response = await depositContract.methods
           .deposit(withDecimals(amount, 18))
-          .send({ gasPrice: 30000000000, gasLimit: 6721900, value: withDecimals(amount, 18) })
+          .send({ ...txOptions, value: withDecimals(amount, 18) })
           .on('transactionHash', sendTxCallback)
         resolve(response)
       } catch (e) {
@@ -307,15 +314,20 @@ export abstract class BaseToken {
     tokenInfo: TokenInfo,
     recipient: string,
     txOptions: ITransactionOptions | undefined,
-    sendTxCallback?: (hash: string) => void,
+    sendTxCallback: (hash: string) => void,
   ) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log('BURN', { contractAddress: tokenInfo.tokenAddress, tokenId: tokenInfo.tokenId, recipient, txOptions})
+        console.log('BURN', {
+          contractAddress: tokenInfo.tokenAddress,
+          tokenId: tokenInfo.tokenId,
+          recipient,
+          txOptions,
+        })
 
         const response = await managerContract.methods
           .burnToken(tokenInfo.tokenAddress, tokenInfo.tokenId, recipient)
-          .send({ gasPrice: 1000000, gasLimit: 50000000 })
+          .send(txOptions)
           .on('transactionHash', sendTxCallback)
         resolve(response)
       } catch (e) {

@@ -69,8 +69,8 @@ export class HRC1155 extends BaseToken {
 
   protected bridgeApproval(
     _data: BridgeApprovalParams,
+    _txOptions: ITransactionOptions,
     _sendTxCallback: (tx: string) => void,
-    _txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
     throw new Error('Method not implemented.')
   }
