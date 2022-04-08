@@ -295,11 +295,10 @@ describe('HRC721 Contract Interface', () => {
 
   describe.only('bridgeToken', () => {
     it('one to eth', async () => {
-      console.log(TEST_ADDRESS_1)
       await contract.bridgeToken(
         {
-          ethAddress: TEST_ADDRESS_1,
-          oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff',
+          ethAddress: TEST_ADDRESS_1, // wallet that will receive the ERC721 token
+          oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff', // wallet that owns the ERC721 token
           network: NETWORK_TYPE.ETHEREUM,
           type: EXCHANGE_MODE.ONE_TO_ETH,
           token: TOKEN.ERC721,
