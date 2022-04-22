@@ -2,7 +2,8 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { BaseToken, ContractError } from './base-token'
+import { BaseToken } from './base-token'
+import { ContractError } from './base-token-contract'
 import { AddressZero } from './constants'
 import { BNish, BridgeApprovalParams, ContractProviderType, ITransactionOptions } from './interfaces'
 
@@ -69,8 +70,8 @@ export class HRC1155 extends BaseToken {
 
   protected bridgeApproval(
     _data: BridgeApprovalParams,
-    _txOptions: ITransactionOptions,
     _sendTxCallback: (tx: string) => void,
+    _txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
     throw new Error('Method not implemented.')
   }

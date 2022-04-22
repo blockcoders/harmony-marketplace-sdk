@@ -2,7 +2,8 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { BaseToken, ContractError } from './base-token'
+import { BaseToken } from './base-token'
+import { ContractError } from './base-token-contract'
 import { BNish, BridgeApprovalParams, ContractProviderType, ITransactionOptions } from './interfaces'
 import { isBNish } from './utils'
 
@@ -54,31 +55,27 @@ export class HRC721 extends BaseToken {
     return this.send('approve', [to, tokenId], txOptions)
   }
 
-  protected bridgeApproval(
+  protected async bridgeApproval(
     data: BridgeApprovalParams,
-    txOptions: ITransactionOptions | undefined,
     sendTxCallback: (tx: string) => void,
+    txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        console.log('APPROVE')
+    try {
+      console.log('APPROVE')
 
-        const { to, tokenId } = data || {}
-        if (!tokenId) {
-          throw Error('tokenId is required')
-        }
-        const response = await this.approve(to, tokenId, txOptions)
-
-        if (response?.id === undefined) {
-          throw Error('Transaction must have an id')
-        }
-        await sendTxCallback(response.id)
-        resolve(response)
-      } catch (e) {
-        console.log('Error: ', e)
-        reject(e)
+      const { to, tokenId } = data || {}
+      if (!tokenId) {
+        throw Error('tokenId is required')
       }
-    })
+      const approveTx = await this.approve(to, tokenId, txOptions)
+      if (approveTx.txStatus !== 'CONFIRMED') {
+        throw Error(`Transaction ${approveTx.txStatus}: ${approveTx}`)
+      }
+      await sendTxCallback(approveTx.id)
+      return approveTx
+    } catch (e) {
+      throw Error(`Error while executing bridgeApproval: ${e}`)
+    }
   }
 
   public async getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {

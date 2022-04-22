@@ -17,14 +17,17 @@ import {
   TEST_PK_1,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC721/abi'
+import { ABI as BCABI } from './tests/contracts/HRC721/blockcodersHRC721ABI'
 
 describe('HRC721 Contract Interface', () => {
   use(chaiAsPromised)
 
   let contract: HRC721
+  let bcContract: HRC721
 
   before(() => {
     contract = new HRC721(HRC721_CONTRACT_ADDRESS, ABI, WALLET_PROVIDER_TEST_1)
+    bcContract = new HRC721(HRC721_CONTRACT_ADDRESS, BCABI, WALLET_PROVIDER_TEST_1)
   })
 
   afterEach(async () => {
@@ -295,7 +298,7 @@ describe('HRC721 Contract Interface', () => {
 
   describe.only('bridgeToken', () => {
     it('one to eth', async () => {
-      await contract.bridgeToken(
+      await bcContract.bridgeToken(
         {
           ethAddress: TEST_ADDRESS_1, // wallet that will receive the ERC721 token
           oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff', // wallet that owns the ERC721 token
@@ -310,7 +313,6 @@ describe('HRC721 Contract Interface', () => {
           },
         },
         TEST_PK_1,
-        TX_OPTIONS,
       )
     })
   })

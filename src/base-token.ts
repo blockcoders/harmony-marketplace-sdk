@@ -1,99 +1,22 @@
-import { Account, Wallet } from '@harmony-js/account'
-import { Contract as BaseContract } from '@harmony-js/contract'
-import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
-import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
-import { Harmony } from '@harmony-js/core'
+import { Account } from '@harmony-js/account'
 import { Transaction } from '@harmony-js/transaction'
-import { ChainType, hexToNumber, Unit } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { ACTION_TYPE, BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
 import { withDecimals } from 'bridge-sdk/lib/blockchain/utils'
 import { testnet, mainnet } from 'bridge-sdk/lib/configs'
-import { abi as ERC721HmyManager } from './ERC721HmyManager'
-import { abi as HmyDeposit } from './HmyDeposit'
-import { AddressZero, DEFAULT_GAS_PRICE } from './constants'
-import {
-  BNish,
-  BridgeApprovalParams,
-  BridgeParams,
-  ContractProviderType,
-  ITransactionOptions,
-  TokenInfo,
-} from './interfaces'
+import { abi as HmyDepositABI } from './abi-hmy-deposit'
+import { abi as ERC721HmyManager } from './abi-hmy-manager-erc721'
+import { BaseTokenContract, ContractError } from './base-token-contract'
+import { AddressZero } from './constants'
+import { HarmonyDepositContract } from './hmy-deposit'
+import { HarmonyManagerContract } from './hmy-manager'
+import { BNish, BridgeApprovalParams, BridgeParams, ITransactionOptions, TokenInfo } from './interfaces'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
 import { isBNish } from './utils'
 
-class Contract extends BaseContract {
-  public readonly wallet: Wallet
-
-  constructor(abi: AbiItemModel[], address: string, provider: ContractProviderType, options?: ContractOptions) {
-    super(abi, address, options, provider)
-
-    this.wallet = provider
-  }
-}
-
-export class ContractError extends Error {
-  public readonly type: string
-
-  constructor(message: string, type: string) {
-    super(message)
-    this.name = ContractError.name
-    this.type = type
-
-    Error.captureStackTrace(this, this.constructor)
-  }
-}
-
-export abstract class BaseToken {
-  private readonly _contract: Contract
-
-  public get address(): string {
-    return this._contract.address
-  }
-
-  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
-    this._contract = new Contract(abi, address, provider, options)
-  }
-
-  protected async estimateGas(
-    method: string,
-    args: any[] = [],
-    options: ITransactionOptions = {
-      gasPrice: DEFAULT_GAS_PRICE,
-    },
-  ): Promise<ITransactionOptions> {
-    let gasLimit = options.gasLimit
-
-    if (!gasLimit) {
-      const hexValue = await this._contract.methods[method](...args).estimateGas({
-        gasPrice: new Unit(options.gasPrice).asGwei().toHex(),
-      })
-      gasLimit = hexToNumber(hexValue)
-    }
-    return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
-  }
-
-  public async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
-    const options = await this.estimateGas(method, args, txOptions)
-    const result: any = await this._contract.methods[method](...args).call(options)
-
-    return result as T
-  }
-
-  public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    const options = await this.estimateGas(method, args, txOptions)
-    const response: BaseContract = await this._contract.methods[method](...args).send(options)
-
-    if (!response.transaction) {
-      throw new ContractError('Invalid transaction response', method)
-    }
-
-    return response.transaction
-  }
-
+export abstract class BaseToken extends BaseTokenContract {
   protected async getBalance(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     if (!address || address === AddressZero) {
       throw new ContractError('Invalid address provided', '_getBalance')
@@ -183,46 +106,35 @@ export abstract class BaseToken {
     const initParams = options?.isMainnet ? mainnet : testnet
     await bridgeSDK.init(initParams)
     if (options.type === EXCHANGE_MODE.ETH_TO_ONE) {
-      await this.ethToOne(options, bridgeSDK, walletPK, initParams)
+      await this.ethToOne(options, bridgeSDK, initParams, txOptions)
     } else {
-      await this.oneToEth(options, bridgeSDK, walletPK, initParams, txOptions)
+      await this.oneToEth(options, bridgeSDK, initParams, txOptions)
     }
   }
 
   private async ethToOne(
     options: BridgeParams,
     bridgeSDK: BridgeSDK,
-    walletPK: string,
     initParams: typeof testnet | typeof mainnet,
+    txOptions?: ITransactionOptions,
   ) {
-    throw new Error(`Error not implemented yet ${options}, ${bridgeSDK}, ${walletPK}, ${initParams}`)
+    throw new Error(`Error not implemented yet ${options}, ${bridgeSDK}, ${initParams}, ${txOptions}`)
   }
 
   // For now, this should allow the caller to send an ERC721 token from the Harmony Network to the Ethereum Network
   private async oneToEth(
     options: BridgeParams,
     bridgeSDK: BridgeSDK,
-    walletPK: string,
     initParams: typeof testnet | typeof mainnet,
     txOptions?: ITransactionOptions,
   ) {
     try {
-      const {
-        hmyClient: { nodeURL, chainId },
-      } = initParams || {}
-      const hmy = new Harmony(nodeURL, {
-        chainType: ChainType.Harmony,
-        chainId: Number(chainId),
-      })
-
-      await hmy.wallet.addByPrivateKey(walletPK)
+      const {} = initParams || {}
 
       // Creation of contracts
-      const hmyManagerContract = hmy.contracts.createContract(
-        ERC721HmyManager,
-        initParams.hmyClient.contracts.erc721Manager,
-      )
-      const depositContract = hmy.contracts.createContract(HmyDeposit, initParams.hmyClient.contracts.depositManager)
+      const { erc721Manager, depositManager } = initParams.hmyClient.contracts
+      const hmyManagerContract = new HarmonyManagerContract(erc721Manager, ERC721HmyManager, this._provider)
+      const depositContract = new HarmonyDepositContract(depositManager, HmyDepositABI, this._provider)
 
       const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
       if (tokenInfo === undefined || tokenInfo.tokenId === undefined) {
@@ -243,15 +155,19 @@ export abstract class BaseToken {
         throw Error(`deposit amount cannot be undefined ${operation}`)
       }
 
-      await this.bridgeDeposit(depositContract, depositAmount, async (transactionHash: string) => {
-        console.log('Deposit hash: ', transactionHash)
+      await this.bridgeDeposit(
+        depositContract,
+        depositAmount,
+        async (transactionHash: string) => {
+          console.log('Deposit hash: ', transactionHash)
 
-        await operation.confirmAction({
-          actionType: ACTION_TYPE.depositOne,
-          transactionHash,
-        })
-      })
-
+          await operation.confirmAction({
+            actionType: ACTION_TYPE.depositOne,
+            transactionHash,
+          })
+        },
+        txOptions,
+      )
       await operation.waitActionComplete(ACTION_TYPE.depositOne)
       //----------------------------------------------------//
 
@@ -259,8 +175,7 @@ export abstract class BaseToken {
       await this.bridgeApproval(
         // This param will send 'tokenId' property for ERC721 and the 'approved' property
         //for ERC1155 as the approve step is different for each case
-        { to: initParams.hmyClient.contracts.erc721Manager, tokenId: tokenInfo.tokenId },
-        txOptions,
+        { to: erc721Manager, tokenId: tokenInfo.tokenId },
         async (transactionHash: string) => {
           console.log('Approve hash: ', transactionHash)
 
@@ -269,24 +184,28 @@ export abstract class BaseToken {
             transactionHash,
           })
         },
+        txOptions,
       )
       await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
       //------------------------------------------------//
 
       //----------------- Burn Step -----------------//
-      const recipient = hmy.crypto.getAddress(ethAddress).checksum
-      await this.bridgeBurnToken(hmyManagerContract, tokenInfo, recipient, txOptions, async (transactionHash) => {
-        console.log('Burn hash: ', transactionHash)
+      await this.bridgeBurnToken(
+        hmyManagerContract,
+        tokenInfo,
+        ethAddress,
+        async (transactionHash) => {
+          console.log('Burn hash: ', transactionHash)
 
-        await operation.confirmAction({
-          actionType: ACTION_TYPE.burnToken,
-          transactionHash,
-        })
-      })
-
+          await operation.confirmAction({
+            actionType: ACTION_TYPE.burnToken,
+            transactionHash,
+          })
+        },
+        txOptions,
+      )
       await operation.waitActionComplete(ACTION_TYPE.burnToken)
       //--------------------------------------------//
-
       await operation.waitOperationComplete()
     } catch (e: any) {
       console.log('Error: ', e)
@@ -296,55 +215,51 @@ export abstract class BaseToken {
   // Implemented at hrc721.ts (hrc1155 is not implemented yet)
   protected abstract bridgeApproval(
     data: BridgeApprovalParams,
-    txOptions: ITransactionOptions | undefined,
     sendTxCallback: (tx: string) => void,
+    txOptions?: ITransactionOptions,
   ): Promise<Transaction>
 
   private async bridgeDeposit(
-    depositContract: Contract,
+    depositContract: HarmonyDepositContract,
     amount: number,
     sendTxCallback: (tx: string) => void,
-  ) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        console.log('DEPOSIT')
-        const response = await depositContract.methods
-          .deposit(withDecimals(amount, 18))
-          .send({ gasPrice: 30000000000, gasLimit: 6721900, value: withDecimals(amount, 18) })
-          .on('transactionHash', sendTxCallback)
-        resolve(response)
-      } catch (e) {
-        console.log('Error: ', e)
-        reject(e)
+    txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
+    try {
+      console.log('DEPOSIT')
+      const depositTx = await depositContract.deposit(withDecimals(amount, 18), txOptions)
+      if (depositTx.txStatus !== 'CONFIRMED') {
+        throw Error(`Transaction ${depositTx.txStatus}: ${depositTx}`)
       }
-    })
+      await sendTxCallback(depositTx.id)
+      return depositTx
+    } catch (e) {
+      throw Error(`Error while executing bridgeDeposit: ${e}`)
+    }
   }
 
   private async bridgeBurnToken(
-    managerContract: Contract,
+    managerContract: HarmonyManagerContract,
     tokenInfo: TokenInfo,
     recipient: string,
-    txOptions: ITransactionOptions | undefined,
     sendTxCallback: (hash: string) => void,
+    txOptions?: ITransactionOptions,
   ) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        console.log('BURN', {
-          contractAddress: tokenInfo.tokenAddress,
-          tokenId: tokenInfo.tokenId,
-          recipient,
-          txOptions,
-        })
-
-        const response = await managerContract.methods
-          .burnToken(tokenInfo.tokenAddress, tokenInfo.tokenId, recipient) // tokenAddress is the ERC721 token address
-          .send(txOptions)
-          .on('transactionHash', sendTxCallback)
-        resolve(response)
-      } catch (e) {
-        console.log('Error: ', e)
-        reject(e)
+    try {
+      console.log('BURN')
+      if (!tokenInfo.tokenId) {
+        throw Error(`Token Id must be provided. Token info: ${tokenInfo}`)
       }
-    })
+      const tokenId = parseInt(tokenInfo.tokenId)
+      const burnTx = await managerContract.burnToken(tokenInfo.tokenAddress, tokenId, recipient, txOptions) // tokenAddress is the ERC721 token address
+      if (burnTx.txStatus !== 'CONFIRMED') {
+        console.log(burnTx)
+        throw Error(`Transaction ${burnTx.txStatus}`)
+      }
+      await sendTxCallback(burnTx.id)
+      return burnTx
+    } catch (e) {
+      throw Error(`Error while executing bridgeBurnToken: ${e}`)
+    }
   }
 }
