@@ -68,14 +68,8 @@ export abstract class BaseTokenContract {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    //const options = await this.estimateGas(method, args, txOptions)
-    if (!txOptions) {
-      txOptions = {
-        gasPrice: 30000000000,
-        gasLimit: 6721900,
-      }
-    }
-    const response: BaseContract = await this._contract.methods[method](...args).send(txOptions)
+    let options = txOptions || await this.estimateGas(method, args, txOptions)
+    const response: BaseContract = await this._contract.methods[method](...args).send(options)
 
     if (!response.transaction) {
       throw new ContractError('Invalid transaction response', method)

@@ -84,7 +84,7 @@ export abstract class BaseToken extends BaseTokenContract {
     this._contract.connect(key)
   }
 
-  public async bridgeToken(options: BridgeParams, walletPK: string, txOptions?: ITransactionOptions): Promise<void> {
+  public async bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void> {
     if (!options.ethAddress) {
       throw new Error('ethAddress is required')
     }
@@ -95,10 +95,6 @@ export abstract class BaseToken extends BaseTokenContract {
 
     if (options.amount === 0) {
       throw new Error('amount must be greater than zero')
-    }
-
-    if (!walletPK) {
-      throw new Error('walletPK is required')
     }
 
     const bridgeSDK = new BridgeSDK({ logLevel: 2 }) // 2 - full logs, 1 - only success & errors, 0 - logs off

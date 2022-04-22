@@ -14,7 +14,6 @@ import {
   TX_OPTIONS,
   WALLET_PROVIDER_TEST_1,
   TOKEN_SWORD,
-  TEST_PK_1,
 } from './tests/constants'
 import { ABI } from './tests/contracts/HRC721/abi'
 import { ABI as BCABI } from './tests/contracts/HRC721/blockcodersHRC721ABI'
@@ -312,7 +311,10 @@ describe('HRC721 Contract Interface', () => {
             tokenId: '11',
           },
         },
-        TEST_PK_1,
+        {
+          gasPrice: 30000000000,
+          gasLimit: 6721900,
+        }
       )
     })
   })
