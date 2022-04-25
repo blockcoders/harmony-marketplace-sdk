@@ -16,12 +16,11 @@ afterEach(async () => {
 })
 
 describe('Manager', () => {
-
   // ----------------------------------------- NOT IMPLEMENTED YET-------------------------------------------//
   it('addToken', async () => {
     try {
-      await contract.addToken("fakeTokenManager","fakeEthTokenAddress","fakeName", "FAKE_SYMBOL")
-      fail("Should not get here")
+      await contract.addToken('fakeTokenManager', 'fakeEthTokenAddress', 'fakeName', 'FAKE_SYMBOL')
+      fail('Should not get here')
     } catch (error) {
       expect(error).to.exist
     }
@@ -29,8 +28,8 @@ describe('Manager', () => {
 
   it('removeToken', async () => {
     try {
-      await contract.removeToken("fakeTokenManager","fakeEthTokenAddress")
-      fail("Should not get here")
+      await contract.removeToken('fakeTokenManager', 'fakeEthTokenAddress')
+      fail('Should not get here')
     } catch (error) {
       expect(error).to.exist
     }
@@ -38,8 +37,8 @@ describe('Manager', () => {
 
   it('mintToken', async () => {
     try {
-      await contract.mintToken("fakeOneToken", 0, "fakeRecipient", "fakeReceipt")
-      fail("Should not get here")
+      await contract.mintToken('fakeOneToken', 0, 'fakeRecipient', 'fakeReceipt')
+      fail('Should not get here')
     } catch (error) {
       expect(error).to.exist
     }
@@ -47,8 +46,8 @@ describe('Manager', () => {
 
   it('mintTokens', async () => {
     try {
-      await contract.mintTokens("fakeOneToken", [0], "fakeRecipient", "fakeReceipt")
-      fail("Should not get here")
+      await contract.mintTokens('fakeOneToken', [0], 'fakeRecipient', 'fakeReceipt')
+      fail('Should not get here')
     } catch (error) {
       expect(error).to.exist
     }
@@ -56,11 +55,10 @@ describe('Manager', () => {
 
   // --------------------------------------------------------------------------------------------------------//
 
-
   it('burnToken', async () => {
-    const oneToken = "0xFakeAddress"
+    const oneToken = '0xFakeAddress'
     const tokenId = 10
-    const recipient = "0xFakeRecipient"
+    const recipient = '0xFakeRecipient'
     const stub = sinon.stub(contract, 'send').withArgs('burnToken', [oneToken, tokenId, recipient], TX_OPTIONS)
     stub.resolves()
 
@@ -70,9 +68,9 @@ describe('Manager', () => {
   })
 
   it('burnTokens', async () => {
-    const oneToken = "0xFakeAddress"
-    const tokenIds = [10,11]
-    const recipient = "0xFakeRecipient"
+    const oneToken = '0xFakeAddress'
+    const tokenIds = [10, 11]
+    const recipient = '0xFakeRecipient'
     const stub = sinon.stub(contract, 'send').withArgs('burnTokens', [oneToken, tokenIds, recipient], TX_OPTIONS)
     stub.resolves()
 
