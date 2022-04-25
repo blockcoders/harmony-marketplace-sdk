@@ -1,7 +1,9 @@
 import { Account } from '@harmony-js/account'
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID } from '@harmony-js/utils'
+import { fail } from 'assert'
 import BN from 'bn.js'
+import { EXCHANGE_MODE, NETWORK_TYPE, TOKEN } from 'bridge-sdk'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
@@ -200,6 +202,80 @@ describe('Base Token Provider', () => {
         expect(error).to.not.null
         expect(error).to.not.undefined
         expect(error).to.be.instanceOf(Error)
+      }
+    })
+  })
+
+  describe('bridgeToken', () => {
+    it('fails if amount is lower or equal to zero', async () => {
+      try {
+        await contract.bridgeToken({
+          ethAddress: TEST_ADDRESS_1,
+          oneAddress: 'fakeAddress',
+          network: NETWORK_TYPE.ETHEREUM,
+          type: EXCHANGE_MODE.ONE_TO_ETH,
+          token: TOKEN.ERC721,
+          amount: 0,
+          tokenInfo: {
+            tokenAddress: 'fakeAddress',
+            tokenId: '12',
+          },
+        })
+        fail('Should not get here')
+      } catch (error) {
+        expect(error).to.exist
+      }
+    })
+
+    it('fails if type is ETH_TO_ONE', async () => {
+      try {
+        await contract.bridgeToken(
+          {
+            ethAddress: TEST_ADDRESS_1,
+            oneAddress: 'fakeAddress',
+            network: NETWORK_TYPE.ETHEREUM,
+            type: EXCHANGE_MODE.ETH_TO_ONE,
+            token: TOKEN.ERC721,
+            amount: 20,
+            tokenInfo: {
+              tokenAddress: 'fakeAddress',
+              tokenId: '12',
+            },
+          },
+          {
+            gasPrice: 30000000000,
+            gasLimit: 6721900,
+          },
+        )
+        fail('Should not get here')
+      } catch (error) {
+        expect(error).to.exist
+      }
+    })
+
+    it('fails if token is invalid', async () => {
+      try {
+        await contract.bridgeToken(
+          {
+            ethAddress: TEST_ADDRESS_1,
+            oneAddress: 'fakeAddress',
+            network: NETWORK_TYPE.ETHEREUM,
+            type: EXCHANGE_MODE.ETH_TO_ONE,
+            token: TOKEN.ERC20,
+            amount: 20,
+            tokenInfo: {
+              tokenAddress: 'fakeAddress',
+              tokenId: '12',
+            },
+          },
+          {
+            gasPrice: 30000000000,
+            gasLimit: 6721900,
+          },
+        )
+        fail('Should not get here')
+      } catch (error) {
+        expect(error).to.exist
       }
     })
   })

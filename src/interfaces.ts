@@ -61,6 +61,7 @@ export interface HDOptions extends MnemonicOptions {
 export interface TokenInfo {
   tokenAddress: string
   tokenId?: string
+  tokenIds?: string[]
 }
 export interface BridgeParams {
   oneAddress: string
@@ -69,8 +70,8 @@ export interface BridgeParams {
   type: EXCHANGE_MODE
   token: TOKEN
   amount: number
+  tokenInfo: TokenInfo
   isMainnet?: boolean
-  tokenInfo?: TokenInfo
   maxWaitingTime?: number
 }
 
@@ -78,14 +79,4 @@ export interface BridgeApprovalParams {
   to: string
   tokenId?: string
   approved?: boolean
-}
-
-export interface BridgeTokenInfo {
-  erc20Address?: string
-  hrc20Address?: string
-  erc1155Address?: string
-  erc1155TokenId?: any
-  hrc721Address?: string
-  hrc1155Address?: string
-  hrc1155TokenId?: any
 }

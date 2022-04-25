@@ -1,7 +1,7 @@
 import { Account } from '@harmony-js/account'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { ACTION_TYPE, BridgeSDK, EXCHANGE_MODE } from 'bridge-sdk'
+import { ACTION_TYPE, BridgeSDK, EXCHANGE_MODE, TOKEN } from 'bridge-sdk'
 import { withDecimals } from 'bridge-sdk/lib/blockchain/utils'
 import { testnet, mainnet } from 'bridge-sdk/lib/configs'
 import { abi as HmyDepositABI } from './abi-hmy-deposit'
@@ -85,15 +85,7 @@ export abstract class BaseToken extends BaseTokenContract {
   }
 
   public async bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void> {
-    if (!options.ethAddress) {
-      throw new Error('ethAddress is required')
-    }
-
-    if (!options.oneAddress) {
-      throw new Error('oneAddress is required')
-    }
-
-    if (options.amount === 0) {
+    if (options.amount <= 0) {
       throw new Error('amount must be greater than zero')
     }
 
@@ -114,7 +106,8 @@ export abstract class BaseToken extends BaseTokenContract {
     initParams: typeof testnet | typeof mainnet,
     txOptions?: ITransactionOptions,
   ) {
-    throw new Error(`Error not implemented yet ${options}, ${bridgeSDK}, ${initParams}, ${txOptions}`)
+    console.log({ options, bridgeSDK, initParams, txOptions })
+    throw new Error('Not implemented yet')
   }
 
   // For now, this should allow the caller to send an ERC721 token from the Harmony Network to the Ethereum Network
@@ -124,88 +117,91 @@ export abstract class BaseToken extends BaseTokenContract {
     initParams: typeof testnet | typeof mainnet,
     txOptions?: ITransactionOptions,
   ) {
-    try {
-      const {} = initParams || {}
+    const {} = initParams || {}
 
-      // Creation of contracts
-      const { erc721Manager, depositManager } = initParams.hmyClient.contracts
-      const hmyManagerContract = new HarmonyManagerContract(erc721Manager, ERC721HmyManager, this._provider)
-      const depositContract = new HarmonyDepositContract(depositManager, HmyDepositABI, this._provider)
+    // Creation of contracts
+    const { erc721Manager, depositManager } = initParams.hmyClient.contracts
+    const hmyManagerContract = new HarmonyManagerContract(erc721Manager, ERC721HmyManager, this._provider)
+    const depositContract = new HarmonyDepositContract(depositManager, HmyDepositABI, this._provider)
 
-      const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
-      if (tokenInfo === undefined || tokenInfo.tokenId === undefined) {
-        throw Error('You must provide token address and token id')
-      }
-
-      const operation = await bridgeSDK.createOperation({
-        type,
-        token,
-        amount,
-        oneAddress,
-        ethAddress,
-      })
-
-      //----------------- Deposit One Step -----------------//
-      const depositAmount = operation?.operation?.actions[0]?.depositAmount
-      if (depositAmount === undefined) {
-        throw Error(`deposit amount cannot be undefined ${operation}`)
-      }
-
-      await this.bridgeDeposit(
-        depositContract,
-        depositAmount,
-        async (transactionHash: string) => {
-          console.log('Deposit hash: ', transactionHash)
-
-          await operation.confirmAction({
-            actionType: ACTION_TYPE.depositOne,
-            transactionHash,
-          })
-        },
-        txOptions,
-      )
-      await operation.waitActionComplete(ACTION_TYPE.depositOne)
-      //----------------------------------------------------//
-
-      //----------------- Approve Step -----------------//
-      await this.bridgeApproval(
-        // This param will send 'tokenId' property for ERC721 and the 'approved' property
-        //for ERC1155 as the approve step is different for each case
-        { to: erc721Manager, tokenId: tokenInfo.tokenId },
-        async (transactionHash: string) => {
-          console.log('Approve hash: ', transactionHash)
-
-          await operation.confirmAction({
-            actionType: ACTION_TYPE.approveHmyManger,
-            transactionHash,
-          })
-        },
-        txOptions,
-      )
-      await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
-      //------------------------------------------------//
-
-      //----------------- Burn Step -----------------//
-      await this.bridgeBurnToken(
-        hmyManagerContract,
-        tokenInfo,
-        ethAddress,
-        async (transactionHash) => {
-          console.log('Burn hash: ', transactionHash)
-
-          await operation.confirmAction({
-            actionType: ACTION_TYPE.burnToken,
-            transactionHash,
-          })
-        },
-        txOptions,
-      )
-      await operation.waitActionComplete(ACTION_TYPE.burnToken)
-      //--------------------------------------------//
-      await operation.waitOperationComplete()
-    } catch (e: any) {
-      console.log('Error: ', e)
+    const { type, token, amount, oneAddress, ethAddress, tokenInfo } = options || {}
+    if (tokenInfo === undefined || tokenInfo.tokenId === undefined) {
+      throw Error('You must provide token address and token id')
     }
+
+    const operation = await bridgeSDK.createOperation({
+      type,
+      token,
+      amount,
+      oneAddress,
+      ethAddress,
+    })
+
+    //----------------- Deposit One Step -----------------//
+    const depositAmount = operation?.operation?.actions[0]?.depositAmount
+    if (depositAmount === undefined) {
+      throw Error(`deposit amount cannot be undefined ${operation}`)
+    }
+
+    await this.bridgeDeposit(
+      depositContract,
+      depositAmount,
+      async (transactionHash: string) => {
+        console.log('Deposit hash: ', transactionHash)
+
+        await operation.confirmAction({
+          actionType: ACTION_TYPE.depositOne,
+          transactionHash,
+        })
+      },
+      txOptions,
+    )
+    await operation.waitActionComplete(ACTION_TYPE.depositOne)
+    //----------------------------------------------------//
+
+    //----------------- Approve Step -----------------//
+    let approvalParams: BridgeApprovalParams
+    if (token === TOKEN.ERC721) {
+      approvalParams = { to: erc721Manager, tokenId: tokenInfo.tokenId }
+    } else if (token === TOKEN.ERC1155) {
+      //approvalParams = { to: erc1155Manager, approved: true}
+      throw Error('ERC1155 is not implemented yet')
+    } else {
+      throw Error('Token bridge not implemented yet')
+    }
+    await this.bridgeApproval(
+      approvalParams,
+      async (transactionHash: string) => {
+        console.log('Approve hash: ', transactionHash)
+
+        await operation.confirmAction({
+          actionType: ACTION_TYPE.approveHmyManger,
+          transactionHash,
+        })
+      },
+      txOptions,
+    )
+    await operation.waitActionComplete(ACTION_TYPE.approveHmyManger)
+    //------------------------------------------------//
+
+    //----------------- Burn Step -----------------//
+    await this.bridgeBurnToken(
+      hmyManagerContract,
+      tokenInfo,
+      ethAddress,
+      async (transactionHash) => {
+        console.log('Burn hash: ', transactionHash)
+
+        await operation.confirmAction({
+          actionType: ACTION_TYPE.burnToken,
+          transactionHash,
+        })
+      },
+      txOptions,
+    )
+    await operation.waitActionComplete(ACTION_TYPE.burnToken)
+    //--------------------------------------------//
+    await operation.waitOperationComplete()
   }
 
   // Implemented at hrc721.ts (hrc1155 is not implemented yet)

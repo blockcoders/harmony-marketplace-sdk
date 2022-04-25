@@ -5,10 +5,12 @@ import { ITransactionOptions } from './interfaces'
 export class HarmonyManagerContract extends BaseTokenContract {
   addToken(tokenManager: string, ethTokenAddr: string, name: string, symbol: string) {
     console.log(tokenManager, ethTokenAddr, name, symbol)
+    throw Error('Not implemented yet')
   }
 
   removeToken(tokenManager: string, ethTokenAddr: string) {
     console.log(tokenManager, ethTokenAddr)
+    throw Error('Not implemented yet')
   }
 
   burnToken(
@@ -18,12 +20,6 @@ export class HarmonyManagerContract extends BaseTokenContract {
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
     try {
-      if (!txOptions) {
-        txOptions = {
-          gasPrice: 30000000000,
-          gasLimit: 6721900,
-        }
-      }
       return this.send('burnToken', [oneToken, tokenId, recipient], txOptions)
     } catch (error) {
       throw Error(`Error executing burnToken: ${error}`)
@@ -37,13 +33,7 @@ export class HarmonyManagerContract extends BaseTokenContract {
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
     try {
-      if (!txOptions) {
-        txOptions = {
-          gasPrice: 30000000000,
-          gasLimit: 6721900,
-        }
-      }
-      return this.send('burnToken', [oneToken, tokenIds, recipient], txOptions)
+      return this.send('burnTokens', [oneToken, tokenIds, recipient], txOptions)
     } catch (error) {
       throw Error(`Error executing burnTokens: ${error}`)
     }
@@ -51,9 +41,11 @@ export class HarmonyManagerContract extends BaseTokenContract {
 
   mintToken(oneToken: string, tokenId: number, recipient: string, receipt: any /* bytes32 ? */) {
     console.log(oneToken, tokenId, recipient, receipt)
+    throw Error('Not implemented yet')
   }
 
   mintTokens(oneToken: string, tokenIds: number[], recipient: string, receipt: any /* bytes32 ? */) {
     console.log(oneToken, tokenIds, recipient, receipt)
+    throw Error('Not implemented yet')
   }
 }
