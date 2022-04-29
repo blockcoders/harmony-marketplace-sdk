@@ -2,10 +2,10 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
+import { BNish, BridgeParams, ContractProviderType, ITransactionOptions } from '../interfaces'
+import { isBNish } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
-import { BNish, BridgeApprovalParams, ContractProviderType, ITransactionOptions } from './interfaces'
-import { isBNish } from './utils'
 
 export class HRC721 extends BaseToken {
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
@@ -55,29 +55,6 @@ export class HRC721 extends BaseToken {
     return this.send('approve', [to, tokenId], txOptions)
   }
 
-  protected async bridgeApproval(
-    data: BridgeApprovalParams,
-    sendTxCallback: (tx: string) => void,
-    txOptions?: ITransactionOptions,
-  ): Promise<Transaction> {
-    try {
-      console.log('APPROVE')
-
-      const { to, tokenId } = data || {}
-      if (!tokenId) {
-        throw Error('tokenId is required')
-      }
-      const approveTx = await this.approve(to, tokenId, txOptions)
-      if (approveTx.txStatus !== 'CONFIRMED') {
-        throw Error(`Transaction ${approveTx.txStatus}: ${approveTx}`)
-      }
-      await sendTxCallback(approveTx.id)
-      return approveTx
-    } catch (e) {
-      throw Error(`Error while executing bridgeApproval: ${e}`)
-    }
-  }
-
   public async getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
     if (!isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'getApproved')
@@ -106,5 +83,9 @@ export class HRC721 extends BaseToken {
 
   public async name(txOptions?: ITransactionOptions): Promise<string> {
     return this.call<string>('name', [], txOptions)
+  }
+
+  public bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 }

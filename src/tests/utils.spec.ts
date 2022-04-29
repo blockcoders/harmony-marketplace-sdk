@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { isBNish } from './utils'
+import { isBNish } from '../utils'
 
 describe('Utils', () => {
   it('should return true if param is a BNish type, as a number', async () => {

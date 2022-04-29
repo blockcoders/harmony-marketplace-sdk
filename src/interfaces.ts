@@ -1,9 +1,9 @@
+import { Networkish } from '@ethersproject/networks'
 import { Wallet } from '@harmony-js/account'
 import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { NETWORK_TYPE, EXCHANGE_MODE, TOKEN } from 'bridge-sdk'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -32,6 +32,18 @@ export enum HarmonyShards {
   SHARD_3_TESTNET = 'SHARD_3_TESTNET',
 }
 
+export enum BRIDGE {
+  ETH_TO_HMY,
+  HMY_TO_ETH,
+}
+
+export enum BRIDGE_TOKENS {
+  ERC721,
+  HRC721,
+  ERC1155,
+  HRC1155,
+}
+
 export type RpcProviderType = string | HttpProvider | WSProvider | HarmonyShards
 
 export type ContractProviderType = Wallet | Key | PrivateKey | MnemonicKey
@@ -58,25 +70,27 @@ export interface HDOptions extends MnemonicOptions {
   gasPrice?: string
 }
 
-export interface TokenInfo {
-  tokenAddress: string
-  tokenId?: string
-  tokenIds?: string[]
-}
 export interface BridgeParams {
+  amount: number
   oneAddress: string
   ethAddress: string
-  network: NETWORK_TYPE
-  type: EXCHANGE_MODE
-  token: TOKEN
-  amount: number
-  tokenInfo: TokenInfo
+  type: BRIDGE
+  token: BRIDGE_TOKENS
+  tokenId?: number
+  tokenIds?: number[]
   isMainnet?: boolean
-  maxWaitingTime?: number
 }
 
-export interface BridgeApprovalParams {
-  to: string
-  tokenId?: string
-  approved?: boolean
+export interface ManagerContractAddresses {
+  erc721EthManagerContract: string
+  erc721HmyManagerContract: string
+  hrc721EthManagerContract: string
+  hrc721HmyManagerContract: string
+  erc1155EthManagerContract: string
+  erc1155HmyManagerContract: string
+  hrc1155EthManagerContract: string
+  hrc1155HmyManagerContract: string
+  tokenManagerContract: string
+  ethUrl: string
+  ethNetwork: Networkish
 }

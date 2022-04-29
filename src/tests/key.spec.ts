@@ -2,9 +2,9 @@ import { Wallet } from '@harmony-js/account'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
-import { HARMONY_RPC_SHARD_0_TESTNET, HARMONY_RPC_SHARD_1_TESTNET, HARMONY_RPC_TESTNET_WS } from './constants'
-import { HarmonyShards } from './interfaces'
-import { Key } from './key'
+import { HARMONY_RPC_SHARD_0_TESTNET, HARMONY_RPC_SHARD_1_TESTNET, HARMONY_RPC_TESTNET_WS } from '../constants'
+import { HarmonyShards } from '../interfaces'
+import { Key } from '../key'
 
 describe('Key Class', () => {
   let instance: Key

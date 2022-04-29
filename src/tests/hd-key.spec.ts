@@ -6,10 +6,10 @@ import { ChainID } from '@harmony-js/utils'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { HARMONY_RPC_SHARD_0_TESTNET_URL } from './constants'
-import { HDKey } from './hd-key'
-import { Key } from './key'
-import { options, FAKE_TX_HRC721, TEST_ADDRESS_1, TEST_PK_1, TEST_ADDRESS_2 } from './tests/constants'
+import { HARMONY_RPC_SHARD_0_TESTNET_URL } from '../constants'
+import { HDKey } from '../hd-key'
+import { Key } from '../key'
+import { options, FAKE_TX_HRC721, TEST_ADDRESS_1, TEST_PK_1, TEST_ADDRESS_2 } from './constants'
 
 describe('HD Key Class', () => {
   use(chaiAsPromised)

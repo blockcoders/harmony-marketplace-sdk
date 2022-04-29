@@ -39,7 +39,7 @@ export const abi: any = [
         type: 'address',
       },
     ],
-    name: 'Burned',
+    name: 'Locked',
     type: 'event',
   },
   {
@@ -48,7 +48,7 @@ export const abi: any = [
       {
         indexed: false,
         internalType: 'address',
-        name: 'oneToken',
+        name: 'ethToken',
         type: 'address',
       },
       {
@@ -70,28 +70,43 @@ export const abi: any = [
         type: 'bytes32',
       },
     ],
-    name: 'Minted',
+    name: 'Unlocked',
     type: 'event',
   },
   {
-    constant: true,
+    constant: false,
     inputs: [
       {
         internalType: 'address',
         name: '',
         type: 'address',
       },
-    ],
-    name: 'mappings',
-    outputs: [
       {
         internalType: 'address',
         name: '',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    name: 'onERC721Received',
+    outputs: [
+      {
+        internalType: 'bytes4',
+        name: '',
+        type: 'bytes4',
+      },
     ],
     payable: false,
-    stateMutability: 'view',
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -135,57 +150,7 @@ export const abi: any = [
     inputs: [
       {
         internalType: 'address',
-        name: 'tokenManager',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
         name: 'ethTokenAddr',
-        type: 'address',
-      },
-      {
-        internalType: 'string',
-        name: 'name',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: 'symbol',
-        type: 'string',
-      },
-    ],
-    name: 'addToken',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'tokenManager',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'ethTokenAddr',
-        type: 'address',
-      },
-    ],
-    name: 'removeToken',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'oneToken',
         type: 'address',
       },
       {
@@ -199,7 +164,7 @@ export const abi: any = [
         type: 'address',
       },
     ],
-    name: 'burnToken',
+    name: 'lockToken',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
@@ -210,7 +175,7 @@ export const abi: any = [
     inputs: [
       {
         internalType: 'address',
-        name: 'oneToken',
+        name: 'ethTokenAddr',
         type: 'address',
       },
       {
@@ -224,7 +189,7 @@ export const abi: any = [
         type: 'address',
       },
     ],
-    name: 'burnTokens',
+    name: 'lockTokens',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
@@ -235,7 +200,37 @@ export const abi: any = [
     inputs: [
       {
         internalType: 'address',
-        name: 'oneToken',
+        name: 'ethTokenAddr',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'userAddr',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'recipient',
+        type: 'address',
+      },
+    ],
+    name: 'lockTokenFor',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'ethTokenAddr',
         type: 'address',
       },
       {
@@ -254,7 +249,7 @@ export const abi: any = [
         type: 'bytes32',
       },
     ],
-    name: 'mintToken',
+    name: 'unlockToken',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
@@ -265,7 +260,7 @@ export const abi: any = [
     inputs: [
       {
         internalType: 'address',
-        name: 'oneToken',
+        name: 'ethTokenAddr',
         type: 'address',
       },
       {
@@ -284,7 +279,7 @@ export const abi: any = [
         type: 'bytes32',
       },
     ],
-    name: 'mintTokens',
+    name: 'unlockTokens',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',

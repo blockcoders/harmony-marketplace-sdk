@@ -4,8 +4,8 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, Unit } from '@harmony-js/utils'
-import { DEFAULT_GAS_PRICE } from './constants'
-import { ContractProviderType, ITransactionOptions } from './interfaces'
+import { DEFAULT_GAS_PRICE } from '../constants'
+import { ContractProviderType, ITransactionOptions } from '../interfaces'
 
 export class ContractError extends Error {
   public readonly type: string

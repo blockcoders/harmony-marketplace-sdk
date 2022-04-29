@@ -1,17 +1,14 @@
 import { Account } from '@harmony-js/account'
-import { Transaction } from '@harmony-js/transaction'
 import { ChainID } from '@harmony-js/utils'
-import { fail } from 'assert'
 import BN from 'bn.js'
-import { EXCHANGE_MODE, NETWORK_TYPE, TOKEN } from 'bridge-sdk'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { BaseToken } from './base-token'
-import { AddressZero, HARMONY_RPC_SHARD_0_TESTNET } from './constants'
-import { BNish, BridgeApprovalParams, HarmonyShards, ITransactionOptions } from './interfaces'
-import { MnemonicKey } from './mnemonic-key'
-import { PrivateKey } from './private-key'
+import { AddressZero, HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
+import { BNish, BridgeParams, HarmonyShards, ITransactionOptions } from '../interfaces'
+import { MnemonicKey } from '../mnemonic-key'
+import { PrivateKey } from '../private-key'
+import { BaseToken } from '../tokens/base-token'
 import {
   TEST_ADDRESS_1,
   EMPTY_TEST_ADDRESS,
@@ -20,8 +17,8 @@ import {
   TX_OPTIONS,
   TOKEN_GOLD,
   TEST_SEED,
-} from './tests/constants'
-import { ABI } from './tests/contracts/TestToken/abi'
+} from './constants'
+import { ABI } from './contracts/TestToken/abi'
 
 class TestToken extends BaseToken {
   constructor() {
@@ -31,11 +28,7 @@ class TestToken extends BaseToken {
     return this.getBalance(address, id, txOptions)
   }
 
-  bridgeApproval(
-    _data: BridgeApprovalParams,
-    _sendTxCallback: (tx: string) => void,
-    _txOptions?: ITransactionOptions,
-  ): Promise<Transaction> {
+  protected bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void> {
     throw new Error('Method not implemented.')
   }
 }
@@ -202,80 +195,6 @@ describe('Base Token Provider', () => {
         expect(error).to.not.null
         expect(error).to.not.undefined
         expect(error).to.be.instanceOf(Error)
-      }
-    })
-  })
-
-  describe('bridgeToken', () => {
-    it('fails if amount is lower or equal to zero', async () => {
-      try {
-        await contract.bridgeToken({
-          ethAddress: TEST_ADDRESS_1,
-          oneAddress: 'fakeAddress',
-          network: NETWORK_TYPE.ETHEREUM,
-          type: EXCHANGE_MODE.ONE_TO_ETH,
-          token: TOKEN.ERC721,
-          amount: 0,
-          tokenInfo: {
-            tokenAddress: 'fakeAddress',
-            tokenId: '12',
-          },
-        })
-        fail('Should not get here')
-      } catch (error) {
-        expect(error).to.exist
-      }
-    })
-
-    it('fails if type is ETH_TO_ONE', async () => {
-      try {
-        await contract.bridgeToken(
-          {
-            ethAddress: TEST_ADDRESS_1,
-            oneAddress: 'fakeAddress',
-            network: NETWORK_TYPE.ETHEREUM,
-            type: EXCHANGE_MODE.ETH_TO_ONE,
-            token: TOKEN.ERC721,
-            amount: 20,
-            tokenInfo: {
-              tokenAddress: 'fakeAddress',
-              tokenId: '12',
-            },
-          },
-          {
-            gasPrice: 30000000000,
-            gasLimit: 6721900,
-          },
-        )
-        fail('Should not get here')
-      } catch (error) {
-        expect(error).to.exist
-      }
-    })
-
-    it('fails if token is invalid', async () => {
-      try {
-        await contract.bridgeToken(
-          {
-            ethAddress: TEST_ADDRESS_1,
-            oneAddress: 'fakeAddress',
-            network: NETWORK_TYPE.ETHEREUM,
-            type: EXCHANGE_MODE.ETH_TO_ONE,
-            token: TOKEN.ERC20,
-            amount: 20,
-            tokenInfo: {
-              tokenAddress: 'fakeAddress',
-              tokenId: '12',
-            },
-          },
-          {
-            gasPrice: 30000000000,
-            gasLimit: 6721900,
-          },
-        )
-        fail('Should not get here')
-      } catch (error) {
-        expect(error).to.exist
       }
     })
   })

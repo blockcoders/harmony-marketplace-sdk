@@ -1,10 +1,8 @@
-import { fail } from 'assert'
-import { NETWORK_TYPE, EXCHANGE_MODE, TOKEN } from 'bridge-sdk'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { AddressZero } from './constants'
-import { HRC1155 } from './hrc1155'
+import { AddressZero } from '../constants'
+import { HRC1155 } from '../tokens/hrc1155'
 import {
   HRC1155_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
@@ -15,8 +13,8 @@ import {
   TX_OPTIONS,
   FAKE_BALANCE_HRC1155,
   WALLET_PROVIDER_TEST_1,
-} from './tests/constants'
-import { ABI } from './tests/contracts/HRC1155/abi'
+} from './constants'
+import { ABI } from './contracts/HRC1155/abi'
 
 describe('HRC1155 Contract Interface', () => {
   use(chaiAsPromised)
@@ -268,57 +266,6 @@ describe('HRC1155 Contract Interface', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(contract.safeBatchTransferFrom('', '', [], [], '')).to.be.rejectedWith(Error)
-    })
-  })
-
-  describe('bridgeToken', () => {
-    it('fails if token is ERC1155 (IT IS NOT IMPLEMENTED YET)', async () => {
-      try {
-        await contract.bridgeToken(
-          {
-            ethAddress: TEST_ADDRESS_1, // wallet that will receive the ERC721 token
-            oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff', // wallet that owns the ERC721 token
-            network: NETWORK_TYPE.ETHEREUM,
-            type: EXCHANGE_MODE.ONE_TO_ETH,
-            token: TOKEN.ERC1155,
-            amount: 20,
-            isMainnet: false,
-            tokenInfo: {
-              tokenAddress: HRC1155_CONTRACT_ADDRESS,
-              tokenIds: ['10', '11'],
-            },
-          },
-          {
-            gasPrice: 30000000000,
-            gasLimit: 6721900,
-          },
-        )
-        fail('Should not get here')
-      } catch (error) {
-        expect(error).to.exist
-      }
-    })
-
-    it.skip('sends the HRC1155 tokens to the ethAddress', async () => {
-      await contract.bridgeToken(
-        {
-          ethAddress: TEST_ADDRESS_1, // wallet that will receive the ERC721 token
-          oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff', // wallet that owns the ERC721 token
-          network: NETWORK_TYPE.ETHEREUM,
-          type: EXCHANGE_MODE.ONE_TO_ETH,
-          token: TOKEN.ERC1155,
-          amount: 20,
-          isMainnet: false,
-          tokenInfo: {
-            tokenAddress: HRC1155_CONTRACT_ADDRESS,
-            tokenIds: ['10', '11'],
-          },
-        },
-        {
-          gasPrice: 30000000000,
-          gasLimit: 6721900,
-        },
-      )
     })
   })
 })

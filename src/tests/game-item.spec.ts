@@ -2,9 +2,9 @@ import { ChainID } from '@harmony-js/utils'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { GameItems } from './game-item'
-import { HarmonyShards } from './interfaces'
-import { Key } from './key'
+import { HarmonyShards } from '../interfaces'
+import { Key } from '../key'
+import { GameItems } from '../tokens/game-item'
 import {
   HRC1155_CONTRACT_ADDRESS,
   TOKEN_GOLD,
@@ -12,8 +12,8 @@ import {
   TOKEN_THORS_HAMMER,
   TOKEN_SWORD,
   TOKEN_SHIELD,
-} from './tests/constants'
-import { ABI } from './tests/contracts/GameItems/abi'
+} from './constants'
+import { ABI } from './contracts/GameItems/abi'
 
 describe('Game Item Provider', () => {
   use(chaiAsPromised)

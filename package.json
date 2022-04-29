@@ -83,7 +83,7 @@
     "@harmony-js/core": "^0.1.57",
     "@harmony-js/transaction": "^0.1.56",
     "@types/bip39": "^2.4.2",
-    "bridge-sdk": "^2.14.0"
+    "ethers": "^5.6.4"
   },
   "peerDependencies": {
     "@harmony-js/account": "0.1.56",

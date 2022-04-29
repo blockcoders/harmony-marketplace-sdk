@@ -1,10 +1,9 @@
 import BN from 'bn.js'
-import { EXCHANGE_MODE, NETWORK_TYPE, TOKEN } from 'bridge-sdk'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { AddressZero } from './constants'
-import { HRC721 } from './hrc721'
+import { AddressZero } from '../constants'
+import { HRC721 } from '../tokens/hrc721'
 import {
   HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
@@ -14,8 +13,8 @@ import {
   TX_OPTIONS,
   WALLET_PROVIDER_TEST_1,
   TOKEN_SWORD,
-} from './tests/constants'
-import { ABI } from './tests/contracts/HRC721/abi'
+} from './constants'
+import { ABI } from './contracts/HRC721/abi'
 
 describe('HRC721 Contract Interface', () => {
   use(chaiAsPromised)
@@ -289,30 +288,6 @@ describe('HRC721 Contract Interface', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(contract.approve('', '')).to.be.rejectedWith(Error)
-    })
-  })
-
-  describe('bridgeToken', () => {
-    it('sends the HRC721 token to the ethAddress', async () => {
-      await contract.bridgeToken(
-        {
-          ethAddress: TEST_ADDRESS_1, // wallet that will receive the ERC721 token
-          oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff', // wallet that owns the ERC721 token
-          network: NETWORK_TYPE.ETHEREUM,
-          type: EXCHANGE_MODE.ONE_TO_ETH,
-          token: TOKEN.ERC721,
-          amount: 20,
-          isMainnet: false,
-          tokenInfo: {
-            tokenAddress: HRC721_CONTRACT_ADDRESS,
-            tokenId: '12',
-          },
-        },
-        {
-          gasPrice: 30000000000,
-          gasLimit: 6721900,
-        },
-      )
     })
   })
 })

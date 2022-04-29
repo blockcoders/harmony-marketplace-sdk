@@ -2,10 +2,10 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
+import { AddressZero } from '../constants'
+import { BNish, BridgeParams, ContractProviderType, ITransactionOptions } from '../interfaces'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
-import { AddressZero } from './constants'
-import { BNish, BridgeApprovalParams, ContractProviderType, ITransactionOptions } from './interfaces'
 
 export class HRC1155 extends BaseToken {
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
@@ -68,11 +68,7 @@ export class HRC1155 extends BaseToken {
     return this.call<string>('contractURI', [], txOptions)
   }
 
-  protected bridgeApproval(
-    _data: BridgeApprovalParams,
-    _sendTxCallback: (tx: string) => void,
-    _txOptions?: ITransactionOptions,
-  ): Promise<Transaction> {
+  public bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void> {
     throw new Error('Method not implemented.')
   }
 }

@@ -1,5 +1,5 @@
 import { ChainID, ChainType } from '@harmony-js/utils'
-import { HarmonyRpcConfig, HarmonyShards } from './interfaces'
+import { HarmonyRpcConfig, HarmonyShards, ManagerContractAddresses } from './interfaces'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const DEFAULT_GAS_PRICE = '1' // 1 Gwei
@@ -65,3 +65,34 @@ export const HARMONY_SHARDS = {
   [HarmonyShards.SHARD_2_TESTNET]: HARMONY_RPC_SHARD_2_TESTNET,
   [HarmonyShards.SHARD_3_TESTNET]: HARMONY_RPC_SHARD_3_TESTNET,
 }
+
+export const TESTNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
+  erc721EthManagerContract: '',
+  erc721HmyManagerContract: '',
+  hrc721EthManagerContract: '',
+  hrc721HmyManagerContract: '',
+  erc1155EthManagerContract: '',
+  erc1155HmyManagerContract: '',
+  hrc1155EthManagerContract: '',
+  hrc1155HmyManagerContract: '',
+  tokenManagerContract: '',
+  ethUrl: '',
+  ethNetwork: '',
+}
+
+export const MAINNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
+  erc721EthManagerContract: '',
+  erc721HmyManagerContract: '',
+  hrc721EthManagerContract: '',
+  hrc721HmyManagerContract: '',
+  erc1155EthManagerContract: '',
+  erc1155HmyManagerContract: '',
+  hrc1155EthManagerContract: '',
+  hrc1155HmyManagerContract: '',
+  tokenManagerContract: '',
+  ethUrl: '',
+  ethNetwork: '',
+}
+
+export const BLOCKS_TO_WAIT = 14
+export const AVG_BLOCK_TIME = 20 * 1000

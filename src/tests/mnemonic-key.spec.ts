@@ -1,9 +1,9 @@
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
-import { HARMONY_RPC_SHARD_0_TESTNET } from './constants'
-import { Key } from './key'
-import { MnemonicKey } from './mnemonic-key'
-import { TEST_SEED } from './tests/constants'
+import { HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
+import { Key } from '../key'
+import { MnemonicKey } from '../mnemonic-key'
+import { TEST_SEED } from '../tests/constants'
 
 describe('Mnemonic Key Class', () => {
   let instance: MnemonicKey
