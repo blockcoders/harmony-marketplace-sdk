@@ -77,13 +77,5 @@ export abstract class BaseToken extends BaseTokenContract {
     this._contract.connect(key)
   }
 
-  public async getDetails(): Promise<any> {
-    return {
-      name: await this._contract.methods['name']().call(),
-      symbol: await this._contract.methods['symbol'].call(),
-      decimals: await this._contract.methods['decimals'].call(),
-    }
-  }
-
-  protected abstract bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void>
+  protected abstract bridgeToken(options: BridgeParams, hmyProvider: PrivateKey,txOptions?: ITransactionOptions): Promise<void>
 }

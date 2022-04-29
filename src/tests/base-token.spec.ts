@@ -28,7 +28,7 @@ class TestToken extends BaseToken {
     return this.getBalance(address, id, txOptions)
   }
 
-  protected bridgeToken(options: BridgeParams, txOptions?: ITransactionOptions): Promise<void> {
+  protected bridgeToken(options: BridgeParams, hmyProvider: PrivateKey,txOptions?: ITransactionOptions): Promise<void> {
     throw new Error('Method not implemented.')
   }
 }

@@ -24,7 +24,6 @@ export class Contract extends BaseContract {
 
   constructor(abi: AbiItemModel[], address: string, provider: ContractProviderType, options?: ContractOptions) {
     super(abi, address, options, provider)
-
     this.wallet = provider
   }
 }
@@ -62,9 +61,14 @@ export abstract class BaseTokenContract {
 
   public async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
     const options = await this.estimateGas(method, args, txOptions)
-    const result: any = await this._contract.methods[method](...args).call(options)
+    try {
+      const result: any = await this._contract.methods[method](...args).call(options)
+      return result as T
+    } catch (error) {
+      console.log("ERORRRRRRR", error)
+      throw Error("FALLO")
+    }
 
-    return result as T
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {

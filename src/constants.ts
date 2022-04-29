@@ -67,17 +67,17 @@ export const HARMONY_SHARDS = {
 }
 
 export const TESTNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
-  erc721EthManagerContract: '',
-  erc721HmyManagerContract: '',
+  erc721EthManagerContract: '0xa44014b0b735dC8C1856f9b41C2112Fe1CfAa948',
+  erc721HmyManagerContract: '0xD235efe296E8349FE5700D4618c8720B3b2dFB8E',
   hrc721EthManagerContract: '',
   hrc721HmyManagerContract: '',
   erc1155EthManagerContract: '',
   erc1155HmyManagerContract: '',
   hrc1155EthManagerContract: '',
   hrc1155HmyManagerContract: '',
-  tokenManagerContract: '',
-  ethUrl: '',
-  ethNetwork: '',
+  tokenManagerContract: '0xBB64ca9fd17EacC17796bFb2D3b3271501DB5EB4',
+  ethUrl: 'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
+  ethNetwork: '3',
 }
 
 export const MAINNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {

@@ -10,6 +10,7 @@ export const HARMONY_TESTNET = 'https://api.s0.b.hmny.io/'
 
 export const TEST_PK_1 = process.env.TEST_PK_1 ?? ''
 export const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
+export const ETH_TEST_PK = process.env.ETH_TEST_PK ?? ''
 export const TEST_SEED =
   process.env.TEST_SEED ?? 'pablo diego jose francisco de paula juan nepomuceno maria ruiz y picasso'
 
@@ -51,7 +52,7 @@ export const TEST_ADDRESS_2 = WALLET_PROVIDER_TEST_2.accounts[0].toLowerCase()
 export const TEST_ADDRESS_3 = WALLET_PROVIDER_TEST_3.accounts[0].toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
-export const ERC721_CONTRACT_ADDRESS = ''.toLowerCase()
+export const ERC721_CONTRACT_ADDRESS = '0x8CAd7e9cAE97f359F4aEFA5FE1615a56319D50eB'.toLowerCase()
 export const HRC721_CONTRACT_ADDRESS = '0x7284afe00b49F9eE6446c279057F2135c28a03A5'.toLowerCase()
 export const ERC1155_CONTRACT_ADDRESS = ''.toLowerCase()
 export const HRC1155_CONTRACT_ADDRESS = '0xD59AF020E36F710e8fB1e42e05cE48CF6b86D4B4'.toLowerCase()
