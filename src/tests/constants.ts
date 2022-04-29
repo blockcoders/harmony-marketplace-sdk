@@ -1,5 +1,5 @@
 import { Transaction } from '@harmony-js/transaction'
-import { ChainID } from '@harmony-js/utils'
+import { ChainID, ChainType } from '@harmony-js/utils'
 import 'dotenv/config'
 import { ITransactionOptions, HDOptions } from 'src/interfaces'
 import { HarmonyShards } from '../interfaces'
@@ -25,6 +25,13 @@ export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
   HarmonyShards.SHARD_0_TESTNET,
   TEST_PK_1.toLowerCase(),
   ChainID.HmyTestnet,
+  ChainType.Ethereum,
+)
+
+export const WALLET_ETH_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
+  'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
+  TEST_PK_1.toLowerCase(),
+  ChainID.Ropsten,
 )
 
 export const WALLET_PROVIDER_TEST_2: PrivateKey = new PrivateKey(

@@ -8,8 +8,7 @@ import { HarmonyRpcConfig, HarmonyShards, RpcProviderType } from './interfaces'
  * Implementation of the Wallet that does not use any pk or mnemonic.
  */
 export class Key extends Wallet {
-  constructor(url: RpcProviderType, chainId = ChainID.HmyMainnet) {
-    let chainType: ChainType = ChainType.Harmony
+  constructor(url: RpcProviderType, chainId = ChainID.HmyMainnet, chainType = ChainType.Harmony) {
     let chain: ChainID = chainId
     let provider: HttpProvider | WSProvider
 

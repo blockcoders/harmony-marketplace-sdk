@@ -11,8 +11,8 @@ import { Key } from './key'
 export class HDKey extends Key {
   private readonly hdNode: HDNode
 
-  constructor(url: RpcProviderType, options: HDOptions, chainId?: ChainID) {
-    super(url, chainId)
+  constructor(url: RpcProviderType, options: HDOptions, chainId?: ChainID, chainType?: ChainType) {
+    super(url, chainId, chainType)
 
     const {
       mnemonic = Wallet.generateMnemonic(),
