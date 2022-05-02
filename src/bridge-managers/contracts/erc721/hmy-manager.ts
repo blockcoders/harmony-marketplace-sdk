@@ -1,8 +1,16 @@
+import { BNish, ITransactionOptions } from '../../../interfaces'
 import { BaseTokenContract } from '../../../tokens/base-token-contract'
 
 export class ERC721HmyManagerContract extends BaseTokenContract {
-  async mappings(ethTokenAddress: string): Promise<string> {
-    throw Error('Not implemented yet')
+  async mappings(ethTokenAddress: string, txOptions?: ITransactionOptions): Promise<string> {
+    try {
+      console.log({ethTokenAddress,  txOptions})
+      
+      return this.call("mappings", [ethTokenAddress],txOptions)
+    } catch (error) {
+      console.error("ERROR: %j",error)
+      throw Error(`Error mappings ${error}`)
+    }
   }
 
   /**
@@ -13,8 +21,13 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param symbol of the ethereum token
    * @param baseURI base URI of the token
    */
-  async addToken(tokenManager: string, ethTokenAddr: string, name: string, symbol: string, baseURI: string) {
-    throw Error('Not implemented yet')
+  async addToken(tokenManager: string, ethTokenAddr: string, name: string, symbol: string, baseURI: string, txOptions?: ITransactionOptions) {
+    try {
+      return this.send("addToken", [tokenManager, ethTokenAddr, name, symbol, baseURI], txOptions)
+    } catch (error) {
+      console.error(error)
+      throw Error(`Error addToken ${error}`)
+    }
   }
 
   /**
@@ -53,7 +66,7 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param recipient recipient of the minted tokens (harmony address)
    * @param receiptId transaction hash of the lock event on ethereum chain
    */
-  async mintToken(oneToken: string, tokenId: number, recipient: string, receiptId: string) {
+  async mintToken(oneToken: string, tokenId: BNish, recipient: string, receiptId: string) {
     throw Error('Not implemented yet')
   }
 
@@ -64,7 +77,7 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param recipient recipient of the minted tokens (harmony address)
    * @param receiptId transaction hash of the lock event on ethereum chain
    */
-  async mintTokens(oneToken: string, tokenIds: number[], recipient: string, receiptId: string) {
+  async mintTokens(oneToken: string, tokenIds: BNish[], recipient: string, receiptId: string) {
     throw Error('Not implemented yet')
   }
 }

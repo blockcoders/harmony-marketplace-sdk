@@ -68,7 +68,7 @@ export const HARMONY_SHARDS = {
 
 export const TESTNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
   erc721EthManagerContract: '0xa44014b0b735dC8C1856f9b41C2112Fe1CfAa948',
-  erc721HmyManagerContract: '0xD235efe296E8349FE5700D4618c8720B3b2dFB8E',
+  erc721HmyManagerContract: '0x1cEE71f0821fB7d3CCBaCaA221AC7e354bC7E439',
   hrc721EthManagerContract: '',
   hrc721HmyManagerContract: '',
   erc1155EthManagerContract: '',

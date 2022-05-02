@@ -30,7 +30,7 @@ export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
 
 export const WALLET_ETH_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
   'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
-  TEST_PK_1.toLowerCase(),
+  ETH_TEST_PK.toLowerCase(),
   ChainID.Ropsten,
   ChainType.Ethereum,
 )

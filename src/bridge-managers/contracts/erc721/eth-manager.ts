@@ -1,4 +1,5 @@
 import { Transaction } from '@harmony-js/transaction'
+import { BNish } from '../../../interfaces'
 import { BaseTokenContract } from '../../../tokens/base-token-contract'
 
 export class ERC721EthManagerContract extends BaseTokenContract {
@@ -29,7 +30,7 @@ export class ERC721EthManagerContract extends BaseTokenContract {
    * @param tokenId tokenId of the token to lock
    * @param recipient recipient address on the harmony chain
    */
-  async lockTokenFor(ethTokenAddr: string, userAddr: string, tokenId: number, recipient: string): Promise<Transaction> {
+  async lockTokenFor(ethTokenAddr: string, userAddr: string, tokenId: BNish, recipient: string): Promise<Transaction> {
     throw Error('Not implemented yet')
   }
 
@@ -40,7 +41,7 @@ export class ERC721EthManagerContract extends BaseTokenContract {
    * @param recipient recipient of the unlock tokens
    * @param receiptId transaction hash of the burn event on harmony chain
    */
-  async unlockToken(ethTokenAddr: string, tokenId: number, recipient: string, receiptId: string): Promise<Transaction> {
+  async unlockToken(ethTokenAddr: string, tokenId: BNish, recipient: string, receiptId: string): Promise<Transaction> {
     throw Error('Not implemented yet')
   }
 

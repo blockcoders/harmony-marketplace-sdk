@@ -76,8 +76,8 @@ export interface BridgeParams {
   ethAddress: string
   type: BRIDGE
   token: BRIDGE_TOKENS
-  tokenId?: number
-  tokenIds?: number[]
+  tokenId?: BNish
+  tokenIds?: BNish[]
   isMainnet?: boolean
 }
 

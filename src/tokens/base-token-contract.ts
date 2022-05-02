@@ -60,15 +60,14 @@ export abstract class BaseTokenContract {
   }
 
   public async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
-    const options = await this.estimateGas(method, args, txOptions)
     try {
+      const options = await this.estimateGas(method, args, txOptions)
       const result: any = await this._contract.methods[method](...args).call(options)
       return result as T
     } catch (error) {
-      console.log("ERORRRRRRR", error)
-      throw Error("FALLO")
+      console.error("CALL ERROR: ",error)
+      throw Error(`ERROR: ${error}`)
     }
-
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {

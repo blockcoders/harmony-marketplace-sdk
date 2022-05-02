@@ -45,14 +45,16 @@ export class ERC721 extends BaseToken {
     if (!isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'tokenURI')
     }
-
+    console.log(tokenId)
     return this.call<string>('tokenURI', [tokenId], txOptions)
   }
 
   public async bridgeToken(options: BridgeParams, hmyProvider: PrivateKey, txOptions?: ITransactionOptions): Promise<void> {
     const { tokenId, amount, isMainnet = false, type, ethAddress, oneAddress } = options
     if (amount <= 0) throw new Error('amount must be greater than zero')
-    if (!tokenId) throw Error('TokenId mut be provided')
+    if (!isBNish(tokenId)) {
+      throw new Error('You must provide a tokenId')
+    }
 
     const managersAddresses = isMainnet ? MAINNET_BRIDGE_CONTRACTS : TESTNET_BRIDGE_CONTRACTS
 
@@ -68,7 +70,7 @@ export class ERC721 extends BaseToken {
 
   private async ethToHmy(
     managerContractAddresses: ManagerContractAddresses,
-    tokenId: number,
+    tokenId: BNish,
     sender: string,
     recipient: string,
     hmyProvider: PrivateKey,
@@ -76,24 +78,29 @@ export class ERC721 extends BaseToken {
   ) {
     const { erc721EthManagerContract, erc721HmyManagerContract, tokenManagerContract, ethUrl, ethNetwork } =
       managerContractAddresses
-    console.log("ENTRE")
      
+    // Manager Contracts
     const ethManager = new ERC721EthManagerContract(erc721EthManagerContract, EthManagerContractABI, this._provider)
     const hmyManager = new ERC721HmyManagerContract(erc721HmyManagerContract, HmyManagerContractABI, hmyProvider)
     const hmyTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, hmyProvider)
-    console.log("Tengo los contratos")
 
+    // Add Token in Hmy
     const symbol = await this.symbol(txOptions)
-    console.log("symbol: ", symbol)
     const name = await this.name(txOptions)
-    console.log("Name: ", name)
     const baseURI = await this.tokenURI(tokenId, txOptions)
+    const hmyTxOptions:ITransactionOptions = {
+      gasPrice: 30000000000,
+      gasLimit: 6721900,
+    }
+    console.log({tokenManager: hmyTokenManager.address, ethTokenAddress: this.address, name, symbol, baseURI,  hmyTxOptions})
+    const addTokenTx = await hmyManager.addToken(hmyTokenManager.address, this.address, name, symbol, baseURI,  hmyTxOptions)
+    console.log("ADD TOKEN", addTokenTx.txStatus)
 
-    const addTokenTx = await hmyManager.addToken(hmyTokenManager.address, this.address, name, symbol, baseURI)
-    console.log("ADD TOKEN", addTokenTx)
-
-    const hmyTokenAddress = await hmyManager.mappings(this.address)
+    //
+    const hmyTokenAddress = await hmyManager.mappings(this.address, hmyTxOptions)
     console.log("MAPPINGS: ",hmyTokenAddress)
+    
+    // Approve 
     const approveEthManagerTx = await this.approve(ethManager.address, tokenId, txOptions)
     console.log("APPROVE",approveEthManagerTx)
 

@@ -1,12 +1,11 @@
-import { expect, use } from 'chai'
-import chaiAsPromised from 'chai-as-promised'
+import { expect } from 'chai'
 import { abi as ABI } from '../bridge-managers/abis/tokens/erc721'
-import { BRIDGE, BridgeParams, BRIDGE_TOKENS, ITransactionOptions } from '../interfaces'
+import { BRIDGE, BridgeParams, BRIDGE_TOKENS } from '../interfaces'
 import { ERC721 } from '../tokens/erc721'
-import { ERC721_CONTRACT_ADDRESS, TEST_ADDRESS_1, WALLET_ETH_PROVIDER_TEST_1, WALLET_PROVIDER_TEST_1 } from './constants'
+import { ERC721_CONTRACT_ADDRESS, TEST_ADDRESS_1, TX_OPTIONS, WALLET_ETH_PROVIDER_TEST_1, WALLET_PROVIDER_TEST_1 } from './constants'
 
 describe('ERC721 Contract Interface', () => {
-  use(chaiAsPromised)
+
 
   let contract: ERC721
 
@@ -27,7 +26,7 @@ describe('ERC721 Contract Interface', () => {
         token: BRIDGE_TOKENS.ERC721,
         amount: 20,
         isMainnet: false,
-        tokenId: 12,
+        tokenId: 5,
       }
       /*const paramsHmyToEth: BridgeParams = {
         ethAddress: TEST_ADDRESS_1,
@@ -38,11 +37,7 @@ describe('ERC721 Contract Interface', () => {
         isMainnet: false,
         tokenId: 12,
       }*/
-      const txOptions: ITransactionOptions = {
-        gasPrice: 30000000000,
-        gasLimit: 6721900,
-      }
-      await contract.bridgeToken(paramsEthToHmy, WALLET_PROVIDER_TEST_1,txOptions)
+      await contract.bridgeToken(paramsEthToHmy, WALLET_PROVIDER_TEST_1,TX_OPTIONS)
       //await contract.bridgeToken(paramsHmyToEth, txOptions)
     })
   })
