@@ -2,6 +2,7 @@ import { Transaction } from '@harmony-js/transaction'
 import { abi as EthManagerContractABI } from '../bridge-managers/abis/managers/erc721-eth-manager-abi'
 import { abi as HmyManagerContractABI } from '../bridge-managers/abis/managers/erc721-hmy-manager-abi'
 import { abi as TokenManagerABI } from '../bridge-managers/abis/managers/token-manager-abi'
+import { abi as ERC721ABI } from '../bridge-managers/abis/tokens/erc721'
 import { BridgeToken } from '../bridge-managers/bridge-token'
 import { ERC721EthManagerContract } from '../bridge-managers/contracts/erc721/eth-manager'
 import { ERC721HmyManagerContract } from '../bridge-managers/contracts/erc721/hmy-manager'
@@ -60,7 +61,6 @@ export class ERC721 extends BaseToken implements IBridgeToken721 {
       hmyTxOptions,
     )
     console.log('ADD TOKEN', addTokenTx.txStatus)
-
     const hmyTokenAddress = await hmyManager.mappings(this.address, hmyTxOptions)
     console.log('MAPPINGS: ', hmyTokenAddress)
 
@@ -88,20 +88,19 @@ export class ERC721 extends BaseToken implements IBridgeToken721 {
     const hmyTokenAddress = await hmyManager.mappings(this.address, hmyTxOptions)
     console.log('MAPPINGS: ', hmyTokenAddress)
 
+    const hmyERC721Token = new ERC721(hmyTokenAddress, ERC721ABI, bridge.hmyProvider)
+
+    const approveHmyManagerTx = await hmyERC721Token.approve(hmyManager.address, tokenId, hmyTxOptions)
+    console.log('APPROVE', approveHmyManagerTx.id)
+
     const burnTokenTx = await hmyManager.burnToken(hmyTokenAddress, tokenId, ethAddress, hmyTxOptions)
     console.log('BURN', burnTokenTx.id)
+
+    const unlockTokenTx = await ethManager.unlockToken(this.address, tokenId, ethAddress, burnTokenTx.id, ethTxOptions)
+    console.log('UNLOCK', unlockTokenTx.id)
 
     // Remove Token in Hmy
     const removeTokenTx = await hmyManager.removeToken(hmyTokenManager.address, this.address, hmyTxOptions)
     console.log('REMOVE TOKEN', removeTokenTx.txStatus)
-
-    const unlockTokenTx = await ethManager.unlockToken(
-      this.address,
-      tokenId,
-      ethAddress,
-      removeTokenTx.id,
-      ethTxOptions,
-    )
-    console.log('UNLOCK', unlockTokenTx.id)
   }
 }
