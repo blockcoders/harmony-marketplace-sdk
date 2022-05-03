@@ -1,5 +1,5 @@
 import { ChainID, ChainType } from '@harmony-js/utils'
-import { HarmonyRpcConfig, HarmonyShards, ManagerContractAddresses } from './interfaces'
+import { HarmonyRpcConfig, HarmonyShards, ITransactionOptions, ManagerContractAddresses } from './interfaces'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const DEFAULT_GAS_PRICE = '1' // 1 Gwei
@@ -96,3 +96,13 @@ export const MAINNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
 
 export const BLOCKS_TO_WAIT = 14
 export const AVG_BLOCK_TIME = 20 * 1000
+
+export const DEFAULT_ETH_TX_OPTIONS: ITransactionOptions = {
+  gasLimit: '5000000',
+  gasPrice: '100',
+}
+
+export const DEFAULT_HMY_TX_OPTIONS: ITransactionOptions = {
+  gasPrice: '30000000000',
+  gasLimit: '6721900',
+}

@@ -1,7 +1,7 @@
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import 'dotenv/config'
-import { ITransactionOptions, HDOptions } from 'src/interfaces'
+import { ITransactionOptions, HDOptions } from '../interfaces'
 import { HarmonyShards } from '../interfaces'
 import { MnemonicKey } from '../mnemonic-key'
 import { PrivateKey } from '../private-key'

@@ -2,9 +2,8 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { PrivateKey } from '../private-key'
 import { AddressZero } from '../constants'
-import { BNish, BridgeParams, ContractProviderType, ITransactionOptions } from '../interfaces'
+import { BNish, ContractProviderType, ITransactionOptions } from '../interfaces'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
 
@@ -67,9 +66,5 @@ export class HRC1155 extends BaseToken {
 
   public async contractURI(txOptions?: ITransactionOptions): Promise<string> {
     return this.call<string>('contractURI', [], txOptions)
-  }
-
-  public bridgeToken(options: BridgeParams, hmyProvider: PrivateKey, txOptions?: ITransactionOptions): Promise<void> {
-    throw new Error('Method not implemented.')
   }
 }

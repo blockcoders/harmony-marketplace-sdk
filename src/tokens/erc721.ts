@@ -1,33 +1,17 @@
-import { Networkish } from '@ethersproject/networks'
 import { Transaction } from '@harmony-js/transaction'
-import { ethers } from 'ethers'
-import { isBNish } from '../utils'
 import { abi as EthManagerContractABI } from '../bridge-managers/abis/managers/erc721-eth-manager-abi'
 import { abi as HmyManagerContractABI } from '../bridge-managers/abis/managers/erc721-hmy-manager-abi'
 import { abi as TokenManagerABI } from '../bridge-managers/abis/managers/token-manager-abi'
+import { BridgeToken } from '../bridge-managers/bridge-token'
 import { ERC721EthManagerContract } from '../bridge-managers/contracts/erc721/eth-manager'
 import { ERC721HmyManagerContract } from '../bridge-managers/contracts/erc721/hmy-manager'
 import { TokenManager } from '../bridge-managers/contracts/token-manager'
-import { BLOCKS_TO_WAIT, MAINNET_BRIDGE_CONTRACTS, TESTNET_BRIDGE_CONTRACTS } from '../constants'
-import { BridgeParams, ITransactionOptions, BRIDGE, ManagerContractAddresses, BNish } from '../interfaces'
+import { ITransactionOptions, BNish, IBridgeToken721 } from '../interfaces'
+import { isBNish, waitForNewBlocks } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
-import { PrivateKey } from '../private-key'
-const { JsonRpcProvider } = ethers.providers
 
-const waitForNewBlocks = async (url: string, network: Networkish) => {
-  const provider = new JsonRpcProvider(url, network)
-  const blockNumber = await provider.getBlockNumber()
-  new Promise<void>((resolve, _reject) => {
-    provider.on('block', async () => {
-      const currentBlock = await provider.getBlockNumber()
-      if (currentBlock >= blockNumber + BLOCKS_TO_WAIT) resolve()
-    })
-  })
-}
-
-export class ERC721 extends BaseToken {
-
+export class ERC721 extends BaseToken implements IBridgeToken721 {
   public async symbol(txOptions?: ITransactionOptions): Promise<string> {
     try {
       return this.call<string>('symbol', [], txOptions)
@@ -49,80 +33,75 @@ export class ERC721 extends BaseToken {
     return this.call<string>('tokenURI', [tokenId], txOptions)
   }
 
-  public async bridgeToken(options: BridgeParams, hmyProvider: PrivateKey, txOptions?: ITransactionOptions): Promise<void> {
-    const { tokenId, amount, isMainnet = false, type, ethAddress, oneAddress } = options
-    if (amount <= 0) throw new Error('amount must be greater than zero')
-    if (!isBNish(tokenId)) {
-      throw new Error('You must provide a tokenId')
-    }
-
-    const managersAddresses = isMainnet ? MAINNET_BRIDGE_CONTRACTS : TESTNET_BRIDGE_CONTRACTS
-
-    if (type === BRIDGE.ETH_TO_HMY) {
-      return this.ethToHmy(managersAddresses, tokenId, ethAddress, oneAddress, hmyProvider, txOptions)
-    }
-    //return this.hmyToEth(managersAddresses, tokenId, ethAddress, oneAddress, txOptions)
-  }
-
   public async approve(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('approve', [to, tokenId], txOptions)
   }
 
-  private async ethToHmy(
-    managerContractAddresses: ManagerContractAddresses,
-    tokenId: BNish,
-    sender: string,
-    recipient: string,
-    hmyProvider: PrivateKey,
-    txOptions?: ITransactionOptions,
-  ) {
+  public async ethToHmy(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void> {
+    const { managerContracts, ethProvider, hmyProvider, ethTxOptions, hmyTxOptions } = bridge
     const { erc721EthManagerContract, erc721HmyManagerContract, tokenManagerContract, ethUrl, ethNetwork } =
-      managerContractAddresses
-     
+      managerContracts
+
     // Manager Contracts
-    const ethManager = new ERC721EthManagerContract(erc721EthManagerContract, EthManagerContractABI, this._provider)
+    const ethManager = new ERC721EthManagerContract(erc721EthManagerContract, EthManagerContractABI, ethProvider)
     const hmyManager = new ERC721HmyManagerContract(erc721HmyManagerContract, HmyManagerContractABI, hmyProvider)
     const hmyTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, hmyProvider)
 
     // Add Token in Hmy
-    const symbol = await this.symbol(txOptions)
-    const name = await this.name(txOptions)
-    const baseURI = await this.tokenURI(tokenId, txOptions)
-    const hmyTxOptions:ITransactionOptions = {
-      gasPrice: 30000000000,
-      gasLimit: 6721900,
-    }
-    console.log({tokenManager: hmyTokenManager.address, ethTokenAddress: this.address, name, symbol, baseURI,  hmyTxOptions})
-    const addTokenTx = await hmyManager.addToken(hmyTokenManager.address, this.address, name, symbol, baseURI,  hmyTxOptions)
-    console.log("ADD TOKEN", addTokenTx.txStatus)
+    const symbol = await this.symbol(ethTxOptions)
+    const name = await this.name(ethTxOptions)
+    const baseURI = await this.tokenURI(tokenId, ethTxOptions)
+    const addTokenTx = await hmyManager.addToken(
+      hmyTokenManager.address,
+      this.address,
+      name,
+      symbol,
+      baseURI,
+      hmyTxOptions,
+    )
+    console.log('ADD TOKEN', addTokenTx.txStatus)
 
-    //
     const hmyTokenAddress = await hmyManager.mappings(this.address, hmyTxOptions)
-    console.log("MAPPINGS: ",hmyTokenAddress)
-    
-    // Approve 
-    const approveEthManagerTx = await this.approve(ethManager.address, tokenId, txOptions)
-    console.log("APPROVE",approveEthManagerTx)
+    console.log('MAPPINGS: ', hmyTokenAddress)
 
-    const lockTokenForTx = await ethManager.lockTokenFor(this.address, sender, tokenId, recipient)
-    console.log("LOCK",lockTokenForTx)
+    const approveEthManagerTx = await this.approve(ethManager.address, tokenId, ethTxOptions)
+    console.log('APPROVE', approveEthManagerTx)
+
+    const lockTokenForTx = await ethManager.lockTokenFor(this.address, ethAddress, tokenId, oneAddress, ethTxOptions)
+    console.log('LOCK', lockTokenForTx)
 
     await waitForNewBlocks(ethUrl, ethNetwork)
-    console.log("WAIT COMPLETE")
-    const mintTx = await hmyManager.mintToken(hmyTokenAddress, tokenId, recipient, lockTokenForTx.id)
+    console.log('WAIT COMPLETE')
+    const mintTx = await hmyManager.mintToken(hmyTokenAddress, tokenId, oneAddress, lockTokenForTx.id, hmyTxOptions)
     console.log(mintTx)
   }
 
-  /*public async hmyToEth(
-    managerContractAddresses: ManagerContractAddresses,
-    tokenId: number,
-    sender: string,
-    recipient: string,
-    txOptions?: ITransactionOptions,
-  ) {
-    const { erc721EthManagerContract, erc721HmyManagerContract, tokenManagerContract } = managerContractAddresses
-    const ethManager = new ERC721EthManagerContract(erc721EthManagerContract, EthManagerContractABI, this._provider)
-    const hmyManager = new ERC721HmyManagerContract(erc721HmyManagerContract, HmyManagerContractABI, this._provider)
-    const ethTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, this._provider)
-  }*/
+  public async hmyToEth(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void> {
+    const { managerContracts, ethProvider, hmyProvider, ethTxOptions, hmyTxOptions } = bridge
+    const { erc721EthManagerContract, erc721HmyManagerContract, tokenManagerContract } = managerContracts
+
+    // Manager Contracts
+    const ethManager = new ERC721EthManagerContract(erc721EthManagerContract, EthManagerContractABI, ethProvider)
+    const hmyManager = new ERC721HmyManagerContract(erc721HmyManagerContract, HmyManagerContractABI, hmyProvider)
+    const hmyTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, hmyProvider)
+
+    const hmyTokenAddress = await hmyManager.mappings(this.address, hmyTxOptions)
+    console.log('MAPPINGS: ', hmyTokenAddress)
+
+    const burnTokenTx = await hmyManager.burnToken(hmyTokenAddress, tokenId, ethAddress, hmyTxOptions)
+    console.log('BURN', burnTokenTx.id)
+
+    // Remove Token in Hmy
+    const removeTokenTx = await hmyManager.removeToken(hmyTokenManager.address, this.address, hmyTxOptions)
+    console.log('REMOVE TOKEN', removeTokenTx.txStatus)
+
+    const unlockTokenTx = await ethManager.unlockToken(
+      this.address,
+      tokenId,
+      ethAddress,
+      removeTokenTx.id,
+      ethTxOptions,
+    )
+    console.log('UNLOCK', unlockTokenTx.id)
+  }
 }

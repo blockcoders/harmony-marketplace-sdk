@@ -65,7 +65,7 @@ export abstract class BaseTokenContract {
       const result: any = await this._contract.methods[method](...args).call(options)
       return result as T
     } catch (error) {
-      console.error("CALL ERROR: ",error)
+      console.error('CALL ERROR: ', error)
       throw Error(`ERROR: ${error}`)
     }
   }

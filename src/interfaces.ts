@@ -4,6 +4,7 @@ import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
+import { BridgeToken } from './bridge-managers/bridge-token'
 import { Key } from './key'
 import { MnemonicKey } from './mnemonic-key'
 import { PrivateKey } from './private-key'
@@ -78,7 +79,6 @@ export interface BridgeParams {
   token: BRIDGE_TOKENS
   tokenId?: BNish
   tokenIds?: BNish[]
-  isMainnet?: boolean
 }
 
 export interface ManagerContractAddresses {
@@ -93,4 +93,14 @@ export interface ManagerContractAddresses {
   tokenManagerContract: string
   ethUrl: string
   ethNetwork: Networkish
+}
+
+export interface IBridgeToken721 {
+  ethToHmy(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void>
+  hmyToEth(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void>
+}
+
+export interface IBridgeToken1155 {
+  ethToHmy(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenIds: BNish): Promise<void>
+  hmyToEth(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenIds: BNish): Promise<void>
 }

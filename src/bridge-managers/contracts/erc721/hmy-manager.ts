@@ -2,14 +2,16 @@ import { BNish, ITransactionOptions } from '../../../interfaces'
 import { BaseTokenContract } from '../../../tokens/base-token-contract'
 
 export class ERC721HmyManagerContract extends BaseTokenContract {
+  /**
+   * @dev get the oneAddress for a given ethTokenAddress
+   * @param ethTokenAddress ethereum token address to get
+   */
   async mappings(ethTokenAddress: string, txOptions?: ITransactionOptions): Promise<string> {
     try {
-      console.log({ethTokenAddress,  txOptions})
-      
-      return this.call("mappings", [ethTokenAddress],txOptions)
+      // console.log('Executing mappings: ', { ethTokenAddress, txOptions })
+      return this.call('mappings', [ethTokenAddress], txOptions)
     } catch (error) {
-      console.error("ERROR: %j",error)
-      throw Error(`Error mappings ${error}`)
+      throw Error(`Error in method "mappings": ${error}`)
     }
   }
 
@@ -21,12 +23,19 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param symbol of the ethereum token
    * @param baseURI base URI of the token
    */
-  async addToken(tokenManager: string, ethTokenAddr: string, name: string, symbol: string, baseURI: string, txOptions?: ITransactionOptions) {
+  async addToken(
+    tokenManager: string,
+    ethTokenAddr: string,
+    name: string,
+    symbol: string,
+    baseURI: string,
+    txOptions?: ITransactionOptions,
+  ) {
     try {
-      return this.send("addToken", [tokenManager, ethTokenAddr, name, symbol, baseURI], txOptions)
+      // console.log('Executing addToken: ', { tokenManager, ethTokenAddr, name, symbol, baseURI, txOptions })
+      return this.send('addToken', [tokenManager, ethTokenAddr, name, symbol, baseURI], txOptions)
     } catch (error) {
-      console.error(error)
-      throw Error(`Error addToken ${error}`)
+      throw Error(`Error in method "addToken": ${error}`)
     }
   }
 
@@ -35,8 +44,13 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param tokenManager address to token manager
    * @param ethTokenAddr address to remove token
    */
-  async removeToken(tokenManager: string, ethTokenAddr: string) {
-    throw Error('Not implemented yet')
+  async removeToken(tokenManager: string, ethTokenAddr: string, txOptions: ITransactionOptions) {
+    try {
+      // console.log('Executing removeToken: ', { tokenManager, ethTokenAddr, txOptions })
+      return this.send('removeToken', [tokenManager, ethTokenAddr], txOptions)
+    } catch (error) {
+      throw Error(`Error in method "removeToken": ${error}`)
+    }
   }
 
   /**
@@ -45,8 +59,13 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param tokenId tokenId to burn
    * @param recipient recipient of the unlock tokens on ethereum
    */
-  async burnToken(oneToken: string, tokenId: number, recipient: string) {
-    throw Error('Not implemented yet')
+  async burnToken(oneToken: string, tokenId: BNish, recipient: string, txOptions: ITransactionOptions) {
+    try {
+      // console.log('Executing burnToken: ', { oneToken, tokenId, recipient, txOptions })
+      return this.send('burnToken', [oneToken, tokenId, recipient], txOptions)
+    } catch (error) {
+      throw Error(`Error in method "burnToken": ${error}`)
+    }
   }
 
   /**
@@ -55,8 +74,13 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param tokenIds tokenIds to burn
    * @param recipient recipient of the unlock tokens on ethereum
    */
-  async burnTokens(oneToken: string, tokenIds: number[], recipient: string) {
-    throw Error('Not implemented yet')
+  async burnTokens(oneToken: string, tokenIds: BNish[], recipient: string, txOptions: ITransactionOptions) {
+    try {
+      // console.log('Executing burnTokens: ', { oneToken, tokenIds, recipient, txOptions })
+      return this.send('burnTokens', [oneToken, tokenIds, recipient], txOptions)
+    } catch (error) {
+      throw Error(`Error in method "burnTokens": ${error}`)
+    }
   }
 
   /**
@@ -66,8 +90,19 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param recipient recipient of the minted tokens (harmony address)
    * @param receiptId transaction hash of the lock event on ethereum chain
    */
-  async mintToken(oneToken: string, tokenId: BNish, recipient: string, receiptId: string) {
-    throw Error('Not implemented yet')
+  async mintToken(
+    oneToken: string,
+    tokenId: BNish,
+    recipient: string,
+    receiptId: string,
+    txOptions: ITransactionOptions,
+  ) {
+    try {
+      // console.log('Executing mintToken: ', { oneToken, tokenId, recipient, receiptId, txOptions })
+      return this.send('mintToken', [oneToken, tokenId, recipient, receiptId], txOptions)
+    } catch (error) {
+      throw Error(`Error in method "mintToken": ${error}`)
+    }
   }
 
   /**
@@ -77,7 +112,18 @@ export class ERC721HmyManagerContract extends BaseTokenContract {
    * @param recipient recipient of the minted tokens (harmony address)
    * @param receiptId transaction hash of the lock event on ethereum chain
    */
-  async mintTokens(oneToken: string, tokenIds: BNish[], recipient: string, receiptId: string) {
-    throw Error('Not implemented yet')
+  async mintTokens(
+    oneToken: string,
+    tokenIds: BNish[],
+    recipient: string,
+    receiptId: string,
+    txOptions: ITransactionOptions,
+  ) {
+    try {
+      // console.log('Executing mintTokens: ', { oneToken, tokenId, recipient, receiptId, txOptions })
+      return this.send('mintTokens', [oneToken, tokenIds, recipient, receiptId], txOptions)
+    } catch (error) {
+      throw Error(`Error in method "mintTokens": ${error}`)
+    }
   }
 }

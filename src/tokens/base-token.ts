@@ -2,7 +2,7 @@ import { Account } from '@harmony-js/account'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { AddressZero } from '../constants'
-import { BNish, BridgeParams, ITransactionOptions } from '../interfaces'
+import { BNish, ITransactionOptions } from '../interfaces'
 import { Key } from '../key'
 import { MnemonicKey } from '../mnemonic-key'
 import { PrivateKey } from '../private-key'
@@ -76,6 +76,4 @@ export abstract class BaseToken extends BaseTokenContract {
   public setSignerByKey(key: Key | PrivateKey | MnemonicKey): void {
     this._contract.connect(key)
   }
-
-  protected abstract bridgeToken(options: BridgeParams, hmyProvider: PrivateKey,txOptions?: ITransactionOptions): Promise<void>
 }

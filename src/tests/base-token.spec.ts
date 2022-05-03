@@ -5,7 +5,7 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { AddressZero, HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
-import { BNish, BridgeParams, HarmonyShards, ITransactionOptions } from '../interfaces'
+import { BNish, HarmonyShards, ITransactionOptions } from '../interfaces'
 import { MnemonicKey } from '../mnemonic-key'
 import { PrivateKey } from '../private-key'
 import { BaseToken } from '../tokens/base-token'
@@ -26,10 +26,6 @@ class TestToken extends BaseToken {
   }
   public async balanceOf(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     return this.getBalance(address, id, txOptions)
-  }
-
-  protected bridgeToken(options: BridgeParams, hmyProvider: PrivateKey,txOptions?: ITransactionOptions): Promise<void> {
-    throw new Error('Method not implemented.')
   }
 }
 
