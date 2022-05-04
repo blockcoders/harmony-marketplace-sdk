@@ -93,6 +93,8 @@ export interface ManagerContractAddresses {
   tokenManagerContract: string
   ethUrl: string
   ethNetwork: Networkish
+  hmyUrl: string
+  hmyNetwork: Networkish
 }
 
 export interface IBridgeToken721 {

@@ -2,6 +2,7 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
+import { ethers } from 'ethers'
 import { BridgeToken } from 'src/bridge-managers/bridge-token'
 import { abi as EthManagerContractABI } from '../bridge-managers/abis/managers/hrc721-eth-manager-abi'
 import { abi as HmyManagerContractABI } from '../bridge-managers/abis/managers/hrc721-hmy-manager-abi'
@@ -14,6 +15,8 @@ import { BNish, ContractProviderType, IBridgeToken721, ITransactionOptions } fro
 import { isBNish, waitForNewBlocks } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
+
+const { JsonRpcProvider } = ethers.providers
 
 export class HRC721 extends BaseToken implements IBridgeToken721 {
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
@@ -125,7 +128,7 @@ export class HRC721 extends BaseToken implements IBridgeToken721 {
 
   public async hmyToEth(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void> {
     const { managerContracts, ethProvider, hmyProvider, ethTxOptions, hmyTxOptions } = bridge
-    const { hrc721EthManagerContract, hrc721HmyManagerContract, tokenManagerContract, ethUrl, ethNetwork } =
+    const { hrc721EthManagerContract, hrc721HmyManagerContract, tokenManagerContract, hmyUrl, hmyNetwork } =
       managerContracts
 
     // Manager Contracts
@@ -145,21 +148,19 @@ export class HRC721 extends BaseToken implements IBridgeToken721 {
       baseURI,
       ethTxOptions,
     )
-    // This is an HRC721 -> this.address should be the Harmony Address for this token contract.
-    // Why the add token expects an ethereum address and return a Harmony address?
     console.log('ADD TOKEN', addTokenTx.txStatus)
-    const hmyTokenAddress = await ethManager.mappings(this.address, ethTxOptions)
-    console.log('MAPPINGS: ', hmyTokenAddress)
+    const ethTokenAddress = await ethManager.mappings(this.address, ethTxOptions)
+    console.log('MAPPINGS: ', ethTokenAddress)
 
     const approveHmyManagerTx = await this.approve(hmyManager.address, tokenId, hmyTxOptions)
     console.log('APPROVE', approveHmyManagerTx)
 
-    const lockTokenTx = await hmyManager.lockNFT721Token(this.address, tokenId, ethAddress, hmyTxOptions)
+    const lockTokenTx = await hmyManager.lockNFT721Token(ethTokenAddress, tokenId, ethAddress, hmyTxOptions)
     console.log('LOCK', lockTokenTx)
-    // TODO FIX THIS
-    await waitForNewBlocks(ethUrl, ethNetwork)
+    const provider = new JsonRpcProvider(hmyUrl, hmyNetwork)
+    await waitForNewBlocks(provider)
     console.log('WAIT COMPLETE')
-    const mintTx = await ethManager.mintToken(hmyTokenAddress, tokenId, ethAddress, lockTokenTx.id, ethTxOptions)
+    const mintTx = await ethManager.mintToken(ethTokenAddress, tokenId, ethAddress, lockTokenTx.id, ethTxOptions)
     console.log(mintTx)
   }
 }

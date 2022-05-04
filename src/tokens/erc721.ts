@@ -1,4 +1,5 @@
 import { Transaction } from '@harmony-js/transaction'
+import { ethers } from 'ethers'
 import { abi as EthManagerContractABI } from '../bridge-managers/abis/managers/erc721-eth-manager-abi'
 import { abi as HmyManagerContractABI } from '../bridge-managers/abis/managers/erc721-hmy-manager-abi'
 import { abi as TokenManagerABI } from '../bridge-managers/abis/managers/token-manager-abi'
@@ -11,6 +12,8 @@ import { ITransactionOptions, BNish, IBridgeToken721 } from '../interfaces'
 import { isBNish, waitForNewBlocks } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
+
+const { JsonRpcProvider } = ethers.providers
 
 export class ERC721 extends BaseToken implements IBridgeToken721 {
   public async symbol(txOptions?: ITransactionOptions): Promise<string> {
@@ -70,7 +73,8 @@ export class ERC721 extends BaseToken implements IBridgeToken721 {
     const lockTokenForTx = await ethManager.lockTokenFor(this.address, ethAddress, tokenId, oneAddress, ethTxOptions)
     console.log('LOCK', lockTokenForTx)
 
-    await waitForNewBlocks(ethUrl, ethNetwork)
+    const provider = new JsonRpcProvider(ethUrl, ethNetwork)
+    await waitForNewBlocks(provider)
     console.log('WAIT COMPLETE')
     const mintTx = await hmyManager.mintToken(hmyTokenAddress, tokenId, oneAddress, lockTokenForTx.id, hmyTxOptions)
     console.log(mintTx)

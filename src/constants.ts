@@ -78,6 +78,8 @@ export const TESTNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
   tokenManagerContract: '0xBB64ca9fd17EacC17796bFb2D3b3271501DB5EB4',
   ethUrl: 'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
   ethNetwork: '3',
+  hmyUrl: 'https://api.s0.b.hmny.io',
+  hmyNetwork: '2',
 }
 
 export const MAINNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
@@ -92,6 +94,8 @@ export const MAINNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
   tokenManagerContract: '',
   ethUrl: '',
   ethNetwork: '',
+  hmyUrl: '',
+  hmyNetwork: '',
 }
 
 export const BLOCKS_TO_WAIT = 14

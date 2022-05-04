@@ -1,10 +1,8 @@
-import { Networkish } from '@ethersproject/networks'
+import { BaseProvider } from '@ethersproject/providers'
 import { isArrayish, isHexString } from '@harmony-js/crypto'
 import BN from 'bn.js'
-import { ethers } from 'ethers'
 import { BLOCKS_TO_WAIT } from './constants'
 import { BNish } from './interfaces'
-const { JsonRpcProvider } = ethers.providers
 
 export function isBNish(value: any): value is BNish {
   return (
@@ -18,8 +16,7 @@ export function isBNish(value: any): value is BNish {
   )
 }
 
-export async function waitForNewBlocks(url: string, network: Networkish): Promise<void> {
-  const provider = new JsonRpcProvider(url, network)
+export async function waitForNewBlocks(provider: BaseProvider): Promise<void> {
   const blockNumber = await provider.getBlockNumber()
   new Promise<void>((resolve, reject) => {
     try {
