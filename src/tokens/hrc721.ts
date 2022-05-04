@@ -2,12 +2,20 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { BNish, ContractProviderType, ITransactionOptions } from '../interfaces'
-import { isBNish } from '../utils'
+import { BridgeToken } from 'src/bridge-managers/bridge-token'
+import { abi as EthManagerContractABI } from '../bridge-managers/abis/managers/hrc721-eth-manager-abi'
+import { abi as HmyManagerContractABI } from '../bridge-managers/abis/managers/hrc721-hmy-manager-abi'
+import { abi as TokenManagerABI } from '../bridge-managers/abis/managers/token-manager-abi'
+import { abi as HRC721ABI } from '../bridge-managers/abis/tokens/hrc721'
+import { HRC721EthManagerContract } from '../bridge-managers/contracts/hrc721/eth-manager'
+import { HRC721HmyManagerContract } from '../bridge-managers/contracts/hrc721/hmy-manager'
+import { TokenManager } from '../bridge-managers/contracts/token-manager'
+import { BNish, ContractProviderType, IBridgeToken721, ITransactionOptions } from '../interfaces'
+import { isBNish, waitForNewBlocks } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
 
-export class HRC721 extends BaseToken {
+export class HRC721 extends BaseToken implements IBridgeToken721 {
   constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
     super(address, abi, provider, options)
   }
@@ -83,5 +91,75 @@ export class HRC721 extends BaseToken {
 
   public async name(txOptions?: ITransactionOptions): Promise<string> {
     return this.call<string>('name', [], txOptions)
+  }
+
+  public async ethToHmy(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void> {
+    const { managerContracts, ethProvider, hmyProvider, ethTxOptions, hmyTxOptions } = bridge
+    const { hrc721EthManagerContract, hrc721HmyManagerContract, tokenManagerContract } = managerContracts
+
+    // Manager Contracts
+    const ethManager = new HRC721EthManagerContract(hrc721EthManagerContract, EthManagerContractABI, ethProvider)
+    const hmyManager = new HRC721HmyManagerContract(hrc721HmyManagerContract, HmyManagerContractABI, hmyProvider)
+    const hmyTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, hmyProvider)
+
+    const hmyTokenAddress = await ethManager.mappings(this.address, ethTxOptions)
+    console.log('MAPPINGS: ', hmyTokenAddress)
+
+    const ethHRC721Token = new HRC721(hmyTokenAddress, HRC721ABI, bridge.hmyProvider)
+
+    const approveEthManagerTx = await ethHRC721Token.approve(ethManager.address, tokenId, ethTxOptions)
+    console.log('APPROVE', approveEthManagerTx.id)
+
+    // Is this.address the harmony token ?
+    const burnTokenTx = await ethManager.burnToken(this.address, tokenId, oneAddress, ethTxOptions)
+    console.log('BURN', burnTokenTx.id)
+
+    // This should recieve ethToken address?
+    const unlockTokenTx = await hmyManager.unlockToken(this.address, tokenId, oneAddress, burnTokenTx.id, hmyTxOptions)
+    console.log('UNLOCK', unlockTokenTx.id)
+
+    // This should recieve ethToken address?
+    const removeTokenTx = await ethManager.removeToken(hmyTokenManager.address, this.address, ethTxOptions)
+    console.log('REMOVE TOKEN', removeTokenTx.txStatus)
+  }
+
+  public async hmyToEth(bridge: BridgeToken, ethAddress: string, oneAddress: string, tokenId: BNish): Promise<void> {
+    const { managerContracts, ethProvider, hmyProvider, ethTxOptions, hmyTxOptions } = bridge
+    const { hrc721EthManagerContract, hrc721HmyManagerContract, tokenManagerContract, ethUrl, ethNetwork } =
+      managerContracts
+
+    // Manager Contracts
+    const ethManager = new HRC721EthManagerContract(hrc721EthManagerContract, EthManagerContractABI, ethProvider)
+    const hmyManager = new HRC721HmyManagerContract(hrc721HmyManagerContract, HmyManagerContractABI, hmyProvider)
+    const hmyTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, hmyProvider)
+
+    // Add Token in Hmy
+    const symbol = await this.symbol(hmyTxOptions)
+    const name = await this.name(hmyTxOptions)
+    const baseURI = await this.tokenURI(tokenId, hmyTxOptions)
+    const addTokenTx = await ethManager.addToken(
+      hmyTokenManager.address,
+      this.address,
+      name,
+      symbol,
+      baseURI,
+      ethTxOptions,
+    )
+    // This is an HRC721 -> this.address should be the Harmony Address for this token contract.
+    // Why the add token expects an ethereum address and return a Harmony address?
+    console.log('ADD TOKEN', addTokenTx.txStatus)
+    const hmyTokenAddress = await ethManager.mappings(this.address, ethTxOptions)
+    console.log('MAPPINGS: ', hmyTokenAddress)
+
+    const approveHmyManagerTx = await this.approve(hmyManager.address, tokenId, hmyTxOptions)
+    console.log('APPROVE', approveHmyManagerTx)
+
+    const lockTokenTx = await hmyManager.lockNFT721Token(this.address, tokenId, ethAddress, hmyTxOptions)
+    console.log('LOCK', lockTokenTx)
+    // TODO FIX THIS
+    await waitForNewBlocks(ethUrl, ethNetwork)
+    console.log('WAIT COMPLETE')
+    const mintTx = await ethManager.mintToken(hmyTokenAddress, tokenId, ethAddress, lockTokenTx.id, ethTxOptions)
+    console.log(mintTx)
   }
 }

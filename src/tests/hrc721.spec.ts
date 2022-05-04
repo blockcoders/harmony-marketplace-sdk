@@ -2,7 +2,9 @@ import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
+import { BridgeToken } from '../bridge-managers/bridge-token'
 import { AddressZero } from '../constants'
+import { BRIDGE, BridgeParams, BRIDGE_TOKENS } from '../interfaces'
 import { HRC721 } from '../tokens/hrc721'
 import {
   HRC721_CONTRACT_ADDRESS,
@@ -13,6 +15,7 @@ import {
   TX_OPTIONS,
   WALLET_PROVIDER_TEST_1,
   TOKEN_SWORD,
+  WALLET_ETH_PROVIDER_TEST_1,
 } from './constants'
 import { ABI } from './contracts/HRC721/abi'
 
@@ -288,6 +291,23 @@ describe('HRC721 Contract Interface', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(contract.approve('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('bridgeToken E2E', () => {
+    it.only('Sends an HRC721 token from hmy to eth', async () => {
+      const params: BridgeParams = {
+        ethAddress: TEST_ADDRESS_1,
+        oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff',
+        type: BRIDGE.HMY_TO_ETH,
+        token: BRIDGE_TOKENS.HRC721,
+        amount: 20,
+        tokenId: 5,
+      }
+
+      const bridge = new BridgeToken(contract, WALLET_ETH_PROVIDER_TEST_1, WALLET_PROVIDER_TEST_1)
+
+      await bridge.bridgeToken(params)
     })
   })
 })

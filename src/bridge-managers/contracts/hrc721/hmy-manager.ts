@@ -1,4 +1,4 @@
-import { ITransactionOptions } from '../../../interfaces'
+import { BNish, ITransactionOptions } from '../../../interfaces'
 import { BaseTokenContract } from '../../../tokens/base-token-contract'
 
 export class HRC721HmyManagerContract extends BaseTokenContract {
@@ -8,7 +8,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
    * @param tokenId tokenId of the token to lock
    * @param recipient recipient address on the harmony chain
    */
-  async lockNFT721Token(ethTokenAddr: string, tokenId: number, recipient: string, txOptions: ITransactionOptions) {
+  async lockNFT721Token(ethTokenAddr: string, tokenId: BNish, recipient: string, txOptions: ITransactionOptions) {
     try {
       // console.log('Executing lockNFT721Token: ', { ethTokenAddr, tokenId, recipient, txOptions })
       return this.send('lockNFT721Token', [ethTokenAddr, tokenId, recipient], txOptions)
@@ -23,7 +23,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
    * @param tokenIds tokenIds of the token to lock
    * @param recipient recipient address on the harmony chain
    */
-  async lockTokens(ethTokenAddr: string, tokenIds: number[], recipient: string, txOptions: ITransactionOptions) {
+  async lockTokens(ethTokenAddr: string, tokenIds: BNish[], recipient: string, txOptions: ITransactionOptions) {
     try {
       // console.log('Executing lockTokens: ', { ethTokenAddr, tokenIds, recipient, txOptions })
       return this.send('lockTokens', [ethTokenAddr, tokenIds, recipient], txOptions)
@@ -41,7 +41,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
    */
   async unlockToken(
     ethTokenAddr: string,
-    tokenId: number,
+    tokenId: BNish,
     recipient: string,
     receiptId: string,
     txOptions: ITransactionOptions,
@@ -63,7 +63,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
    */
   async unlockTokens(
     ethTokenAddr: string,
-    tokenIds: number[],
+    tokenIds: BNish[],
     recipient: string,
     receiptId: string,
     txOptions: ITransactionOptions,
@@ -84,9 +84,9 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
    */
   async lockNFT1155Token(
     ethTokenAddr: string,
-    tokenId: number,
+    tokenId: BNish,
     recipient: string,
-    amount: number,
+    amount: BNish,
     data: any,
     txOptions: ITransactionOptions,
   ) {
@@ -100,7 +100,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
 
   async unlockNFT1155Token(
     ethTokenAddr: string,
-    tokenId: number,
+    tokenId: BNish,
     recipient: string,
     receiptId: string,
     txOptions: ITransactionOptions,
@@ -119,7 +119,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
    * @param tokenIds tokenIds of the token to lock
    * @param recipient recipient address on the harmony chain
    */
-  async lockNFT1155Tokens(ethTokenAddr: string, tokenIds: number[], recipient: string, txOptions: ITransactionOptions) {
+  async lockNFT1155Tokens(ethTokenAddr: string, tokenIds: BNish[], recipient: string, txOptions: ITransactionOptions) {
     try {
       // console.log('Executing lockNFT1155Tokens: ', { ethTokenAddr, tokenIds, recipient, txOptions })
       return this.send('lockNFT1155Tokens', [ethTokenAddr, tokenIds, recipient], txOptions)
@@ -130,7 +130,7 @@ export class HRC721HmyManagerContract extends BaseTokenContract {
 
   async unlockNFT1155Tokens(
     ethTokenAddr: string,
-    tokenIds: number[],
+    tokenIds: BNish[],
     recipient: string,
     receiptId: string,
     txOptions: ITransactionOptions,

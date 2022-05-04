@@ -1,7 +1,20 @@
-import { ITransactionOptions } from '../../../interfaces'
+import { BNish, ITransactionOptions } from '../../../interfaces'
 import { BaseTokenContract } from '../../../tokens/base-token-contract'
 
 export class HRC721EthManagerContract extends BaseTokenContract {
+  /**
+   * @dev get the oneAddress for a given ethTokenAddress
+   * @param ethTokenAddress ethereum token address to get
+   */
+  async mappings(ethTokenAddress: string, txOptions?: ITransactionOptions): Promise<string> {
+    try {
+      // console.log('Executing mappings: ', { ethTokenAddress, txOptions })
+      return this.call('mappings', [ethTokenAddress], txOptions)
+    } catch (error) {
+      throw Error(`Error in method "mappings": ${error}`)
+    }
+  }
+
   /**
    * @dev map an ethereum token to harmony
    * @param tokenManager address to token manager
@@ -46,7 +59,7 @@ export class HRC721EthManagerContract extends BaseTokenContract {
    * @param tokenId tokenId to burn
    * @param recipient recipient of the unlock tokens on ethereum
    */
-  async burnToken(oneToken: string, tokenId: number, recipient: string, txOptions: ITransactionOptions) {
+  async burnToken(oneToken: string, tokenId: BNish, recipient: string, txOptions: ITransactionOptions) {
     try {
       // console.log('Executing burnToken: ', { oneToken, tokenId, recipient, txOptions })
       return this.send('burnToken', [oneToken, tokenId, recipient], txOptions)
@@ -61,7 +74,7 @@ export class HRC721EthManagerContract extends BaseTokenContract {
    * @param tokenIds tokenIds to burn
    * @param recipient recipient of the unlock tokens on ethereum
    */
-  async burnTokens(oneToken: string, tokenIds: number[], recipient: string, txOptions: ITransactionOptions) {
+  async burnTokens(oneToken: string, tokenIds: BNish[], recipient: string, txOptions: ITransactionOptions) {
     try {
       // console.log('Executing burnTokens: ', { oneToken, tokenIds, recipient, txOptions })
       return this.send('burnTokens', [oneToken, tokenIds, recipient], txOptions)
@@ -79,7 +92,7 @@ export class HRC721EthManagerContract extends BaseTokenContract {
    */
   async mintToken(
     oneToken: string,
-    tokenId: number,
+    tokenId: BNish,
     recipient: string,
     receiptId: string,
     txOptions: ITransactionOptions,
@@ -101,7 +114,7 @@ export class HRC721EthManagerContract extends BaseTokenContract {
    */
   async mintTokens(
     oneToken: string,
-    tokenIds: number[],
+    tokenIds: BNish[],
     recipient: string,
     receiptId: string,
     txOptions: ITransactionOptions,

@@ -22,7 +22,7 @@ describe('ERC721 Contract Interface', () => {
   })
 
   describe('bridgeToken E2E', () => {
-    it.only('Sends an ERC721 token from eth to hmy and then back to eth', async () => {
+    it.skip('Sends an ERC721 token from eth to hmy', async () => {
       const paramsEthToHmy: BridgeParams = {
         ethAddress: TEST_ADDRESS_1,
         oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff',
