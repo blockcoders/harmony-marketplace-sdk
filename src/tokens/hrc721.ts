@@ -135,9 +135,9 @@ export class HRC721 extends BaseToken implements IBridgeToken721 {
     const ethManager = new HRC721EthManagerContract(hrc721EthManagerContract, EthManagerContractABI, ethProvider)
     const hmyManager = new HRC721HmyManagerContract(hrc721HmyManagerContract, HmyManagerContractABI, hmyProvider)
     const hmyTokenManager = new TokenManager(tokenManagerContract, TokenManagerABI, hmyProvider)
-
     // Add Token in Hmy
     const symbol = await this.symbol(hmyTxOptions)
+    console.log('details')
     const name = await this.name(hmyTxOptions)
     const baseURI = await this.tokenURI(tokenId, hmyTxOptions)
     const addTokenTx = await ethManager.addToken(
