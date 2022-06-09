@@ -295,7 +295,7 @@ describe('HRC721 Contract Interface', () => {
   })
 
   describe('bridgeToken E2E', () => {
-    it.only('Sends an HRC721 token from hmy to eth', async () => {
+    it('Sends an HRC721 token from hmy to eth', async () => {
       const params: BridgeParams = {
         ethAddress: TEST_ADDRESS_1,
         oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff',

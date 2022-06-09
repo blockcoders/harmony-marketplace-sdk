@@ -20,7 +20,7 @@ export class BridgeToken {
   public readonly hmyProvider: ContractProviderType
   public readonly ethTxOptions: ITransactionOptions
   public readonly hmyTxOptions: ITransactionOptions
-  public readonly managerContracts: ManagerContractAddresses
+  public managerContracts: ManagerContractAddresses
   public readonly token: IBridgeToken721 | IBridgeToken1155
 
   constructor(
