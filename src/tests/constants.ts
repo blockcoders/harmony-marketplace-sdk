@@ -29,9 +29,9 @@ export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
 )
 
 export const WALLET_ETH_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
-  'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
+  'https://rinkeby.infura.io/v3/2e9b76ccf317401c8a9ba38c8816cdaf',
   ETH_TEST_PK.toLowerCase(),
-  ChainID.Ropsten,
+  ChainID.Rinkeby,
   ChainType.Ethereum,
 )
 

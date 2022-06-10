@@ -40,8 +40,7 @@ export class BridgeToken {
   }
 
   async bridgeToken(options: BridgeParams) {
-    const { tokenId, amount, type, ethAddress, oneAddress } = options
-    if (amount <= 0) throw new Error('amount must be greater than zero')
+    const { tokenId, type, ethAddress, oneAddress } = options
     if (!isBNish(tokenId)) {
       throw new Error('You must provide a tokenId')
     }

@@ -72,7 +72,6 @@ export interface HDOptions extends MnemonicOptions {
 }
 
 export interface BridgeParams {
-  amount: number
   oneAddress: string
   ethAddress: string
   type: BRIDGE

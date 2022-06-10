@@ -12,7 +12,7 @@ import { HRC721EthManagerContract } from '../bridge-managers/contracts/hrc721/et
 import { HRC721HmyManagerContract } from '../bridge-managers/contracts/hrc721/hmy-manager'
 import { TokenManager } from '../bridge-managers/contracts/token-manager'
 import { BNish, ContractProviderType, IBridgeToken721, ITransactionOptions } from '../interfaces'
-import { isBNish, waitForNewBlocks } from '../utils'
+import { isBNish } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
 
@@ -158,7 +158,8 @@ export class HRC721 extends BaseToken implements IBridgeToken721 {
     const lockTokenTx = await hmyManager.lockNFT721Token(ethTokenAddress, tokenId, ethAddress, hmyTxOptions)
     console.log('LOCK', lockTokenTx)
     const provider = new JsonRpcProvider(hmyUrl, hmyNetwork)
-    await waitForNewBlocks(provider)
+    console.log(provider)
+    //await waitForNewBlocks(provider)
     console.log('WAIT COMPLETE')
     const mintTx = await ethManager.mintToken(ethTokenAddress, tokenId, ethAddress, lockTokenTx.id, ethTxOptions)
     console.log(mintTx)

@@ -301,7 +301,6 @@ describe('HRC721 Contract Interface', () => {
         oneAddress: 'one1rnh8ruyzr7ma8n96e23zrtr7x49u0epe283wff',
         type: BRIDGE.HMY_TO_ETH,
         token: BRIDGE_TOKENS.HRC721,
-        amount: 20,
         tokenId: 5,
       }
 

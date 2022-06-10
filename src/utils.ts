@@ -1,7 +1,5 @@
-import { BaseProvider } from '@ethersproject/providers'
 import { isArrayish, isHexString } from '@harmony-js/crypto'
 import BN from 'bn.js'
-import { BLOCKS_TO_WAIT } from './constants'
 import { BNish } from './interfaces'
 
 export function isBNish(value: any): value is BNish {
@@ -14,18 +12,4 @@ export function isBNish(value: any): value is BNish {
       typeof value === 'bigint' ||
       isArrayish(value))
   )
-}
-
-export async function waitForNewBlocks(provider: BaseProvider): Promise<void> {
-  const blockNumber = await provider.getBlockNumber()
-  new Promise<void>((resolve, reject) => {
-    try {
-      provider.on('block', async () => {
-        const currentBlock = await provider.getBlockNumber()
-        if (currentBlock >= blockNumber + BLOCKS_TO_WAIT) resolve()
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
 }

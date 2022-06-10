@@ -102,8 +102,8 @@ export const BLOCKS_TO_WAIT = 14
 export const AVG_BLOCK_TIME = 20 * 1000
 
 export const DEFAULT_ETH_TX_OPTIONS: ITransactionOptions = {
-  gasLimit: '5000000',
   gasPrice: '100',
+  gasLimit: '5000000',
 }
 
 export const DEFAULT_HMY_TX_OPTIONS: ITransactionOptions = {

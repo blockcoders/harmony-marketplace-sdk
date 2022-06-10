@@ -1,5 +1,5 @@
 import { Transaction } from '@harmony-js/transaction'
-import { ethers } from 'ethers'
+import { BLOCKS_TO_WAIT } from '../constants'
 import { abi as EthManagerContractABI } from '../bridge-managers/abis/managers/erc721-eth-manager-abi'
 import { abi as HmyManagerContractABI } from '../bridge-managers/abis/managers/erc721-hmy-manager-abi'
 import { abi as TokenManagerABI } from '../bridge-managers/abis/managers/token-manager-abi'
@@ -9,10 +9,10 @@ import { ERC721EthManagerContract } from '../bridge-managers/contracts/erc721/et
 import { ERC721HmyManagerContract } from '../bridge-managers/contracts/erc721/hmy-manager'
 import { TokenManager } from '../bridge-managers/contracts/token-manager'
 import { ITransactionOptions, BNish, IBridgeToken721 } from '../interfaces'
-import { isBNish, waitForNewBlocks } from '../utils'
+import { isBNish } from '../utils'
 import { BaseToken } from './base-token'
 import { ContractError } from './base-token-contract'
-
+import { ethers } from 'ethers'
 const { JsonRpcProvider } = ethers.providers
 
 export class ERC721 extends BaseToken implements IBridgeToken721 {
@@ -33,7 +33,6 @@ export class ERC721 extends BaseToken implements IBridgeToken721 {
     if (!isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'tokenURI')
     }
-    console.log(tokenId)
     return this.call<string>('tokenURI', [tokenId], txOptions)
   }
 
@@ -64,6 +63,7 @@ export class ERC721 extends BaseToken implements IBridgeToken721 {
       hmyTxOptions,
     )
     console.log('ADD TOKEN', addTokenTx.txStatus)
+  
     const hmyTokenAddress = await hmyManager.mappings(this.address, hmyTxOptions)
     console.log('MAPPINGS: ', hmyTokenAddress)
 
@@ -72,10 +72,21 @@ export class ERC721 extends BaseToken implements IBridgeToken721 {
 
     const lockTokenForTx = await ethManager.lockTokenFor(this.address, ethAddress, tokenId, oneAddress, ethTxOptions)
     console.log('LOCK', lockTokenForTx)
-
+    
     const provider = new JsonRpcProvider(ethUrl, ethNetwork)
-    await waitForNewBlocks(provider)
+    const currentBlock = await provider.getBlockNumber()
+    const expectedBlockNumber = currentBlock + BLOCKS_TO_WAIT
+    await new Promise((res) => {
+      provider.on('block', (blockNumber: number) => {
+        if (blockNumber <= expectedBlockNumber) {
+          console.log(`Currently at block ${blockNumber}, waiting for block ${expectedBlockNumber} to be confirmed`)
+        } else {
+          res(null)
+        }
+      })
+    })
     console.log('WAIT COMPLETE')
+
     const mintTx = await hmyManager.mintToken(hmyTokenAddress, tokenId, oneAddress, lockTokenForTx.id, hmyTxOptions)
     console.log(mintTx)
   }

@@ -25,10 +25,10 @@ export class TokenManager extends BaseTokenContract {
    * @param ethTokenAddr address of the ethereum token
    * @return mintAddress of the mapped token
    */
-  async addToken(ethTokenAddr: string, name: string, symbol: string, decimals: number, txOptions: ITransactionOptions) {
+  async addToken(ethTokenAddr: string, name: string, symbol: string, baseURI: string, txOptions: ITransactionOptions) {
     try {
       // console.log('Executing addToken: ', { ethTokenAddr, name, symbol, decimals, txOptions })
-      return this.send('addToken', [ethTokenAddr, name, symbol, decimals], txOptions)
+      return this.send('addToken', [ethTokenAddr, name, symbol, baseURI], txOptions)
     } catch (error) {
       throw Error(`Error in method "addToken": ${error}`)
     }
