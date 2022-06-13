@@ -1,5 +1,5 @@
 import { ChainID, ChainType } from '@harmony-js/utils'
-import { HarmonyRpcConfig, HarmonyShards, ManagerContractAddresses } from './interfaces'
+import { HarmonyRpcConfig, HarmonyShards } from './interfaces'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const DEFAULT_GAS_PRICE = '1' // 1 Gwei
@@ -65,34 +65,3 @@ export const HARMONY_SHARDS = {
   [HarmonyShards.SHARD_2_TESTNET]: HARMONY_RPC_SHARD_2_TESTNET,
   [HarmonyShards.SHARD_3_TESTNET]: HARMONY_RPC_SHARD_3_TESTNET,
 }
-
-export const TESTNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
-  erc721EthManagerContract: '0xa44014b0b735dC8C1856f9b41C2112Fe1CfAa948',
-  erc721HmyManagerContract: '0xD235efe296E8349FE5700D4618c8720B3b2dFB8E',
-  hrc721EthManagerContract: '',
-  hrc721HmyManagerContract: '',
-  erc1155EthManagerContract: '',
-  erc1155HmyManagerContract: '',
-  hrc1155EthManagerContract: '',
-  hrc1155HmyManagerContract: '',
-  tokenManagerContract: '0xBB64ca9fd17EacC17796bFb2D3b3271501DB5EB4',
-  ethUrl: 'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
-  ethNetwork: '3',
-}
-
-export const MAINNET_BRIDGE_CONTRACTS: ManagerContractAddresses = {
-  erc721EthManagerContract: '',
-  erc721HmyManagerContract: '',
-  hrc721EthManagerContract: '',
-  hrc721HmyManagerContract: '',
-  erc1155EthManagerContract: '',
-  erc1155HmyManagerContract: '',
-  hrc1155EthManagerContract: '',
-  hrc1155HmyManagerContract: '',
-  tokenManagerContract: '',
-  ethUrl: '',
-  ethNetwork: '',
-}
-
-export const BLOCKS_TO_WAIT = 14
-export const AVG_BLOCK_TIME = 20 * 1000

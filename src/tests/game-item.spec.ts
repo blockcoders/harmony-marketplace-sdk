@@ -1,10 +1,11 @@
 import { ChainID } from '@harmony-js/utils'
+import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
+import { HRC1155 } from '../contracts'
 import { HarmonyShards } from '../interfaces'
-import { Key } from '../key'
-import { GameItems } from '../tokens/game-item'
+import { Key } from '../wallets'
 import {
   HRC1155_CONTRACT_ADDRESS,
   TOKEN_GOLD,
@@ -15,9 +16,36 @@ import {
 } from './constants'
 import { ABI } from './contracts/GameItems/abi'
 
-describe('Game Item Provider', () => {
-  use(chaiAsPromised)
+use(chaiAsPromised)
 
+export class GameItems extends HRC1155 {
+  async getGold(): Promise<number> {
+    const gold = await this.call<BN>('GOLD')
+    return gold.toNumber()
+  }
+
+  async getSilver(): Promise<number> {
+    const silver = await this.call<BN>('SILVER')
+    return silver.toNumber()
+  }
+
+  async getThorsHammer(): Promise<number> {
+    const thors = await this.call<BN>('THORS_HAMMER')
+    return thors.toNumber()
+  }
+
+  async getSword(): Promise<number> {
+    const sword = await this.call<BN>('SWORD')
+    return sword.toNumber()
+  }
+
+  async getShield(): Promise<number> {
+    const shield = await this.call<BN>('SHIELD')
+    return shield.toNumber()
+  }
+}
+
+describe('Game Item Contract Extension', () => {
   let contract: GameItems
   let provider: Key
 

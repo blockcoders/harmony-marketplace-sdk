@@ -1,9 +1,8 @@
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
 import { HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
-import { Key } from '../key'
-import { PrivateKey } from '../private-key'
 import { TEST_PK_1, TEST_ADDRESS_1 } from '../tests/constants'
+import { Key, PrivateKey } from '../wallets'
 
 describe('Private Key Class', () => {
   let instance: PrivateKey

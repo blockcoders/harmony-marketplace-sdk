@@ -3,7 +3,7 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { AddressZero } from '../constants'
-import { HRC721 } from '../tokens/hrc721'
+import { HRC721 } from '../contracts'
 import {
   HRC721_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
@@ -16,9 +16,9 @@ import {
 } from './constants'
 import { ABI } from './contracts/HRC721/abi'
 
-describe('HRC721 Contract Interface', () => {
-  use(chaiAsPromised)
+use(chaiAsPromised)
 
+describe('HRC721 Contract Interface', () => {
   let contract: HRC721
 
   before(() => {
@@ -288,6 +288,43 @@ describe('HRC721 Contract Interface', () => {
 
     it('should throw an error if params are not provided', async () => {
       expect(contract.approve('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('setApprovalForAll', () => {
+    it('should throw an error if addressOperator is not provided in HRC1155', async () => {
+      expect(contract.setApprovalForAll('', true)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOperator is not provided in HRC721', async () => {
+      expect(contract.setApprovalForAll('', true)).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('isApprovedForAll', () => {
+    it('should throw an error if addressOwner is not provided in HRC1155', async () => {
+      expect(contract.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOwner is not provided in HRC721', async () => {
+      expect(contract.isApprovedForAll('', EMPTY_TEST_ADDRESS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOperator is not provided in HRC1155', async () => {
+      expect(contract.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if addressOperator is not provided in HRC721', async () => {
+      expect(contract.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided in HRC1155', async () => {
+      expect(contract.isApprovedForAll('', '')).to.be.rejectedWith(Error)
+      expect(contract.isApprovedForAll('', '')).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided in HRC721', async () => {
+      expect(contract.isApprovedForAll('', '')).to.be.rejectedWith(Error)
     })
   })
 })

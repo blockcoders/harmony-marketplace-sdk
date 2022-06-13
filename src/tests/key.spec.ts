@@ -4,7 +4,7 @@ import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
 import { HARMONY_RPC_SHARD_0_TESTNET, HARMONY_RPC_SHARD_1_TESTNET, HARMONY_RPC_TESTNET_WS } from '../constants'
 import { HarmonyShards } from '../interfaces'
-import { Key } from '../key'
+import { Key } from '../wallets'
 
 describe('Key Class', () => {
   let instance: Key

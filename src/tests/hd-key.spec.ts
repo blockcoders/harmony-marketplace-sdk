@@ -7,13 +7,12 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { HARMONY_RPC_SHARD_0_TESTNET_URL } from '../constants'
-import { HDKey } from '../hd-key'
-import { Key } from '../key'
+import { Key, HDKey } from '../wallets'
 import { options, FAKE_TX_HRC721, TEST_ADDRESS_1, TEST_PK_1, TEST_ADDRESS_2 } from './constants'
 
-describe('HD Key Class', () => {
-  use(chaiAsPromised)
+use(chaiAsPromised)
 
+describe('HD Key', () => {
   let instance: HDKey
 
   before(() => {

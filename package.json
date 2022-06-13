@@ -20,6 +20,7 @@
     "test": "NODE_ENV=test mocha -t 120000 --require ts-node/register src/**/*.spec.ts --exit",
     "test:watch": "NODE_ENV=test mocha -t 120000 --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
     "test:cov": "nyc npm run test",
+    "test:e2e": "NODE_ENV=test mocha -t 120000 --require ts-node/register tests/**/*.e2e-spec.ts --exit",
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
     "build": "tsc --build ./tsconfig.json",
     "build-all": "npm run build-cjs && npm run build-esnext && npm run build-esm",

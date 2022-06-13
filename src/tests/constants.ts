@@ -1,10 +1,9 @@
+import 'dotenv/config'
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID, ChainType } from '@harmony-js/utils'
-import 'dotenv/config'
 import { ITransactionOptions, HDOptions } from 'src/interfaces'
 import { HarmonyShards } from '../interfaces'
-import { MnemonicKey } from '../mnemonic-key'
-import { PrivateKey } from '../private-key'
+import { MnemonicKey, PrivateKey } from '../wallets'
 
 export const HARMONY_TESTNET = 'https://api.s0.b.hmny.io/'
 
@@ -30,7 +29,7 @@ export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
 
 export const WALLET_ETH_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
   'https://ropsten.infura.io/v3/7d13ce4d18e5424bbc618b371204cb19',
-  TEST_PK_1.toLowerCase(),
+  ETH_TEST_PK.toLowerCase(),
   ChainID.Ropsten,
   ChainType.Ethereum,
 )
@@ -63,7 +62,7 @@ export const TOKEN_SWORD = 3
 export const TOKEN_SHIELD = 4
 export const TX_OPTIONS: ITransactionOptions = {
   gasLimit: '5000000',
-  gasPrice: '100',
+  gasPrice: '0',
 }
 
 export const FAKE_TX_HRC721 = new Transaction({
