@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721Holder.sol";
-import "../erc1155/ERC1155Holder.sol";
-import "../erc1155/IERC1155.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-contract HRC721HmyManager is ERC721Holder, ERC1155Holder {
+contract HRC721HmyManager is ERC721Holder {
     using SafeMath for uint256;
 
     mapping(bytes32 => bool) public usedEvents_;
@@ -36,7 +34,7 @@ contract HRC721HmyManager is ERC721Holder, ERC1155Holder {
      * @dev constructor
      * @param _wallet is the multisig wallet
      */
-    constructor(address _wallet) public {
+    constructor(address _wallet) {
         wallet = _wallet;
     }
 

@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./BridgedHRC20Token.sol";
+import "./BridgedHRC1155Token.sol";
 
-contract HRC20TokenManager is Ownable {
+contract HRC1155TokenManager is Ownable {
     // ethtoken to onetoken mapping
     mapping(address => address) public mappedTokens;
 
@@ -31,13 +30,16 @@ contract HRC20TokenManager is Ownable {
     /**
      * @dev map ethereum token to harmony token and emit mintAddress
      * @param ethTokenAddr address of the ethereum token
+     * @param name name of the token
+     * @param symbol of the token
+     * @param baseURI of the token
      * @return mintAddress of the mapped token
      */
-    function addToken(
+    function addHRC1155Token(
         address ethTokenAddr,
         string memory name,
         string memory symbol,
-        uint8 decimals
+        string memory baseURI
     ) public auth returns (address) {
         require(
             ethTokenAddr != address(0),
@@ -48,11 +50,11 @@ contract HRC20TokenManager is Ownable {
             "TokenManager/ethToken already mapped"
         );
 
-        BridgedHRC20Token bridgedToken = new BridgedHRC20Token(
+        BridgedHRC1155Token bridgedToken = new BridgedHRC1155Token(
             ethTokenAddr,
             name,
             symbol,
-            decimals
+            baseURI
         );
         address bridgedTokenAddr = address(bridgedToken);
 
@@ -72,9 +74,9 @@ contract HRC20TokenManager is Ownable {
      * @return oneToken of the mapped harmony token
      */
     function registerToken(address ethTokenAddr, address oneTokenAddr)
-        public
-        auth
-        returns (bool)
+    public
+    auth
+    returns (bool)
     {
         require(
             ethTokenAddr != address(0),
@@ -96,14 +98,13 @@ contract HRC20TokenManager is Ownable {
      * @param ethTokenAddr address of the ethereum token
      * @param supply only allow removing mapping when supply, e.g., zero or 10**27
      */
-    function removeToken(address ethTokenAddr, uint256 supply) public auth {
+    function removeHRC1155Token(address ethTokenAddr, uint256 supply) public auth {
         require(
             mappedTokens[ethTokenAddr] != address(0),
             "TokenManager/ethToken mapping does not exists"
         );
-        IERC20 oneToken = IERC20(mappedTokens[ethTokenAddr]);
         require(
-            oneToken.totalSupply() == supply,
+            BridgedHRC1155Token(mappedTokens[ethTokenAddr]).checkSupply(supply),
             "TokenManager/remove has non-zero supply"
         );
         delete mappedTokens[ethTokenAddr];

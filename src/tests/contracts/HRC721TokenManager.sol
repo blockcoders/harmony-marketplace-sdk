@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
-import "./BridgedNFTToken.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./BridgedHRC721Token.sol";
 
 contract HRC721TokenManager is Ownable {
     // ethtoken to onetoken mapping
@@ -51,7 +51,7 @@ contract HRC721TokenManager is Ownable {
             "TokenManager/ethToken already mapped"
         );
 
-        BridgedNFTToken bridgedToken = new BridgedNFTToken(
+        BridgedHRC721Token bridgedToken = new BridgedHRC721Token(
             ethTokenAddr,
             name,
             symbol,
@@ -90,6 +90,8 @@ contract HRC721TokenManager is Ownable {
 
         // store the mapping and created address
         mappedTokens[ethTokenAddr] = oneTokenAddr;
+        
+        return true;
     }
 
     /**
@@ -103,7 +105,7 @@ contract HRC721TokenManager is Ownable {
             "TokenManager/ethToken mapping does not exists"
         );
         require(
-            BridgedNFTToken(mappedTokens[ethTokenAddr]).checkSupply(supply),
+            BridgedHRC721Token(mappedTokens[ethTokenAddr]).checkSupply(supply),
             "TokenManager/remove has non-zero supply"
         );
         delete mappedTokens[ethTokenAddr];

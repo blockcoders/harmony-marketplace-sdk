@@ -21,6 +21,7 @@
     "test:watch": "NODE_ENV=test mocha -t 120000 --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
     "test:cov": "nyc npm run test",
     "test:e2e": "NODE_ENV=test mocha -t 120000 --require ts-node/register tests/**/*.e2e-spec.ts --exit",
+    "build:contracts": "hardhat compile",
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
     "build": "tsc --build ./tsconfig.json",
     "build-all": "npm run build-cjs && npm run build-esnext && npm run build-esm",
@@ -84,7 +85,8 @@
     "@harmony-js/core": "^0.1.57",
     "@harmony-js/transaction": "^0.1.56",
     "@types/bip39": "^2.4.2",
-    "ethers": "^5.6.4"
+    "ethers": "^5.6.4",
+    "hardhat": "^2.9.9"
   },
   "peerDependencies": {
     "@harmony-js/account": "0.1.56",
