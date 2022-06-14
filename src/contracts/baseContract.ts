@@ -3,7 +3,7 @@ import { Contract as HmyContract } from '@harmony-js/contract'
 import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
-import { hexToNumber, Unit } from '@harmony-js/utils'
+import { hexToNumber, numberToHex } from '@harmony-js/utils'
 import { DEFAULT_GAS_PRICE } from '../constants'
 import { ContractProviderType, ITransactionOptions } from '../interfaces'
 import { Key, MnemonicKey, PrivateKey } from '../wallets'
@@ -57,11 +57,12 @@ export abstract class BaseContract {
 
     if (!gasLimit) {
       const hexValue = await this._contract.methods[method](...args).estimateGas({
-        gasPrice: new Unit(options.gasPrice).asGwei().toHex(),
+        gasPrice: numberToHex(options.gasPrice),
       })
       gasLimit = hexToNumber(hexValue)
     }
-    return { gasPrice: new Unit(options.gasPrice).asGwei().toWeiString(), gasLimit }
+
+    return { ...options, gasLimit }
   }
 
   public async call<T>(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<T> {
@@ -71,7 +72,7 @@ export abstract class BaseContract {
   }
 
   public async send(method: string, args: any[] = [], txOptions?: ITransactionOptions): Promise<Transaction> {
-    const options = txOptions || (await this.estimateGas(method, args, txOptions))
+    const options = await this.estimateGas(method, args, txOptions)
     const response: HmyContract = await this._contract.methods[method](...args).send(options)
 
     if (!response.transaction) {

@@ -1,5 +1,5 @@
-export * from './base-contract'
-export * from './base-token'
+export * from './baseContract'
+export * from './baseToken'
 export * from './hrc20'
 export * from './hrc721'
 export * from './hrc1155'

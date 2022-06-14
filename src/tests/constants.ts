@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { Transaction } from '@harmony-js/transaction'
-import { ChainID, ChainType } from '@harmony-js/utils'
+import { ChainID, ChainType, Unit } from '@harmony-js/utils'
 import { ITransactionOptions, HDOptions } from 'src/interfaces'
 import { HarmonyShards } from '../interfaces'
 import { MnemonicKey, PrivateKey } from '../wallets'
@@ -12,6 +12,9 @@ export const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
 export const ETH_TEST_PK = process.env.ETH_TEST_PK ?? ''
 export const TEST_SEED =
   process.env.TEST_SEED ?? 'pablo diego jose francisco de paula juan nepomuceno maria ruiz y picasso'
+export const MASTER_PRIVATE_KEY = process.env.MASTER_PRIVATE_KEY ?? ''
+export const OWNER_PRIVATE_KEY = process.env.OWNER_PRIVATE_KEY ?? ''
+export const ETH_RPC = process.env.OWNER_PRIVATE_KEY ?? ''
 
 if (!TEST_PK_1) {
   throw new Error('TEST_PK_1 must be defined')
@@ -19,6 +22,14 @@ if (!TEST_PK_1) {
 
 if (!TEST_PK_2) {
   throw new Error('TEST_PK_2 must be defined')
+}
+
+if (!MASTER_PRIVATE_KEY) {
+  throw new Error('MASTER_PRIVATE_KEY must be defined')
+}
+
+if (!OWNER_PRIVATE_KEY) {
+  throw new Error('OWNER_PRIVATE_KEY must be defined')
 }
 
 export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
@@ -44,6 +55,32 @@ export const WALLET_PROVIDER_TEST_3: PrivateKey = new MnemonicKey(
   HarmonyShards.SHARD_0_TESTNET,
   { mnemonic: TEST_SEED },
   ChainID.HmyTestnet,
+)
+
+export const WALLET_HMY_OWNER = new PrivateKey(
+  HarmonyShards.SHARD_0_TESTNET,
+  OWNER_PRIVATE_KEY.toLowerCase(),
+  ChainID.HmyTestnet,
+)
+
+export const WALLET_ETH_OWNER = new PrivateKey(
+  ETH_RPC,
+  OWNER_PRIVATE_KEY.toLowerCase(),
+  ChainID.Rinkeby,
+  ChainType.Ethereum,
+)
+
+export const WALLET_HMY_MASTER = new PrivateKey(
+  HarmonyShards.SHARD_0_TESTNET,
+  MASTER_PRIVATE_KEY.toLowerCase(),
+  ChainID.HmyTestnet,
+)
+
+export const WALLET_ETH_MASTER = new PrivateKey(
+  ETH_RPC,
+  MASTER_PRIVATE_KEY.toLowerCase(),
+  ChainID.Rinkeby,
+  ChainType.Ethereum,
 )
 
 export const TEST_ADDRESS_1 = WALLET_PROVIDER_TEST_1.accounts[0].toLowerCase()
@@ -82,4 +119,9 @@ export const options: HDOptions = {
   numberOfAddresses: 1,
   gasPrice: '100',
   gasLimit: '5000000',
+}
+
+export const E2E_TX_OPTIONS: ITransactionOptions = {
+  gasPrice: new Unit('60').asGwei().toWei(),
+  gasLimit: 80000000,
 }

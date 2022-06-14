@@ -2,7 +2,7 @@ import BN from 'bn.js'
 import { AddressZero } from '../constants'
 import { BNish, ITransactionOptions } from '../interfaces'
 import { isBNish } from '../utils'
-import { BaseContract, ContractError } from './base-contract'
+import { BaseContract, ContractError } from './baseContract'
 
 export abstract class BaseToken extends BaseContract {
   protected async getBalance(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {

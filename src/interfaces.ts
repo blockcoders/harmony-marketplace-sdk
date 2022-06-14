@@ -8,8 +8,8 @@ import { Key, MnemonicKey, PrivateKey } from './wallets'
 export type BNish = BN | Arrayish | bigint | number
 
 export interface ITransactionOptions {
-  gasLimit?: number | string
-  gasPrice: number | string
+  gasLimit?: BN | number | string
+  gasPrice: BN | number | string
 }
 
 export interface HarmonyRpcConfig {

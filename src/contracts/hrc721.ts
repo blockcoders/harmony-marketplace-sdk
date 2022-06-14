@@ -1,18 +1,12 @@
-import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
-import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { AddressZero } from '../constants'
-import { BNish, ContractProviderType, ITransactionOptions } from '../interfaces'
+import { BNish, ITransactionOptions } from '../interfaces'
 import { isBNish } from '../utils'
-import { ContractError } from './base-contract'
-import { BaseToken } from './base-token'
+import { ContractError } from './baseContract'
+import { BaseToken } from './baseToken'
 
 export class HRC721 extends BaseToken {
-  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
-    super(address, abi, provider, options)
-  }
-
   public async balanceOf(address: string, txOptions?: ITransactionOptions): Promise<BN> {
     return await this.getBalance(address, undefined, txOptions)
   }
