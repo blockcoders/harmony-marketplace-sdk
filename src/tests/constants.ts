@@ -70,11 +70,7 @@ export const WALLET_ETH_OWNER = new PrivateKey(
   ChainType.Ethereum,
 )
 
-export const WALLET_HMY_MASTER = new PrivateKey(
-  HarmonyShards.SHARD_0_DEVNET,
-  MASTER_PRIVATE_KEY.toLowerCase(),
-  ChainID.HmyPangaea,
-)
+export const WALLET_HMY_MASTER = new PrivateKey(HarmonyShards.SHARD_0_DEVNET, MASTER_PRIVATE_KEY.toLowerCase(), 4)
 
 export const WALLET_ETH_MASTER = new PrivateKey(
   ETH_RPC,
@@ -122,6 +118,6 @@ export const options: HDOptions = {
 }
 
 export const E2E_TX_OPTIONS: ITransactionOptions = {
-  gasPrice: new Unit('60').asGwei().toWei(),
-  gasLimit: 80000000,
+  gasPrice: new Unit('10').asGwei().toWei(),
+  gasLimit: 3500000,
 }

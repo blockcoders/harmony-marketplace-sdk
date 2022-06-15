@@ -33,7 +33,7 @@ export const HARMONY_RPC_SHARD_3: HarmonyRpcConfig = {
 }
 export const HARMONY_RPC_SHARD_0_DEVNET: HarmonyRpcConfig = {
   url: HARMONY_RPC_SHARD_0_DEVNET_URL,
-  chainId: ChainID.HmyPangaea,
+  chainId: 4,
   chainType: ChainType.Harmony,
 }
 
