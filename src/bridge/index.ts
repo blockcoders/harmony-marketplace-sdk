@@ -1,4 +1,6 @@
 export * from './bridgedHrc20Token'
+export * from './bridgedHrc721Token'
+export * from './bridgedHrc1155Token'
 export * from './hrc20EthManager'
 export * from './hrc20HmyManager'
 export * from './hrc20TokenManager'

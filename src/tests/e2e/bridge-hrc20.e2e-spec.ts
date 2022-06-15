@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised'
 import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../../bridge'
 import { HRC20 } from '../../contracts'
 import { WALLET_HMY_MASTER } from '../constants'
-import { deployContract } from '../helpers'
+import { ContractName, deployContract } from '../helpers'
 
 use(chaiAsPromised)
 
@@ -18,7 +18,7 @@ describe('Bridge HRC21 Token', () => {
   let tokenManager: HRC20TokenManager
 
   before(async () => {
-    hrc20 = await deployContract<HRC20>('BlockcodersHRC20', WALLET_HMY_MASTER, [name, symbol])
+    hrc20 = await deployContract<HRC20>(ContractName.BlockcodersHRC20, WALLET_HMY_MASTER, [name, symbol])
   })
 
   it('contracts should be defined', () => {

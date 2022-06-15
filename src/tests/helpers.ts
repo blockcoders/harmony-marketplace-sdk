@@ -23,7 +23,25 @@ class DeployContract extends BaseContract {
   }
 }
 
-export async function getContractMetadata(contractName: string): Promise<ContractMetadata> {
+export enum ContractName {
+  BlockcodersHRC20 = 'BlockcodersHRC20',
+  BlockcodersHRC721 = 'BlockcodersHRC721',
+  BlockcodersHRC1155 = 'BlockcodersHRC1155',
+  BridgedHRC20Token = 'BridgedHRC20Token',
+  BridgedHRC721Token = 'BridgedHRC721Token',
+  BridgedHRC1155Token = 'BridgedHRC1155Token',
+  HRC20EthManager = 'HRC20EthManager',
+  HRC20HmyManager = 'HRC20HmyManager',
+  HRC20TokenManager = 'HRC20TokenManager',
+  HRC721EthManager = 'HRC721EthManager',
+  HRC721HmyManager = 'HRC721HmyManager',
+  HRC721TokenManager = 'HRC721TokenManager',
+  HRC1155EthManager = 'HRC1155EthManager',
+  HRC1155HmyManager = 'HRC1155HmyManager',
+  HRC1155TokenManager = 'HRC1155TokenManager',
+}
+
+export async function getContractMetadata(contractName: ContractName): Promise<ContractMetadata> {
   const data = await readFile(
     `${join(__dirname, `./artifacts/src/tests/contracts/${contractName}.sol`)}/${contractName}.json`,
     { encoding: 'utf8' },
@@ -34,7 +52,7 @@ export async function getContractMetadata(contractName: string): Promise<Contrac
 }
 
 export async function deployContract<T>(
-  contractName: string,
+  contractName: ContractName,
   wallet: ContractProviderType,
   args: any[] = [],
 ): Promise<T> {
