@@ -13,8 +13,6 @@ export interface ContractMetadata {
   bytecode: string
 }
 
-class DeployedContract extends BaseContract {}
-
 class DeployContract extends BaseContract {
   constructor(abi: any[], wallet: ContractProviderType) {
     super('0x', abi, wallet)
@@ -55,21 +53,20 @@ export async function getContractMetadata(contractName: ContractName): Promise<C
   return { abi: metadata.abi, bytecode: metadata.bytecode }
 }
 
-export async function deployContract<T>(
+export async function deployContract(
   contractName: ContractName,
   wallet: ContractProviderType,
   args: any[] = [],
-): Promise<T> {
+): Promise<{ addr: string; abi: any[] }> {
   const { abi, bytecode } = await getContractMetadata(contractName)
   const contract = new DeployContract(abi, wallet)
 
   const tx = await contract.deploy(bytecode, args)
-  const contractAddr = tx?.receipt?.contractAddress?.toLowerCase() ?? ''
-  const deployed = new DeployedContract(contractAddr, abi, wallet)
+  const addr = tx?.receipt?.contractAddress?.toLowerCase() ?? ''
 
-  console.info(`${contractName} deployed on address: ${contractAddr}`)
+  console.info(`${contractName} deployed on address: ${addr}`)
 
-  return deployed as any
+  return { addr, abi }
 }
 
 export async function deployEthContract<T>(contractName: ContractName, wallet: Signer, args: any[] = []): Promise<T> {
