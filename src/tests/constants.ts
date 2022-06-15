@@ -1,4 +1,6 @@
 import 'dotenv/config'
+import { EtherscanProvider } from '@ethersproject/providers'
+import { Wallet } from '@ethersproject/wallet'
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID, ChainType, Unit } from '@harmony-js/utils'
 import { ITransactionOptions, HDOptions } from 'src/interfaces'
@@ -14,7 +16,7 @@ export const TEST_SEED =
   process.env.TEST_SEED ?? 'pablo diego jose francisco de paula juan nepomuceno maria ruiz y picasso'
 export const MASTER_PRIVATE_KEY = process.env.MASTER_PRIVATE_KEY ?? ''
 export const OWNER_PRIVATE_KEY = process.env.OWNER_PRIVATE_KEY ?? ''
-export const ETH_RPC = process.env.OWNER_PRIVATE_KEY ?? ''
+export const API_KEY = process.env.API_KEY ?? ''
 
 if (!TEST_PK_1) {
   throw new Error('TEST_PK_1 must be defined')
@@ -57,31 +59,31 @@ export const WALLET_PROVIDER_TEST_3: PrivateKey = new MnemonicKey(
   ChainID.HmyPangaea,
 )
 
+export const WALLET_HMY_MASTER = new PrivateKey(HarmonyShards.SHARD_0_DEVNET, MASTER_PRIVATE_KEY.toLowerCase(), 4)
 export const WALLET_HMY_OWNER = new PrivateKey(
   HarmonyShards.SHARD_0_DEVNET,
   OWNER_PRIVATE_KEY.toLowerCase(),
   ChainID.HmyPangaea,
 )
 
-export const WALLET_ETH_OWNER = new PrivateKey(
-  ETH_RPC,
-  OWNER_PRIVATE_KEY.toLowerCase(),
-  ChainID.Rinkeby,
-  ChainType.Ethereum,
+const ethProvider = new EtherscanProvider(
+  {
+    chainId: 4,
+    name: 'rinkeby',
+  },
+  API_KEY,
 )
-
-export const WALLET_HMY_MASTER = new PrivateKey(HarmonyShards.SHARD_0_DEVNET, MASTER_PRIVATE_KEY.toLowerCase(), 4)
-
-export const WALLET_ETH_MASTER = new PrivateKey(
-  ETH_RPC,
-  MASTER_PRIVATE_KEY.toLowerCase(),
-  ChainID.Rinkeby,
-  ChainType.Ethereum,
-)
+export const WALLET_ETH_MASTER = new Wallet(MASTER_PRIVATE_KEY.toLowerCase(), ethProvider)
+export const WALLET_ETH_OWNER = new Wallet(OWNER_PRIVATE_KEY.toLowerCase(), ethProvider)
 
 export const TEST_ADDRESS_1 = WALLET_PROVIDER_TEST_1.accounts[0].toLowerCase()
 export const TEST_ADDRESS_2 = WALLET_PROVIDER_TEST_2.accounts[0].toLowerCase()
 export const TEST_ADDRESS_3 = WALLET_PROVIDER_TEST_3.accounts[0].toLowerCase()
+
+export const HMY_OWNER_ADDRESS = WALLET_HMY_OWNER.accounts[0].toLowerCase()
+export const HMY_MASTER_ADDRESS = WALLET_HMY_MASTER.accounts[0].toLowerCase()
+export const ETH_OWNER_ADDRESS = WALLET_ETH_OWNER.address.toLowerCase()
+export const ETH_MASTER_ADDRESS = WALLET_ETH_MASTER.address.toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const ERC721_CONTRACT_ADDRESS = '0x8CAd7e9cAE97f359F4aEFA5FE1615a56319D50eB'.toLowerCase()

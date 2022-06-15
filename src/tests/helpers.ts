@@ -1,20 +1,22 @@
-import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
+import { Signer } from '@ethersproject/abstract-signer'
+import { ContractFactory } from '@ethersproject/contracts'
+import { parseUnits, formatUnits } from '@ethersproject/units'
 import { Transaction } from '@harmony-js/transaction'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-import { BaseContract } from '../contracts'
+import { BaseContract, EthBaseContract } from '../contracts'
 import { ContractProviderType } from '../interfaces'
 import { E2E_TX_OPTIONS } from './constants'
 
 export interface ContractMetadata {
-  abi: AbiItemModel[]
+  abi: any[]
   bytecode: string
 }
 
 class DeployedContract extends BaseContract {}
 
 class DeployContract extends BaseContract {
-  constructor(abi: AbiItemModel[], wallet: ContractProviderType) {
+  constructor(abi: any[], wallet: ContractProviderType) {
     super('0x', abi, wallet)
   }
 
@@ -22,6 +24,8 @@ class DeployContract extends BaseContract {
     return this.send('contractConstructor', [{ data: bytecode, arguments: args }], E2E_TX_OPTIONS)
   }
 }
+
+class DeployedEthContract extends EthBaseContract {}
 
 export enum ContractName {
   BlockcodersHRC20 = 'BlockcodersHRC20',
@@ -64,6 +68,23 @@ export async function deployContract<T>(
   const deployed = new DeployedContract(contractAddr, abi, wallet)
 
   console.info(`${contractName} deployed on address: ${contractAddr}`)
+
+  return deployed as any
+}
+
+export async function deployEthContract<T>(contractName: ContractName, wallet: Signer, args: any[] = []): Promise<T> {
+  const { abi, bytecode } = await getContractMetadata(contractName)
+  const factory = new ContractFactory(abi, bytecode, wallet)
+  const fees = await wallet.getFeeData()
+  const options = {
+    maxFeePerGas: parseUnits(formatUnits(fees.maxFeePerGas ?? 0, 'gwei'), 'gwei'),
+    maxPriorityFeePerGas: parseUnits(formatUnits(fees.maxPriorityFeePerGas ?? 0, 'gwei'), 'gwei'),
+  }
+  const caller = await factory.deploy(...args, options)
+  const contract = await caller.deployed()
+  const deployed = new DeployedEthContract(contract.address, abi, wallet)
+
+  console.info(`${contractName} deployed on address: ${deployed.address}`)
 
   return deployed as any
 }

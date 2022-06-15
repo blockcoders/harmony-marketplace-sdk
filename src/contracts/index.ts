@@ -1,5 +1,6 @@
 export * from './baseContract'
 export * from './baseToken'
+export * from './ethBaseContract'
 export * from './hrc20'
 export * from './hrc721'
 export * from './hrc1155'

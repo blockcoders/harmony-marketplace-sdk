@@ -1,6 +1,5 @@
 import { Account, Wallet } from '@harmony-js/account'
 import { Contract as HmyContract } from '@harmony-js/contract'
-import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, numberToHex } from '@harmony-js/utils'
@@ -23,7 +22,7 @@ export class ContractError extends Error {
 export class HarmonyContract extends HmyContract {
   public readonly wallet: Wallet
 
-  constructor(abi: AbiItemModel[], address: string, provider: ContractProviderType, options?: ContractOptions) {
+  constructor(abi: any[], address: string, provider: ContractProviderType, options?: ContractOptions) {
     super(abi, address, options, provider)
     this.wallet = provider
   }
@@ -37,7 +36,7 @@ export abstract class BaseContract {
     return this._contract.address
   }
 
-  constructor(address: string, abi: AbiItemModel[], provider: ContractProviderType, options?: ContractOptions) {
+  constructor(address: string, abi: any[], provider: ContractProviderType, options?: ContractOptions) {
     this._contract = new HarmonyContract(abi, address, provider, options)
     this._provider = provider
   }
