@@ -23,10 +23,7 @@ export enum HarmonyShards {
   SHARD_1 = 'SHARD_1',
   SHARD_2 = 'SHARD_2',
   SHARD_3 = 'SHARD_3',
-  SHARD_0_TESTNET = 'SHARD_0_TESTNET',
-  SHARD_1_TESTNET = 'SHARD_1_TESTNET',
-  SHARD_2_TESTNET = 'SHARD_2_TESTNET',
-  SHARD_3_TESTNET = 'SHARD_3_TESTNET',
+  SHARD_0_DEVNET = 'SHARD_0_DEVNET',
 }
 
 export type RpcProviderType = string | HttpProvider | WSProvider | HarmonyShards

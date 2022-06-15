@@ -33,7 +33,7 @@ if (!OWNER_PRIVATE_KEY) {
 }
 
 export const WALLET_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
-  HarmonyShards.SHARD_0_TESTNET,
+  HarmonyShards.SHARD_0_DEVNET,
   TEST_PK_1.toLowerCase(),
   ChainID.HmyPangaea,
 )
@@ -46,19 +46,19 @@ export const WALLET_ETH_PROVIDER_TEST_1: PrivateKey = new PrivateKey(
 )
 
 export const WALLET_PROVIDER_TEST_2: PrivateKey = new PrivateKey(
-  HarmonyShards.SHARD_0_TESTNET,
+  HarmonyShards.SHARD_0_DEVNET,
   TEST_PK_2.toLowerCase(),
   ChainID.HmyPangaea,
 )
 
 export const WALLET_PROVIDER_TEST_3: PrivateKey = new MnemonicKey(
-  HarmonyShards.SHARD_0_TESTNET,
+  HarmonyShards.SHARD_0_DEVNET,
   { mnemonic: TEST_SEED },
   ChainID.HmyPangaea,
 )
 
 export const WALLET_HMY_OWNER = new PrivateKey(
-  HarmonyShards.SHARD_0_TESTNET,
+  HarmonyShards.SHARD_0_DEVNET,
   OWNER_PRIVATE_KEY.toLowerCase(),
   ChainID.HmyPangaea,
 )
@@ -71,7 +71,7 @@ export const WALLET_ETH_OWNER = new PrivateKey(
 )
 
 export const WALLET_HMY_MASTER = new PrivateKey(
-  HarmonyShards.SHARD_0_TESTNET,
+  HarmonyShards.SHARD_0_DEVNET,
   MASTER_PRIVATE_KEY.toLowerCase(),
   ChainID.HmyPangaea,
 )

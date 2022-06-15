@@ -25,7 +25,7 @@ class DeployContract extends BaseContract {
 
 export async function getContractMetadata(contractName: string): Promise<ContractMetadata> {
   const data = await readFile(
-    `${join(__dirname, `../artifacts/src/tests/contracts/${contractName}.sol`)}/${contractName}.json`,
+    `${join(__dirname, `./artifacts/src/tests/contracts/${contractName}.sol`)}/${contractName}.json`,
     { encoding: 'utf8' },
   )
   const metadata = JSON.parse(data)
