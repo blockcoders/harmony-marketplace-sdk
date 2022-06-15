@@ -2,7 +2,7 @@ import { Wallet } from '@harmony-js/account'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
-import { HARMONY_RPC_SHARD_0_TESTNET, HARMONY_RPC_SHARD_1_TESTNET, HARMONY_RPC_TESTNET_WS } from '../constants'
+import { HARMONY_RPC_SHARD_0_DEVNET, HARMONY_RPC_DEVNET_WS } from '../constants'
 import { HarmonyShards } from '../interfaces'
 import { Key } from '../wallets'
 
@@ -10,7 +10,7 @@ describe('Key Class', () => {
   let instance: Key
 
   it('should be an instance of Wallet', async () => {
-    instance = new Key(HARMONY_RPC_SHARD_0_TESTNET.url)
+    instance = new Key(HARMONY_RPC_SHARD_0_DEVNET.url)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -18,7 +18,7 @@ describe('Key Class', () => {
   })
 
   it('should instance correctly the key class using url as a string with chain id', async () => {
-    instance = new Key(HARMONY_RPC_SHARD_0_TESTNET.url, ChainID.HmyTestnet)
+    instance = new Key(HARMONY_RPC_SHARD_0_DEVNET.url, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -26,7 +26,7 @@ describe('Key Class', () => {
   })
 
   it('should instance correctly the key class using url as a string', async () => {
-    instance = new Key(HARMONY_RPC_SHARD_1_TESTNET.url)
+    instance = new Key(HARMONY_RPC_SHARD_0_DEVNET.url)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -34,8 +34,8 @@ describe('Key Class', () => {
   })
 
   it('should instance correctly the key class using url as a HttpProvider', async () => {
-    const http = new HttpProvider(HARMONY_RPC_SHARD_0_TESTNET.url)
-    instance = new Key(http, ChainID.HmyTestnet)
+    const http = new HttpProvider(HARMONY_RPC_SHARD_0_DEVNET.url)
+    instance = new Key(http, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -43,8 +43,8 @@ describe('Key Class', () => {
   })
 
   it('should instance correctly the key class using url as a WSProvider', async () => {
-    const http = new WSProvider(HARMONY_RPC_TESTNET_WS)
-    instance = new Key(http, ChainID.HmyTestnet)
+    const http = new WSProvider(HARMONY_RPC_DEVNET_WS)
+    instance = new Key(http, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -52,7 +52,7 @@ describe('Key Class', () => {
   })
 
   it('should instance correctly the key class using url as a HarmonyShards', async () => {
-    instance = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyTestnet)
+    instance = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined

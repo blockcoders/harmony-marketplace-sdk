@@ -3,7 +3,7 @@ import { ChainID } from '@harmony-js/utils'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
+import { HARMONY_RPC_SHARD_0_DEVNET } from '../constants'
 import { BaseContract } from '../contracts'
 import { HarmonyShards } from '../interfaces'
 import { MnemonicKey, PrivateKey } from '../wallets'
@@ -14,7 +14,7 @@ use(chaiAsPromised)
 
 class TestToken extends BaseContract {
   constructor() {
-    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyTestnet))
+    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyPangaea))
   }
 }
 
@@ -118,7 +118,7 @@ describe('Base Contract', () => {
   describe('setSignerByKey', () => {
     it('should throw an error if key is not valid', async () => {
       try {
-        new MnemonicKey(HARMONY_RPC_SHARD_0_TESTNET.url, {}, ChainID.HmyTestnet)
+        new MnemonicKey(HARMONY_RPC_SHARD_0_DEVNET.url, {}, ChainID.HmyPangaea)
       } catch (error) {
         expect(error).to.not.null
         expect(error).to.not.undefined

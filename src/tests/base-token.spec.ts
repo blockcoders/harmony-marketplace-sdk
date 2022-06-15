@@ -14,7 +14,7 @@ use(chaiAsPromised)
 
 class TestToken extends BaseToken {
   constructor() {
-    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyTestnet))
+    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyPangaea))
   }
   public async balanceOf(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     return this.getBalance(address, id, txOptions)

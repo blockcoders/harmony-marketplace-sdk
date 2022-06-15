@@ -50,7 +50,7 @@ describe('Game Item Contract Extension', () => {
   let provider: Key
 
   before(() => {
-    provider = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyTestnet)
+    provider = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyPangaea)
     contract = new GameItems(HRC1155_CONTRACT_ADDRESS, ABI, provider)
   })
 

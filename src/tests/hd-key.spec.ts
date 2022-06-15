@@ -6,7 +6,7 @@ import { ChainID } from '@harmony-js/utils'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { HARMONY_RPC_SHARD_0_TESTNET_URL } from '../constants'
+import { HARMONY_RPC_SHARD_0_DEVNET_URL } from '../constants'
 import { Key, HDKey } from '../wallets'
 import { options, FAKE_TX_HRC721, TEST_ADDRESS_1, TEST_PK_1, TEST_ADDRESS_2 } from './constants'
 
@@ -16,7 +16,7 @@ describe('HD Key', () => {
   let instance: HDKey
 
   before(() => {
-    instance = new HDKey(HARMONY_RPC_SHARD_0_TESTNET_URL, options, ChainID.HmyTestnet)
+    instance = new HDKey(HARMONY_RPC_SHARD_0_DEVNET_URL, options, ChainID.HmyPangaea)
   })
 
   afterEach(async () => {
@@ -28,7 +28,7 @@ describe('HD Key', () => {
   })
 
   it('should be an instance of Key', () => {
-    instance = new HDKey(HARMONY_RPC_SHARD_0_TESTNET_URL, options)
+    instance = new HDKey(HARMONY_RPC_SHARD_0_DEVNET_URL, options)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -154,7 +154,7 @@ describe('HD Key', () => {
 
   describe('setMessenger', () => {
     it('should set a messeger', () => {
-      const http = new HttpProvider(HARMONY_RPC_SHARD_0_TESTNET_URL)
+      const http = new HttpProvider(HARMONY_RPC_SHARD_0_DEVNET_URL)
       const messenger = new Messenger(http)
       const stub = sinon.stub(instance, 'setMessenger').withArgs(messenger)
 

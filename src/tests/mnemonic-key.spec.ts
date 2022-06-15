@@ -1,6 +1,6 @@
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
-import { HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
+import { HARMONY_RPC_SHARD_0_DEVNET } from '../constants'
 import { TEST_SEED } from '../tests/constants'
 import { Key, MnemonicKey } from '../wallets'
 
@@ -8,7 +8,7 @@ describe('Mnemonic Key Class', () => {
   let instance: MnemonicKey
 
   it('should be an instance of Key', () => {
-    instance = new MnemonicKey(HARMONY_RPC_SHARD_0_TESTNET.url, {
+    instance = new MnemonicKey(HARMONY_RPC_SHARD_0_DEVNET.url, {
       mnemonic: TEST_SEED,
     })
 
@@ -19,12 +19,12 @@ describe('Mnemonic Key Class', () => {
 
   it('should get the private key associated', () => {
     instance = new MnemonicKey(
-      HARMONY_RPC_SHARD_0_TESTNET.url,
+      HARMONY_RPC_SHARD_0_DEVNET.url,
       {
         mnemonic: TEST_SEED,
         index: 0,
       },
-      ChainID.HmyTestnet,
+      ChainID.HmyPangaea,
     )
 
     expect(instance).to.not.be.null
@@ -33,7 +33,7 @@ describe('Mnemonic Key Class', () => {
   })
 
   it('should return a default mnemonic key if object is empty', () => {
-    instance = new MnemonicKey(HARMONY_RPC_SHARD_0_TESTNET.url, {}, ChainID.HmyTestnet)
+    instance = new MnemonicKey(HARMONY_RPC_SHARD_0_DEVNET.url, {}, ChainID.HmyPangaea)
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
     expect(instance.signer).to.exist
@@ -43,11 +43,11 @@ describe('Mnemonic Key Class', () => {
   it('should throw an error if mnemonic key is not valid', () => {
     try {
       new MnemonicKey(
-        HARMONY_RPC_SHARD_0_TESTNET.url,
+        HARMONY_RPC_SHARD_0_DEVNET.url,
         {
           mnemonic: 'this is an wrong example of seed',
         },
-        ChainID.HmyTestnet,
+        ChainID.HmyPangaea,
       )
     } catch (error) {
       expect(error).to.be.exist

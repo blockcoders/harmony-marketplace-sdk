@@ -1,6 +1,6 @@
 import { ChainID } from '@harmony-js/utils'
 import { expect } from 'chai'
-import { HARMONY_RPC_SHARD_0_TESTNET } from '../constants'
+import { HARMONY_RPC_SHARD_0_DEVNET } from '../constants'
 import { TEST_PK_1, TEST_ADDRESS_1 } from '../tests/constants'
 import { Key, PrivateKey } from '../wallets'
 
@@ -8,7 +8,7 @@ describe('Private Key Class', () => {
   let instance: PrivateKey
 
   it('should be an instance of Key', async () => {
-    instance = new PrivateKey(HARMONY_RPC_SHARD_0_TESTNET.url, TEST_PK_1)
+    instance = new PrivateKey(HARMONY_RPC_SHARD_0_DEVNET.url, TEST_PK_1)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -16,7 +16,7 @@ describe('Private Key Class', () => {
   })
 
   it('should get the signer associated', async () => {
-    instance = new PrivateKey(HARMONY_RPC_SHARD_0_TESTNET.url, TEST_PK_1, ChainID.HmyTestnet)
+    instance = new PrivateKey(HARMONY_RPC_SHARD_0_DEVNET.url, TEST_PK_1, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
@@ -26,7 +26,7 @@ describe('Private Key Class', () => {
   })
 
   it('should get the private key associated', async () => {
-    instance = new PrivateKey(HARMONY_RPC_SHARD_0_TESTNET.url, TEST_PK_1, ChainID.HmyTestnet)
+    instance = new PrivateKey(HARMONY_RPC_SHARD_0_DEVNET.url, TEST_PK_1, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined
