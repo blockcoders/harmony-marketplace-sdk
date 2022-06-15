@@ -36,8 +36,11 @@ export class EthBaseContract {
   }
 
   protected async getCallOptions(methodName: string, args: any[]): Promise<CallOverrides> {
-    const gasLimit = this.getGasLimit(methodName, args)
-    const fees = await this._contract.provider.getFeeData()
+    const [gasLimit, fees] = await Promise.all([
+      this.getGasLimit(methodName, args),
+      this._contract.provider.getFeeData(),
+    ])
+
     return {
       gasLimit,
       maxFeePerGas: parseUnits(formatUnits(fees.maxFeePerGas ?? 0, 'gwei'), 'gwei'),
@@ -46,7 +49,7 @@ export class EthBaseContract {
   }
 
   public async read<T>(methodName: string, args: any[] = []): Promise<T> {
-    return this._contract.methods[methodName](...args)
+    return this._contract[methodName](...args)
   }
 
   public async write(methodName: string, args: any[] = [], txOptions?: CallOverrides): Promise<TransactionReceipt> {
@@ -56,7 +59,7 @@ export class EthBaseContract {
       options = await this.getCallOptions(methodName, args)
     }
 
-    const tx = await this._contract[methodName](...args, txOptions)
+    const tx = await this._contract[methodName](...args, options)
 
     return tx.wait()
   }

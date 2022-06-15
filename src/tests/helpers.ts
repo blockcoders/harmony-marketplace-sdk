@@ -4,9 +4,9 @@ import { parseUnits, formatUnits } from '@ethersproject/units'
 import { Transaction } from '@harmony-js/transaction'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-import { BaseContract, EthBaseContract } from '../contracts'
+import { BaseContract } from '../contracts'
 import { ContractProviderType } from '../interfaces'
-import { E2E_TX_OPTIONS } from './constants'
+import { ContractName, E2E_TX_OPTIONS } from './constants'
 
 export interface ContractMetadata {
   abi: any[]
@@ -21,26 +21,6 @@ class DeployContract extends BaseContract {
   public deploy(bytecode: string, args: any[] = []): Promise<Transaction> {
     return this.send('contractConstructor', [{ data: bytecode, arguments: args }], E2E_TX_OPTIONS)
   }
-}
-
-class DeployedEthContract extends EthBaseContract {}
-
-export enum ContractName {
-  BlockcodersHRC20 = 'BlockcodersHRC20',
-  BlockcodersHRC721 = 'BlockcodersHRC721',
-  BlockcodersHRC1155 = 'BlockcodersHRC1155',
-  BridgedHRC20Token = 'BridgedHRC20Token',
-  BridgedHRC721Token = 'BridgedHRC721Token',
-  BridgedHRC1155Token = 'BridgedHRC1155Token',
-  HRC20EthManager = 'HRC20EthManager',
-  HRC20HmyManager = 'HRC20HmyManager',
-  HRC20TokenManager = 'HRC20TokenManager',
-  HRC721EthManager = 'HRC721EthManager',
-  HRC721HmyManager = 'HRC721HmyManager',
-  HRC721TokenManager = 'HRC721TokenManager',
-  HRC1155EthManager = 'HRC1155EthManager',
-  HRC1155HmyManager = 'HRC1155HmyManager',
-  HRC1155TokenManager = 'HRC1155TokenManager',
 }
 
 export async function getContractMetadata(contractName: ContractName): Promise<ContractMetadata> {
@@ -69,7 +49,11 @@ export async function deployContract(
   return { addr, abi }
 }
 
-export async function deployEthContract<T>(contractName: ContractName, wallet: Signer, args: any[] = []): Promise<T> {
+export async function deployEthContract(
+  contractName: ContractName,
+  wallet: Signer,
+  args: any[] = [],
+): Promise<{ addr: string; abi: any[] }> {
   const { abi, bytecode } = await getContractMetadata(contractName)
   const factory = new ContractFactory(abi, bytecode, wallet)
   const fees = await wallet.getFeeData()
@@ -79,9 +63,8 @@ export async function deployEthContract<T>(contractName: ContractName, wallet: S
   }
   const caller = await factory.deploy(...args, options)
   const contract = await caller.deployed()
-  const deployed = new DeployedEthContract(contract.address, abi, wallet)
 
-  console.info(`${contractName} deployed on address: ${deployed.address}`)
+  console.info(`${contractName} deployed on address: ${contract.address}`)
 
-  return deployed as any
+  return { addr: contract.address, abi }
 }

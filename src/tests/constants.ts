@@ -120,6 +120,24 @@ export const options: HDOptions = {
 }
 
 export const E2E_TX_OPTIONS: ITransactionOptions = {
-  gasPrice: new Unit('10').asGwei().toWei(),
+  gasPrice: new Unit('30').asGwei().toWei(),
   gasLimit: 3500000,
+}
+
+export enum ContractName {
+  BlockcodersHRC20 = 'BlockcodersHRC20',
+  BlockcodersHRC721 = 'BlockcodersHRC721',
+  BlockcodersHRC1155 = 'BlockcodersHRC1155',
+  BridgedHRC20Token = 'BridgedHRC20Token',
+  BridgedHRC721Token = 'BridgedHRC721Token',
+  BridgedHRC1155Token = 'BridgedHRC1155Token',
+  HRC20EthManager = 'HRC20EthManager',
+  HRC20HmyManager = 'HRC20HmyManager',
+  HRC20TokenManager = 'HRC20TokenManager',
+  HRC721EthManager = 'HRC721EthManager',
+  HRC721HmyManager = 'HRC721HmyManager',
+  HRC721TokenManager = 'HRC721TokenManager',
+  HRC1155EthManager = 'HRC1155EthManager',
+  HRC1155HmyManager = 'HRC1155HmyManager',
+  HRC1155TokenManager = 'HRC1155TokenManager',
 }
