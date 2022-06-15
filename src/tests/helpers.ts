@@ -2,9 +2,9 @@ import { AbiItemModel } from '@harmony-js/contract/dist/models/types'
 import { Transaction } from '@harmony-js/transaction'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-import { BaseContract } from '../../contracts'
-import { ContractProviderType } from '../../interfaces'
-import { E2E_TX_OPTIONS } from '../constants'
+import { BaseContract } from '../contracts'
+import { ContractProviderType } from '../interfaces'
+import { E2E_TX_OPTIONS } from './constants'
 
 export interface ContractMetadata {
   abi: AbiItemModel[]

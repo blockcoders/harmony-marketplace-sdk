@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised'
 import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../../bridge'
 import { HRC20 } from '../../contracts'
 import { WALLET_HMY_MASTER } from '../constants'
-import { deployContract } from './utils'
+import { deployContract } from '../helpers'
 
 use(chaiAsPromised)
 
