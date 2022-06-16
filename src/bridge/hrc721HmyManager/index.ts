@@ -1,8 +1,14 @@
+import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
 import { Transaction } from '@harmony-js/transaction'
-import { BaseContract } from '../contracts'
-import { BNish, ITransactionOptions } from '../interfaces'
+import { BaseContract } from '../../contracts'
+import { BNish, ContractProviderType, ITransactionOptions } from '../../interfaces'
+import ABI from './abi'
 
 export class HRC721HmyManager extends BaseContract {
+  constructor(address: string, provider: ContractProviderType, options?: ContractOptions) {
+    super(address, ABI, provider, options)
+  }
+
   public async lockNFT721Token(
     ethTokenAddr: string,
     tokenId: BNish,

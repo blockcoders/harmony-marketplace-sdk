@@ -13,15 +13,18 @@ import {
   TX_OPTIONS,
   WALLET_PROVIDER_TEST_1,
   TOKEN_SWORD,
+  ContractName,
 } from './constants'
-import { ABI } from './contracts/HRC721/abi'
+import { getContractMetadata } from './helpers'
 
 use(chaiAsPromised)
 
 describe('HRC721 Contract Interface', () => {
   let contract: HRC721
 
-  before(() => {
+  before(async () => {
+    const metadata = await getContractMetadata(ContractName.BlockcodersHRC721)
+    const ABI = metadata.abi
     contract = new HRC721(HRC721_CONTRACT_ADDRESS, ABI, WALLET_PROVIDER_TEST_1)
   })
 

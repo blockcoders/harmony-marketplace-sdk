@@ -6,6 +6,7 @@ import sinon from 'sinon'
 import { HRC1155 } from '../contracts'
 import { HarmonyShards } from '../interfaces'
 import { Key } from '../wallets'
+import { ABI } from './abi/GameItems/abi'
 import {
   HRC1155_CONTRACT_ADDRESS,
   TOKEN_GOLD,
@@ -14,7 +15,6 @@ import {
   TOKEN_SWORD,
   TOKEN_SHIELD,
 } from './constants'
-import { ABI } from './contracts/GameItems/abi'
 
 use(chaiAsPromised)
 
@@ -50,7 +50,7 @@ describe('Game Item Contract Extension', () => {
   let provider: Key
 
   before(() => {
-    provider = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyPangaea)
+    provider = new Key(HarmonyShards.SHARD_0_DEVNET, ChainID.HmyPangaea)
     contract = new GameItems(HRC1155_CONTRACT_ADDRESS, ABI, provider)
   })
 

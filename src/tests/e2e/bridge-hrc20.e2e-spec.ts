@@ -29,7 +29,7 @@ class HRC20Mintable extends HRC20 {
   }
 }
 
-describe('Bridge HRC21 Token', () => {
+describe('Bridge HRC20 Token', () => {
   const name = 'Blockcoders'
   const symbol = 'BC'
   const decimals = 18
