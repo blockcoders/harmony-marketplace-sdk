@@ -30,8 +30,8 @@ class HRC721Mintable extends HRC721 {
 }
 
 describe('Bridge HRC721 Token', () => {
-  const name = 'Blockcoders'
-  const symbol = 'BC'
+  const name = 'Blockcoders NFT'
+  const symbol = 'Blockcoders'
   const tokenId = '1'
   const sender = HMY_OWNER_ADDRESS
   const receiver = HMY_OWNER_ADDRESS
@@ -47,7 +47,7 @@ describe('Bridge HRC721 Token', () => {
   before(async () => {
     // Deploy contracts
     const [hrc721Options, ethManagerOptions] = await Promise.all([
-      deployContract(ContractName.BlockcodersHRC721, WALLET_HMY_MASTER, [name, symbol]),
+      deployContract(ContractName.BlockcodersHRC721, WALLET_HMY_MASTER, []),
       deployEthContract(ContractName.HRC721EthManager, WALLET_ETH_MASTER, [ETH_MASTER_ADDRESS]),
     ])
     const [hmyManagerOptions, tokenManagerOptions] = await Promise.all([
