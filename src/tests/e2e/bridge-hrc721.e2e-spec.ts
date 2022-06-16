@@ -6,7 +6,6 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import { BridgedHRC721Token, HRC721EthManager, HRC721HmyManager, HRC721TokenManager } from '../../bridge'
 import { HRC721 } from '../../contracts'
-import { BNish } from '../../interfaces'
 import {
   WALLET_HMY_MASTER,
   WALLET_ETH_MASTER,
@@ -24,8 +23,8 @@ import { deployContract, deployEthContract, waitForNewBlock } from '../helpers'
 use(chaiAsPromised)
 
 class HRC721Mintable extends HRC721 {
-  public mint(account: string, tokenId: BNish): Promise<Transaction> {
-    return this.send('mint', [account, tokenId], E2E_TX_OPTIONS)
+  public mint(account: string): Promise<Transaction> {
+    return this.send('mint', [account], E2E_TX_OPTIONS)
   }
 }
 
@@ -89,8 +88,8 @@ describe('Bridge HRC721 Token', () => {
     expect(balance.isZero()).to.be.true
   })
 
-  it(`hrc721 holder should have one token with id ${tokenId} after mint`, async () => {
-    const mintTx = await hrc721.mint(sender, tokenId)
+  it(`hrc721 holder should have one token after mint`, async () => {
+    const mintTx = await hrc721.mint(sender)
 
     console.info('HRC721Mintable mint tx hash: ', mintTx.id)
 
