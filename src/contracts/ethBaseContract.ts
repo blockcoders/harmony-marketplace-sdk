@@ -16,6 +16,7 @@ export class EthBaseContract {
   }
 
   private async getGasLimit(methodName: string, args: any[]): Promise<BigNumber> {
+    console.log(args)
     let gasEstimate: BigNumber
 
     try {

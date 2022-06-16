@@ -60,11 +60,7 @@ export const WALLET_PROVIDER_TEST_3: PrivateKey = new MnemonicKey(
 )
 
 export const WALLET_HMY_MASTER = new PrivateKey(HarmonyShards.SHARD_0_DEVNET, MASTER_PRIVATE_KEY.toLowerCase(), 4)
-export const WALLET_HMY_OWNER = new PrivateKey(
-  HarmonyShards.SHARD_0_DEVNET,
-  OWNER_PRIVATE_KEY.toLowerCase(),
-  ChainID.HmyPangaea,
-)
+export const WALLET_HMY_OWNER = new PrivateKey(HarmonyShards.SHARD_0_DEVNET, OWNER_PRIVATE_KEY.toLowerCase(), 4)
 
 const ethProvider = new EtherscanProvider(
   {
