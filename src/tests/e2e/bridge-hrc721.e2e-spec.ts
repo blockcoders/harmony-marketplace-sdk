@@ -43,16 +43,19 @@ describe('Bridge HRC721 Token', () => {
   let hmyManager: HRC721HmyManager
   let tokenManager: HRC721TokenManager
 
+  let options: any[]
   before(async () => {
     // Deploy contracts
     const [hrc721Options, ethManagerOptions] = await Promise.all([
       deployContract(ContractName.BlockcodersHRC721, WALLET_HMY_MASTER, []),
       deployEthContract(ContractName.HRC721EthManager, WALLET_ETH_MASTER, [ETH_MASTER_ADDRESS]),
     ])
-    const [hmyManagerOptions, tokenManagerOptions] = await Promise.all([
+    options = await Promise.all([
       deployContract(ContractName.HRC721HmyManager, WALLET_HMY_MASTER, [HMY_MASTER_ADDRESS]),
       deployEthContract(ContractName.HRC721TokenManager, WALLET_ETH_MASTER),
     ])
+
+    const [hmyManagerOptions, tokenManagerOptions] = options
 
     // Create contract instances
     hrc721 = new HRC721Mintable(hrc721Options.addr, hrc721Options.abi, WALLET_HMY_MASTER)
@@ -112,26 +115,11 @@ describe('Bridge HRC721 Token', () => {
     const balanceBeforeLock = await hrc721.balanceOf(sender, E2E_TX_OPTIONS)
 
     expect(balanceBeforeLock.eq(new BN(1))).to.be.true
-
-    /*
-    function lockNFT721Token(
-        address ethTokenAddr,
-        uint256 tokenId,
-        address recipient
-    ) public {
-        require(
-            recipient != address(0),
-            "NFTHmyManager/recipient is a zero address"
-        );
-        IERC721 ethToken = IERC721(ethTokenAddr);
-        ethToken.safeTransferFrom(msg.sender, address(this), tokenId);
-        emit Locked(address(ethToken), msg.sender, tokenId, recipient);
-    }
-    
-    */
-    const lockTokenTx = await hmyManager.lockNFT721Token(
+    // This is necessary because the contract can only lock for the msg.sender 
+    const hmyManagerOwnerSig = new HRC721HmyManager(options[0].addr, WALLET_HMY_OWNER)
+    const lockTokenTx = await hmyManagerOwnerSig.lockNFT721Token(
       hrc721.address,
-      HMY_OWNER_ADDRESS,// recipient that is only used on the Lock event.
+      receiver,
       tokenId,
       E2E_TX_OPTIONS,
     )
