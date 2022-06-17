@@ -7,6 +7,7 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
@@ -159,6 +160,7 @@ export default [
     type: 'event',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -188,10 +190,12 @@ export default [
     ],
     name: 'addToken',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -216,10 +220,12 @@ export default [
     ],
     name: 'burnToken',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -244,10 +250,12 @@ export default [
     ],
     name: 'burnTokens',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -263,10 +271,12 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -301,10 +311,12 @@ export default [
     ],
     name: 'mintToken',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -339,10 +351,12 @@ export default [
     ],
     name: 'mintTokens',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -357,10 +371,12 @@ export default [
     ],
     name: 'removeToken',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'bytes32',
@@ -376,10 +392,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'wallet',
     outputs: [
@@ -389,6 +407,7 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },

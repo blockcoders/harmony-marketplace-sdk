@@ -8,12 +8,12 @@ export default [
       },
       {
         internalType: 'string',
-        name: 'name_',
+        name: 'name',
         type: 'string',
       },
       {
         internalType: 'string',
-        name: 'symbol_',
+        name: 'symbol',
         type: 'string',
       },
       {
@@ -22,8 +22,34 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'constructor',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: '_owner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: '_operator',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'bool',
+        name: '_approved',
+        type: 'bool',
+      },
+    ],
+    name: 'ApprovalForAll',
+    type: 'event',
   },
   {
     anonymous: false,
@@ -34,20 +60,21 @@ export default [
         name: 'account',
         type: 'address',
       },
+    ],
+    name: 'MinterAdded',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: true,
         internalType: 'address',
-        name: 'operator',
+        name: 'account',
         type: 'address',
       },
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: 'approved',
-        type: 'bool',
-      },
     ],
-    name: 'ApprovalForAll',
+    name: 'MinterRemoved',
     type: 'event',
   },
   {
@@ -73,121 +100,33 @@ export default [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'Paused',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'previousAdminRole',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'newAdminRole',
-        type: 'bytes32',
-      },
-    ],
-    name: 'RoleAdminChanged',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
         indexed: true,
         internalType: 'address',
-        name: 'account',
+        name: '_operator',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleGranted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
+        name: '_from',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleRevoked',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'from',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'to',
+        name: '_to',
         type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256[]',
-        name: 'ids',
+        name: '_ids',
         type: 'uint256[]',
       },
       {
         indexed: false,
         internalType: 'uint256[]',
-        name: 'values',
+        name: '_amounts',
         type: 'uint256[]',
       },
     ],
@@ -200,31 +139,31 @@ export default [
       {
         indexed: true,
         internalType: 'address',
-        name: 'operator',
+        name: '_operator',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'from',
+        name: '_from',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'to',
+        name: '_to',
         type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'id',
+        name: '_id',
         type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'value',
+        name: '_amount',
         type: 'uint256',
       },
     ],
@@ -237,13 +176,13 @@ export default [
       {
         indexed: false,
         internalType: 'string',
-        name: 'value',
+        name: '_uri',
         type: 'string',
       },
       {
         indexed: true,
         internalType: 'uint256',
-        name: 'id',
+        name: '_id',
         type: 'uint256',
       },
     ],
@@ -251,80 +190,31 @@ export default [
     type: 'event',
   },
   {
-    anonymous: false,
+    constant: false,
     inputs: [
       {
-        indexed: false,
         internalType: 'address',
         name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'Unpaused',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'MINTER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'PAUSER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'miner',
         type: 'address',
       },
     ],
     name: 'addMinter',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
-        name: 'account',
+        name: '_owner',
         type: 'address',
       },
       {
         internalType: 'uint256',
-        name: 'id',
+        name: '_id',
         type: 'uint256',
       },
     ],
@@ -336,19 +226,21 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address[]',
-        name: 'accounts',
+        name: '_owners',
         type: 'address[]',
       },
       {
         internalType: 'uint256[]',
-        name: 'ids',
+        name: '_ids',
         type: 'uint256[]',
       },
     ],
@@ -360,10 +252,37 @@ export default [
         type: 'uint256[]',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_from',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256[]',
+        name: '_ids',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: '_amounts',
+        type: 'uint256[]',
+      },
+    ],
+    name: 'batchBurn',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256[]',
@@ -373,10 +292,12 @@ export default [
     ],
     name: 'batchDecrement',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256[]',
@@ -386,56 +307,67 @@ export default [
     ],
     name: 'batchIncrement',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
-        name: 'account',
+        name: '_to',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256[]',
+        name: '_ids',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: '_quantities',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'bytes',
+        name: '_data',
+        type: 'bytes',
+      },
+    ],
+    name: 'batchMint',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_from',
         type: 'address',
       },
       {
         internalType: 'uint256',
-        name: 'id',
+        name: '_id',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'value',
+        name: '_amount',
         type: 'uint256',
       },
     ],
     name: 'burn',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'ids',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'values',
-        type: 'uint256[]',
-      },
-    ],
-    name: 'burnBatch',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -451,10 +383,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'counter',
     outputs: [
@@ -464,10 +398,12 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256',
@@ -477,114 +413,12 @@ export default [
     ],
     name: 'decrement',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRoleAdmin',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
-      },
-    ],
-    name: 'getRoleMember',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRoleMemberCount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'grantRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'hasRole',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256',
@@ -594,19 +428,21 @@ export default [
     ],
     name: 'increment',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
-        name: 'account',
+        name: '_owner',
         type: 'address',
       },
       {
         internalType: 'address',
-        name: 'operator',
+        name: '_operator',
         type: 'address',
       },
     ],
@@ -614,70 +450,82 @@ export default [
     outputs: [
       {
         internalType: 'bool',
-        name: '',
+        name: 'isOperator',
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
-        name: 'to',
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    name: 'isMinter',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'isOwner',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_to',
         type: 'address',
       },
       {
         internalType: 'uint256',
-        name: 'id',
+        name: '_id',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: '_quantity',
         type: 'uint256',
       },
       {
         internalType: 'bytes',
-        name: 'data',
+        name: '_data',
         type: 'bytes',
       },
     ],
     name: 'mint',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'ids',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'amounts',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'bytes',
-        name: 'data',
-        type: 'bytes',
-      },
-    ],
-    name: 'mintBatch',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
+    constant: true,
     inputs: [],
     name: 'name',
     outputs: [
@@ -687,10 +535,12 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'owner',
     outputs: [
@@ -700,157 +550,135 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [],
-    name: 'pause',
+    name: 'renounceMinter',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'paused',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
+    constant: false,
     inputs: [],
     name: 'renounceOwnership',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'renounceRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'revokeRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
-        name: 'from',
+        name: '_from',
         type: 'address',
       },
       {
         internalType: 'address',
-        name: 'to',
+        name: '_to',
         type: 'address',
       },
       {
         internalType: 'uint256[]',
-        name: 'ids',
+        name: '_ids',
         type: 'uint256[]',
       },
       {
         internalType: 'uint256[]',
-        name: 'amounts',
+        name: '_amounts',
         type: 'uint256[]',
       },
       {
         internalType: 'bytes',
-        name: 'data',
+        name: '_data',
         type: 'bytes',
       },
     ],
     name: 'safeBatchTransferFrom',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
-        name: 'from',
+        name: '_from',
         type: 'address',
       },
       {
         internalType: 'address',
-        name: 'to',
+        name: '_to',
         type: 'address',
       },
       {
         internalType: 'uint256',
-        name: 'id',
+        name: '_id',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: '_amount',
         type: 'uint256',
       },
       {
         internalType: 'bytes',
-        name: 'data',
+        name: '_data',
         type: 'bytes',
       },
     ],
     name: 'safeTransferFrom',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
-        name: 'operator',
+        name: '_operator',
         type: 'address',
       },
       {
         internalType: 'bool',
-        name: 'approved',
+        name: '_approved',
         type: 'bool',
       },
     ],
     name: 'setApprovalForAll',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_newBaseMetadataURI',
+        type: 'string',
+      },
+    ],
+    name: 'setBaseMetadataURI',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
     inputs: [],
     name: 'srcTokenAddr',
     outputs: [
@@ -860,14 +688,16 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'bytes4',
-        name: 'interfaceId',
+        name: '_interfaceID',
         type: 'bytes4',
       },
     ],
@@ -879,10 +709,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'symbol',
     outputs: [
@@ -892,10 +724,12 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -911,10 +745,33 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
+      },
+    ],
+    name: 'totalSupply',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -924,21 +781,16 @@ export default [
     ],
     name: 'transferOwnership',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'unpause',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
-        name: '',
+        name: '_id',
         type: 'uint256',
       },
     ],
@@ -950,6 +802,7 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },

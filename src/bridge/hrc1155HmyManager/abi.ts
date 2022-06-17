@@ -7,6 +7,7 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
@@ -159,6 +160,7 @@ export default [
     type: 'event',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -188,10 +190,12 @@ export default [
     ],
     name: 'lockHRC1155Token',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -221,10 +225,12 @@ export default [
     ],
     name: 'lockHRC1155Tokens',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -260,10 +266,12 @@ export default [
         type: 'bytes4',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -299,14 +307,16 @@ export default [
         type: 'bytes4',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'bytes4',
-        name: 'interfaceId',
+        name: 'interfaceID',
         type: 'bytes4',
       },
     ],
@@ -318,10 +328,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -356,10 +368,12 @@ export default [
     ],
     name: 'unlockHRC1155Token',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -394,10 +408,12 @@ export default [
     ],
     name: 'unlockHRC1155Tokens',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'bytes32',
@@ -413,10 +429,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'wallet',
     outputs: [
@@ -426,6 +444,7 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },

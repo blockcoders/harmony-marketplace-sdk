@@ -22,6 +22,7 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
@@ -79,13 +80,13 @@ export default [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
         name: 'account',
         type: 'address',
       },
     ],
-    name: 'Paused',
+    name: 'MinterAdded',
     type: 'event',
   },
   {
@@ -93,74 +94,12 @@ export default [
     inputs: [
       {
         indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'previousAdminRole',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'newAdminRole',
-        type: 'bytes32',
-      },
-    ],
-    name: 'RoleAdminChanged',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
         internalType: 'address',
         name: 'account',
         type: 'address',
       },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
     ],
-    name: 'RoleGranted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleRevoked',
+    name: 'MinterRemoved',
     type: 'event',
   },
   {
@@ -189,71 +128,22 @@ export default [
     type: 'event',
   },
   {
-    anonymous: false,
+    constant: false,
     inputs: [
       {
-        indexed: false,
         internalType: 'address',
         name: 'account',
         type: 'address',
       },
     ],
-    name: 'Unpaused',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'MINTER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'PAUSER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'miner',
-        type: 'address',
-      },
-    ],
     name: 'addMinter',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -268,10 +158,12 @@ export default [
     ],
     name: 'approve',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -287,10 +179,27 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
+    inputs: [],
+    name: 'baseURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256',
@@ -300,10 +209,32 @@ export default [
     ],
     name: 'burn',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
+    name: 'burnFrom',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -319,10 +250,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'counter',
     outputs: [
@@ -332,17 +265,21 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [],
     name: 'decrement',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'ethTokenAddr',
     outputs: [
@@ -352,10 +289,12 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -371,121 +310,21 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRoleAdmin',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
-      },
-    ],
-    name: 'getRoleMember',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRoleMemberCount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'grantRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'hasRole',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
+    constant: false,
     inputs: [],
     name: 'increment',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -506,23 +345,59 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    name: 'isMinter',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
         name: 'to',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
     ],
     name: 'mint',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'name',
     outputs: [
@@ -532,10 +407,12 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -551,19 +428,39 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [],
-    name: 'pause',
+    name: 'renounceMinter',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'paused',
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: '_data',
+        type: 'bytes',
+      },
+    ],
+    name: 'safeMint',
     outputs: [
       {
         internalType: 'bool',
@@ -571,46 +468,38 @@ export default [
         type: 'bool',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'renounceRole',
-    outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
         internalType: 'address',
-        name: 'account',
+        name: 'to',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
     ],
-    name: 'revokeRole',
-    outputs: [],
+    name: 'safeMint',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -630,10 +519,12 @@ export default [
     ],
     name: 'safeTransferFrom',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -658,14 +549,16 @@ export default [
     ],
     name: 'safeTransferFrom',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
-        name: 'operator',
+        name: 'to',
         type: 'address',
       },
       {
@@ -676,10 +569,12 @@ export default [
     ],
     name: 'setApprovalForAll',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256',
@@ -694,10 +589,12 @@ export default [
     ],
     name: 'setTokenURI',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'bytes4',
@@ -713,10 +610,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'symbol',
     outputs: [
@@ -726,10 +625,12 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -745,10 +646,12 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -769,10 +672,12 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'uint256',
@@ -788,10 +693,12 @@ export default [
         type: 'string',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'totalSupply',
     outputs: [
@@ -801,10 +708,12 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -824,13 +733,7 @@ export default [
     ],
     name: 'transferFrom',
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'unpause',
-    outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },

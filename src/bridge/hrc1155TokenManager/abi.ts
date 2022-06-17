@@ -38,6 +38,7 @@ export default [
     type: 'event',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -68,10 +69,12 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -81,10 +84,27 @@ export default [
     ],
     name: 'deny',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
+    inputs: [],
+    name: 'isOwner',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -100,10 +120,12 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'owner',
     outputs: [
@@ -113,10 +135,12 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -137,10 +161,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -150,10 +176,12 @@ export default [
     ],
     name: 'rely',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -168,17 +196,21 @@ export default [
     ],
     name: 'removeHRC1155Token',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [],
     name: 'renounceOwnership',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -188,10 +220,12 @@ export default [
     ],
     name: 'transferOwnership',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -207,6 +241,7 @@ export default [
         type: 'uint256',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
