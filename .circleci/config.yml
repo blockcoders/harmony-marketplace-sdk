@@ -38,6 +38,9 @@ jobs:
           name: Run Tests
           command: npm run test:cov
       - run:
+          name: Run E2E Tests
+          command: npm run test:e2e
+      - run:
           name: Run Build
           command: npm run build
       - run:

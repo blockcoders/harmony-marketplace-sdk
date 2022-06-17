@@ -1,10 +1,13 @@
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.9;
+pragma solidity 0.5.17;
 
-import "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
 
-contract BlockcodersHRC20 is ERC20PresetMinterPauser {
-  constructor(string memory name, string memory symbol) ERC20PresetMinterPauser(name, symbol) {
-    _mint(_msgSender(), 1000**18);
-  }
+contract BlockcodersHRC20 is ERC20Burnable, ERC20Detailed, ERC20Mintable {
+    constructor(
+        string memory name,
+        string memory symbol,
+        uint8 decimals
+    ) public ERC20Detailed(name, symbol, decimals) {}
 }

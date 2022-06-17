@@ -8,13 +8,36 @@ import { BaseToken } from '../contracts'
 import { BNish, HarmonyShards, ITransactionOptions } from '../interfaces'
 import { PrivateKey } from '../wallets'
 import { TEST_PK_1 } from './constants'
-import { ABI } from './contracts/TestToken/abi'
 
 use(chaiAsPromised)
 
+const abi = [
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'balanceOf',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
 class TestToken extends BaseToken {
   constructor() {
-    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyPangaea))
+    super('0x', abi, new PrivateKey(HarmonyShards.SHARD_0_DEVNET, TEST_PK_1, ChainID.HmyPangaea))
   }
   public async balanceOf(address: string, id?: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     return this.getBalance(address, id, txOptions)

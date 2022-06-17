@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.5.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./HRC20TokenManager.sol";
@@ -40,7 +39,7 @@ contract HRC20EthManager {
      * @dev constructor
      * @param _wallet is the multisig wallet
      */
-    constructor(address _wallet) {
+    constructor(address _wallet) public {
         wallet = _wallet;
     }
 

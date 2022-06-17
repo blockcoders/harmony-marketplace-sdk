@@ -52,7 +52,7 @@ describe('Key Class', () => {
   })
 
   it('should instance correctly the key class using url as a HarmonyShards', async () => {
-    instance = new Key(HarmonyShards.SHARD_0_TESTNET, ChainID.HmyPangaea)
+    instance = new Key(HarmonyShards.SHARD_0_DEVNET, ChainID.HmyPangaea)
 
     expect(instance).to.not.be.null
     expect(instance).to.not.be.undefined

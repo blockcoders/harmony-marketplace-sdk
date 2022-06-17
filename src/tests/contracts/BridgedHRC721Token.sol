@@ -1,31 +1,31 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.5.17;
 
-import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721Mintable.sol";
+import "./ERC721FullCustom.sol";
 
-contract BridgedHRC721Token is ERC721PresetMinterPauserAutoId {
+contract BridgedHRC721Token is ERC721Mintable, ERC721Burnable, ERC721FullCustom {
     address public ethTokenAddr;
     uint256 public counter;
-    
-    // Optional mapping for token URIs
-    mapping(uint256 => string) private _tokenURIs;
-    
     constructor(
         address _ethTokenAddr,
         string memory name,
         string memory symbol,
         string memory baseURI
-    ) ERC721PresetMinterPauserAutoId(name, symbol, baseURI) {}
+    ) public ERC721FullCustom(name, symbol) {
+        ethTokenAddr = _ethTokenAddr;
+        _setBaseURI(baseURI);
+    }
 
-    modifier onlyMinter () {
-        require(hasRole(MINTER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have minter role to mint");
-        _;
+    function burnFrom(address owner, uint256 tokenId) public {
+        //solhint-disable-next-line max-line-length
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
+        _burn(owner, tokenId);
     }
 
     function setTokenURI(uint256 tokenId, string memory tokenURI) public {
         require(_msgSender() == ownerOf(tokenId), "only owner can set tokenURI");
-        require(_exists(tokenId), "ERC721Metadata: URI set of nonexistent token");
-        _tokenURIs[tokenId] = tokenURI;
+        _setTokenURI(tokenId, tokenURI);
     }
 
     function increment() public onlyMinter {
@@ -38,9 +38,5 @@ contract BridgedHRC721Token is ERC721PresetMinterPauserAutoId {
 
     function checkSupply(uint256 value) public view returns (bool) {
         return counter == value;
-    }
-
-    function addMinter(address miner) public virtual {
-        _setupRole(MINTER_ROLE, miner);
     }
 }

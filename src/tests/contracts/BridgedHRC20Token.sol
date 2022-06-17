@@ -1,27 +1,17 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.5.17;
 
-import "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
 
-contract BridgedHRC20Token is ERC20PresetMinterPauser {
+contract BridgedHRC20Token is ERC20Burnable, ERC20Detailed, ERC20Mintable {
     address public ethTokenAddr;
-    uint8 private _decimals;
-
     constructor(
         address _ethTokenAddr,
         string memory name,
         string memory symbol,
-        uint8 decimals_
-    ) ERC20PresetMinterPauser(name, symbol) {
+        uint8 decimals
+    ) public ERC20Detailed(name, symbol, decimals) {
         ethTokenAddr = _ethTokenAddr;
-        _decimals = decimals_;
-    }
-    
-    function decimals() public view virtual override returns (uint8) {
-        return _decimals;
-    }
-    
-    function addMinter(address miner) public virtual {
-        _setupRole(MINTER_ROLE, miner);
     }
 }

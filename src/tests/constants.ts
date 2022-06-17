@@ -136,4 +136,5 @@ export enum ContractName {
   HRC1155EthManager = 'HRC1155EthManager',
   HRC1155HmyManager = 'HRC1155HmyManager',
   HRC1155TokenManager = 'HRC1155TokenManager',
+  GameItems = 'GameItems',
 }

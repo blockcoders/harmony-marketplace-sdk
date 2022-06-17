@@ -62,7 +62,7 @@
     "@ethersproject/providers": "^5.6.8",
     "@ethersproject/units": "^5.6.1",
     "@ethersproject/wallet": "^5.6.2",
-    "@openzeppelin/contracts": "^4.5.0",
+    "@openzeppelin/contracts": "^2.5.1",
     "@types/bip39": "^2.4.2",
     "@types/chai": "^4.3.0",
     "@types/chai-as-promised": "^7.1.5",

@@ -7,6 +7,7 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
@@ -73,6 +74,7 @@ export default [
     type: 'event',
   },
   {
+    constant: true,
     inputs: [],
     name: 'HMY_ADDRESS',
     outputs: [
@@ -82,10 +84,12 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256',
@@ -100,10 +104,12 @@ export default [
     ],
     name: 'lockOne',
     outputs: [],
+    payable: true,
     stateMutability: 'payable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -123,10 +129,12 @@ export default [
     ],
     name: 'lockToken',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -151,10 +159,12 @@ export default [
     ],
     name: 'lockTokenFor',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'uint256',
@@ -174,10 +184,12 @@ export default [
     ],
     name: 'unlockOne',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: false,
     inputs: [
       {
         internalType: 'address',
@@ -202,10 +214,12 @@ export default [
     ],
     name: 'unlockToken',
     outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [
       {
         internalType: 'bytes32',
@@ -221,10 +235,12 @@ export default [
         type: 'bool',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
   {
+    constant: true,
     inputs: [],
     name: 'wallet',
     outputs: [
@@ -234,6 +250,7 @@ export default [
         type: 'address',
       },
     ],
+    payable: false,
     stateMutability: 'view',
     type: 'function',
   },

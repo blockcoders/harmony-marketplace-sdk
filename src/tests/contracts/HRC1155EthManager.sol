@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.5.17;
 
+import "./IERC1155.sol";
 import "./HRC1155TokenManager.sol";
 import "./BridgedHRC1155Token.sol";
 
@@ -62,7 +62,7 @@ contract HRC1155EthManager {
      * @dev constructor
      * @param _wallet is the multisig wallet
      */
-    constructor(address _wallet) {
+    constructor(address _wallet) public {
         wallet = _wallet;
     }
 

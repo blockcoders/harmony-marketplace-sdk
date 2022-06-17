@@ -1,6 +1,4 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
-
+pragma solidity 0.5.17;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./HRC721TokenManager.sol";
 import "./BridgedHRC721Token.sol";
@@ -41,7 +39,7 @@ contract HRC721EthManager {
      * @dev constructor
      * @param _wallet is the multisig wallet
      */
-    constructor(address _wallet) {
+    constructor(address _wallet) public {
         wallet = _wallet;
     }
 

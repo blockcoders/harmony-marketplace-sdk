@@ -1,8 +1,7 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.5.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./BridgedHRC721Token.sol";
 
 contract HRC721TokenManager is Ownable {
@@ -90,8 +89,6 @@ contract HRC721TokenManager is Ownable {
 
         // store the mapping and created address
         mappedTokens[ethTokenAddr] = oneTokenAddr;
-        
-        return true;
     }
 
     /**

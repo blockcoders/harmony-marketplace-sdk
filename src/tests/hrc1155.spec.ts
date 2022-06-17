@@ -13,16 +13,18 @@ import {
   TX_OPTIONS,
   FAKE_BALANCE_HRC1155,
   WALLET_PROVIDER_TEST_1,
+  ContractName,
 } from './constants'
-import { ABI } from './contracts/HRC1155/abi'
+import { getContractMetadata } from './helpers'
 
 use(chaiAsPromised)
 
 describe('HRC1155 Contract Interface', () => {
   let contract: HRC1155
 
-  before(() => {
-    contract = new HRC1155(HRC1155_CONTRACT_ADDRESS, ABI, WALLET_PROVIDER_TEST_1)
+  before(async () => {
+    const { abi } = await getContractMetadata(ContractName.BlockcodersHRC1155)
+    contract = new HRC1155(HRC1155_CONTRACT_ADDRESS, abi, WALLET_PROVIDER_TEST_1)
   })
 
   afterEach(async () => {

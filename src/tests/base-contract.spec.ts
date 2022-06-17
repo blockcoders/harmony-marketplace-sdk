@@ -8,13 +8,12 @@ import { BaseContract } from '../contracts'
 import { HarmonyShards } from '../interfaces'
 import { MnemonicKey, PrivateKey } from '../wallets'
 import { TEST_ADDRESS_2, TEST_PK_1, TX_OPTIONS, TOKEN_GOLD, TEST_SEED } from './constants'
-import { ABI } from './contracts/TestToken/abi'
 
 use(chaiAsPromised)
 
 class TestToken extends BaseContract {
   constructor() {
-    super('0x', ABI, new PrivateKey(HarmonyShards.SHARD_0_TESTNET, TEST_PK_1, ChainID.HmyPangaea))
+    super('0x', [], new PrivateKey(HarmonyShards.SHARD_0_DEVNET, TEST_PK_1, ChainID.HmyPangaea))
   }
 }
 

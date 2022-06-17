@@ -1,31 +1,35 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.5.17;
 
-import "@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./ERC1155.sol";
+import "./ERC1155Metadata.sol";
+import "./ERC1155MintBurn.sol";
 
-contract BlockcodersHRC1155 is ERC1155PresetMinterPauser, Ownable {
-  uint256 public constant GOLD = 0;
-  uint256 public constant SILVER = 1;
-  uint256 public constant THORS_HAMMER = 2;
-  uint256 public constant SWORD = 3;
-  uint256 public constant SHIELD = 4;
-  string private _uriPrefix;
+contract BlockcodersHRC1155 is ERC1155, ERC1155MintBurn, ERC1155Metadata {
+    string private _name;
+    string private _symbol;
 
-  constructor() ERC1155PresetMinterPauser("https://gateway.pinata.cloud/ipfs/{id}.json") {
-    _mint(_msgSender(), GOLD, 10**18, "");
-    _mint(_msgSender(), SILVER, 10**27, "");
-    _mint(_msgSender(), THORS_HAMMER, 1, "");
-    _mint(_msgSender(), SWORD, 10**9, "");
-    _mint(_msgSender(), SHIELD, 10**9, "");
-    _uriPrefix = "https://gateway.pinata.cloud/ipfs/";
-  }
+    constructor(
+        string memory name,
+        string memory symbol,
+        string memory uri
+    ) public ERC1155() {
+        _name = name;
+        _symbol = symbol;
+        _setBaseMetadataURI(uri);
+    }
 
-  function tokenURIPrefix() public view virtual returns (string memory) {
-    return _uriPrefix;
-  }
+    /**
+     * @dev Returns the name of the token.
+     */
+    function name() public view returns (string memory) {
+        return _name;
+    }
 
-  function contractURI() public view virtual returns (string memory) {
-    return _uriPrefix;
-  }
+    /**
+     * @dev Returns the symbol of the token, usually a shorter version of the
+     * name.
+     */
+    function symbol() public view returns (string memory) {
+        return _symbol;
+    }
 }
