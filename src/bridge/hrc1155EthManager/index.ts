@@ -70,4 +70,8 @@ export class HRC1155EthManager extends EthBaseContract {
   ): Promise<TransactionReceipt> {
     return this.write('mintTokens', [oneToken, tokenIds, recipient, receiptId, amounts], txOptions)
   }
+
+  public async mappings(hrc1155Addr: string): Promise<string> {
+    return this.read<string>('mappings', [hrc1155Addr])
+  }
 }
