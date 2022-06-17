@@ -17,8 +17,11 @@
     "access": "public"
   },
   "scripts": {
+    "pretest": "npm run build:contracts",
     "test": "NODE_ENV=test mocha -t 120000 --require ts-node/register src/**/*.spec.ts --exit",
+    "pretest:watch": "npm run build:contracts",
     "test:watch": "NODE_ENV=test mocha -t 120000 --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
+    "pretest:cov": "npm run build:contracts",
     "test:cov": "nyc npm run test",
     "pretest:e2e": "npm run build:contracts",
     "test:e2e": "NODE_ENV=test mocha -t 360000 --require ts-node/register src/**/*.e2e-spec.ts --exit",
