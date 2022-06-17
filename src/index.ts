@@ -1,3 +1,4 @@
+export * from './bridge'
 export * from './contracts'
 export * from './wallets'
 export * from './constants'

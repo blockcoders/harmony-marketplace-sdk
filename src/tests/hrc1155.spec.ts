@@ -4,7 +4,6 @@ import sinon from 'sinon'
 import { AddressZero } from '../constants'
 import { HRC1155 } from '../contracts'
 import {
-  HRC1155_CONTRACT_ADDRESS,
   TEST_ADDRESS_1,
   EMPTY_TEST_ADDRESS,
   TEST_ADDRESS_2,
@@ -24,7 +23,7 @@ describe('HRC1155 Contract Interface', () => {
 
   before(async () => {
     const { abi } = await getContractMetadata(ContractName.BlockcodersHRC1155)
-    contract = new HRC1155(HRC1155_CONTRACT_ADDRESS, abi, WALLET_PROVIDER_TEST_1)
+    contract = new HRC1155('0x', abi, WALLET_PROVIDER_TEST_1)
   })
 
   afterEach(async () => {

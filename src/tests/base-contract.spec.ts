@@ -20,7 +20,7 @@ class TestToken extends BaseContract {
 describe('Base Contract', () => {
   let contract: TestToken
 
-  before(() => {
+  before(async () => {
     contract = new TestToken()
   })
 
