@@ -25,7 +25,7 @@ export class HRC721HmyManager extends BaseContract {
     amount: BNish,
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    return this.send('lockNFT1155Token', [ethTokenAddr, tokenId, recipient, amount], txOptions)
+    return this.send('lockNFT1155Token', [ethTokenAddr, tokenId, recipient, amount, []], txOptions)
   }
 
   public async lockTokens(

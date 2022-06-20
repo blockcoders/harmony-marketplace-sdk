@@ -28,11 +28,11 @@ const tokenURI = 'https://fakeURI.com'
 
 class HRC1155Mintable extends HRC1155 {
   public mint(account: string, tokenId: BNish, amount: BNish): Promise<Transaction> {
-    return this.send('mint', [account, tokenId, amount, tokenURI], E2E_TX_OPTIONS)
+    return this.send('mint', [account, tokenId, amount, []], E2E_TX_OPTIONS)
   }
 }
 
-describe.only('Bridge HRC1155 Token', () => {
+describe('Bridge HRC1155 Token', () => {
   const tokenIds = [1, 2]
   const amounts = [1, 2]
   let lockTokenTxHash: string
@@ -134,6 +134,7 @@ describe.only('Bridge HRC1155 Token', () => {
         tokenIds,
         ETH_OWNER_ADDRESS,
         amounts,
+        [],
         E2E_TX_OPTIONS,
       )
 
@@ -166,7 +167,7 @@ describe.only('Bridge HRC1155 Token', () => {
       expect(balanceBeforeMint1.isZero()).to.be.true
       expect(balanceBeforeMint2.isZero()).to.be.true
 
-      const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, ETH_OWNER_ADDRESS, lockTokenTxHash, amounts)
+      const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, ETH_OWNER_ADDRESS, lockTokenTxHash, amounts, [])
 
       expect(mintTokenTx.transactionHash).to.not.be.undefined
       expect(mintTokenTx.status).eq(1) // The status of a transaction is 1 is successful
@@ -227,6 +228,7 @@ describe.only('Bridge HRC1155 Token', () => {
         HMY_OWNER_ADDRESS,
         burnTokenTxHash,
         amounts,
+        [],
         E2E_TX_OPTIONS,
       )
 

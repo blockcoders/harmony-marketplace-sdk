@@ -3,8 +3,9 @@ pragma solidity 0.5.17;
 import "./ERC1155.sol";
 import "./ERC1155Metadata.sol";
 import "./ERC1155MintBurn.sol";
+import "@openzeppelin/contracts/access/roles/MinterRole.sol";
 
-contract BlockcodersHRC1155 is ERC1155, ERC1155MintBurn, ERC1155Metadata {
+contract BlockcodersHRC1155 is ERC1155, ERC1155MintBurn, ERC1155Metadata, MinterRole {
     string private _name;
     string private _symbol;
 
@@ -31,5 +32,14 @@ contract BlockcodersHRC1155 is ERC1155, ERC1155MintBurn, ERC1155Metadata {
      */
     function symbol() public view returns (string memory) {
         return _symbol;
+    }
+
+    function mint(
+        address _to,
+        uint256 _id,
+        uint256 _quantity,
+        bytes memory _data
+    ) public onlyMinter {
+        _mint(_to, _id, _quantity, _data);
     }
 }

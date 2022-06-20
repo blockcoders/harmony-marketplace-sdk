@@ -14,9 +14,10 @@ export class HRC1155HmyManager extends BaseContract {
     tokenId: BNish,
     recipient: string,
     amount: BNish,
+    data: string[],
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    return this.send('lockHRC1155Token', [ethTokenAddr, tokenId, recipient, amount], txOptions)
+    return this.send('lockHRC1155Token', [ethTokenAddr, tokenId, recipient, amount, data], txOptions)
   }
 
   public async lockHRC1155Tokens(
@@ -24,9 +25,10 @@ export class HRC1155HmyManager extends BaseContract {
     tokenIds: BNish[],
     recipient: string,
     amounts: BNish[],
+    data: string[],
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    return this.send('lockHRC1155Tokens', [ethTokenAddr, tokenIds, recipient, amounts], txOptions)
+    return this.send('lockHRC1155Tokens', [ethTokenAddr, tokenIds, recipient, amounts, data], txOptions)
   }
 
   public async unlockHRC1155Token(
@@ -35,9 +37,10 @@ export class HRC1155HmyManager extends BaseContract {
     recipient: string,
     receiptId: string,
     amount: BNish,
+    data: string[],
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    return this.send('unlockHRC1155Token', [ethTokenAddr, tokenId, recipient, receiptId, amount], txOptions)
+    return this.send('unlockHRC1155Token', [ethTokenAddr, tokenId, recipient, receiptId, amount, data], txOptions)
   }
 
   public async unlockHRC1155Tokens(
@@ -46,8 +49,9 @@ export class HRC1155HmyManager extends BaseContract {
     recipient: string,
     receiptId: string,
     amounts: BNish[],
+    data: string[],
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
-    return this.send('unlockHRC1155Tokens', [ethTokenAddr, tokenIds, recipient, receiptId, amounts], txOptions)
+    return this.send('unlockHRC1155Tokens', [ethTokenAddr, tokenIds, recipient, receiptId, amounts, data], txOptions)
   }
 }

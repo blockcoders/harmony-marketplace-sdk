@@ -55,9 +55,10 @@ export class HRC1155EthManager extends EthBaseContract {
     recipient: string,
     receiptId: string,
     amount: BigNumberish,
+    data: string[],
     txOptions?: CallOverrides,
   ): Promise<TransactionReceipt> {
-    return this.write('mintToken', [oneToken, tokenId, recipient, receiptId, amount], txOptions)
+    return this.write('mintToken', [oneToken, tokenId, recipient, receiptId, amount, data], txOptions)
   }
 
   public async mintTokens(
@@ -66,9 +67,10 @@ export class HRC1155EthManager extends EthBaseContract {
     recipient: string,
     receiptId: string,
     amounts: BigNumberish[],
+    data: string[],
     txOptions?: CallOverrides,
   ): Promise<TransactionReceipt> {
-    return this.write('mintTokens', [oneToken, tokenIds, recipient, receiptId, amounts], txOptions)
+    return this.write('mintTokens', [oneToken, tokenIds, recipient, receiptId, amounts, data], txOptions)
   }
 
   public async mappings(hrc1155Addr: string): Promise<string> {
