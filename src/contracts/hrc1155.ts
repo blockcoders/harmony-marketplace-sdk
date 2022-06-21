@@ -154,10 +154,17 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     if (!amounts || amounts.length === 0) {
       throw Error('Error in tokenInfo, amounts cannot be undefined nor empty for HRC1155')
     }
-    const balance = await this.balanceOf(sender, tokenIds[0], txOptions)
-    if (balance < new BN(1)) {
-      throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[0]}`)
+    if (amounts.length !== tokenIds.length) {
+      throw Error('Error in tokenInfo, amounts length must be same as tokensIds length')
     }
+    // creates an array with the same account with a length equal to tokenIds
+    const senderArray = tokenIds.map(() => sender)
+    const balances = await this.balanceOfBatch(senderArray, tokenIds, txOptions)
+    balances.forEach((balance, index)=> {
+      if (balance < new BN(amounts[index])) {
+        throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`)
+      }
+    })
 
     // approve HRC1155EthManager on HRC1155TokenManager
     const relyTx = await tokenManager.rely(ethManager.address)
@@ -223,10 +230,14 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     if (!amounts || amounts.length === 0) {
       throw Error('Error in tokenInfo, amounts cannot be undefined nor empty for HRC1155')
     }
-    const balance = await erc1155.balanceOf(sender, tokenIds[0])
-    if (balance.toNumber() < 1) {
-      throw Error('Insufficient funds')
-    }
+    // creates an array with the same account with a length equal to tokenIds
+    const senderArray = tokenIds.map(() => sender)
+    const balances = await erc1155.balanceOfBatch(senderArray, tokenIds)
+    balances.forEach((balance, index)=> {
+      if (balance.toNumber() < amounts[index]) {
+        throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`)
+      }
+    })
 
     // Approve EthManager to burn the tokens on the Ethereum Network
     const approveTx = await erc1155.setApprovalForAll(ethManager.address, true)

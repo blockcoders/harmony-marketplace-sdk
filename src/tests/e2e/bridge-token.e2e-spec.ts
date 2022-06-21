@@ -1,5 +1,5 @@
-import { TokenInfo } from '../interfaces'
-import { BridgeToken } from '../bridge/bridgeToken'
+import { TokenInfo } from '../../interfaces'
+import { BridgeToken } from '../../bridge/bridgeToken'
 import {
   WALLET_ETH_MASTER,
   WALLET_HMY_MASTER,
@@ -7,8 +7,8 @@ import {
   WALLET_ETH_OWNER,
   HMY_OWNER_ADDRESS,
   ETH_OWNER_ADDRESS,
-} from './constants'
-import { BridgeType, DEFAULT_TX_OPTIONS, NetworkInfo, TokenType } from '../constants'
+} from '../constants'
+import { BridgeType, DEFAULT_TX_OPTIONS, NetworkInfo, TokenType } from '../../constants'
 const hrc20Address = "0x8202502dc1d2d0bf741ccafcf08bd973c0547bea"
 const hrc721Address = "0x3bd7ff8176daef64e81711027b50ed2f3d07c2f5"
 const hrc1155Address = "0x245cd441f37d98122e5f9c8214228409ecb51869"
