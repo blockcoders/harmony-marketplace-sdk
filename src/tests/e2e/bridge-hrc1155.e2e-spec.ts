@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { Transaction, TxStatus } from '@harmony-js/transaction'
-import { hexToNumber } from '@harmony-js/utils'
+import { ChainType, hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
@@ -18,26 +18,21 @@ import {
   ContractName,
   E2E_TX_OPTIONS,
 } from '../constants'
-import { deployContract, deployEthContract, waitForNewBlock } from '../helpers'
-import { BNish } from '../../interfaces'
+import { deployContract, deployEthContract } from '../helpers'
+import { HARMONY_RPC_DEVNET_WS } from '../../constants'
+import { waitForNewBlock } from '../../utils'
 
 use(chaiAsPromised)
 const name = 'Blockcoders NFT'
 const symbol = 'Blockcoders'
 const tokenURI = 'https://fakeURI.com'
 
-class HRC1155Mintable extends HRC1155 {
-  public mint(account: string, tokenId: BNish, amount: BNish): Promise<Transaction> {
-    return this.send('mint', [account, tokenId, amount, []], E2E_TX_OPTIONS)
-  }
-}
-
 describe('Bridge HRC1155 Token', () => {
   const tokenIds = [1, 2]
   const amounts = [1, 2]
   let lockTokenTxHash: string
   let burnTokenTxHash: string
-  let hrc1155: HRC1155Mintable
+  let hrc1155: HRC1155
   let ownerHrc1155: HRC1155
   let erc1155Addr: string
   let bridgedToken: BridgedHRC1155Token
@@ -59,7 +54,7 @@ describe('Bridge HRC1155 Token', () => {
     ])
 
     // Create contract instances
-    hrc1155 = new HRC1155Mintable(hrc1155Options.addr, hrc1155Options.abi, WALLET_HMY_MASTER)
+    hrc1155 = new HRC1155(hrc1155Options.addr, hrc1155Options.abi, WALLET_HMY_MASTER)
     ownerHrc1155 = new HRC1155(hrc1155Options.addr, hrc1155Options.abi, WALLET_HMY_OWNER)
     hmyManager = new HRC1155HmyManager(hmyManagerOptions.addr, WALLET_HMY_MASTER)
     ownerHmyManager = new HRC1155HmyManager(hmyManagerOptions.addr, WALLET_HMY_OWNER)
@@ -97,14 +92,14 @@ describe('Bridge HRC1155 Token', () => {
     })
 
     it(`hrc1155 holder should have ${amounts[0]} token with tokenId ${tokenIds[0]} and ${amounts[1]} tokens with tokenId ${tokenIds[1]} after mint`, async () => {
-      const mintTx1 = await hrc1155.mint(HMY_OWNER_ADDRESS, tokenIds[0], amounts[0])
+      const mintTx1 = await hrc1155.mint(HMY_OWNER_ADDRESS, tokenIds[0], amounts[0], E2E_TX_OPTIONS)
       console.info('HRC1155Mintable mint tx hash: ', mintTx1.id)
       const balance1 = await hrc1155.balanceOf(HMY_OWNER_ADDRESS, tokenIds[0], E2E_TX_OPTIONS)
       expect(mintTx1.txStatus).eq(TxStatus.CONFIRMED)
       expect(balance1.isZero()).to.not.be.true
       expect(balance1.eq(new BN(amounts[0]))).to.be.true
 
-      const mintTx2 = await hrc1155.mint(HMY_OWNER_ADDRESS, tokenIds[1], amounts[1])
+      const mintTx2 = await hrc1155.mint(HMY_OWNER_ADDRESS, tokenIds[1], amounts[1], E2E_TX_OPTIONS)
       console.info('HRC1155Mintable mint tx hash: ', mintTx2.id)
       const balance2 = await hrc1155.balanceOf(HMY_OWNER_ADDRESS, tokenIds[1], E2E_TX_OPTIONS)
       expect(mintTx2.txStatus).eq(TxStatus.CONFIRMED)
@@ -147,7 +142,12 @@ describe('Bridge HRC1155 Token', () => {
 
       console.info('HRC1155HmyManager lockTokenFor tx hash: ', lockTokenTxHash)
 
-      await waitForNewBlock(parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6)
+      await waitForNewBlock(
+        parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6,
+        HARMONY_RPC_DEVNET_WS,
+        ChainType.Harmony,
+        4,
+      )
 
       const balanceAfterLock1 = await hrc1155.balanceOf(HMY_OWNER_ADDRESS, tokenIds[0], E2E_TX_OPTIONS)
       const balanceAfterLock2 = await hrc1155.balanceOf(HMY_OWNER_ADDRESS, tokenIds[1], E2E_TX_OPTIONS)
@@ -167,7 +167,14 @@ describe('Bridge HRC1155 Token', () => {
       expect(balanceBeforeMint1.isZero()).to.be.true
       expect(balanceBeforeMint2.isZero()).to.be.true
 
-      const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, ETH_OWNER_ADDRESS, lockTokenTxHash, amounts, [])
+      const mintTokenTx = await ethManager.mintTokens(
+        erc1155Addr,
+        tokenIds,
+        ETH_OWNER_ADDRESS,
+        lockTokenTxHash,
+        amounts,
+        [],
+      )
 
       expect(mintTokenTx.transactionHash).to.not.be.undefined
       expect(mintTokenTx.status).eq(1) // The status of a transaction is 1 is successful

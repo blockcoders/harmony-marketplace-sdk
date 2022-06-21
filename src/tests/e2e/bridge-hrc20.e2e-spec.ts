@@ -1,12 +1,11 @@
 import 'dotenv/config'
-import { Transaction, TxStatus } from '@harmony-js/transaction'
-import { hexToNumber } from '@harmony-js/utils'
+import { TxStatus } from '@harmony-js/transaction'
+import { ChainType, hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../../bridge'
 import { HRC20 } from '../../contracts'
-import { BNish } from '../../interfaces'
 import {
   WALLET_HMY_MASTER,
   WALLET_ETH_MASTER,
@@ -19,15 +18,11 @@ import {
   ContractName,
   E2E_TX_OPTIONS,
 } from '../constants'
-import { deployContract, deployEthContract, waitForNewBlock } from '../helpers'
+import { deployContract, deployEthContract } from '../helpers'
+import { HARMONY_RPC_DEVNET_WS } from '../../constants'
+import { waitForNewBlock } from '../../utils'
 
 use(chaiAsPromised)
-
-class HRC20Mintable extends HRC20 {
-  public mint(account: string, amount: BNish): Promise<Transaction> {
-    return this.send('mint', [account, amount], E2E_TX_OPTIONS)
-  }
-}
 
 describe('Bridge HRC20 Token', () => {
   const name = 'Blockcoders'
@@ -36,7 +31,7 @@ describe('Bridge HRC20 Token', () => {
   const amount = (500 * 10 ** decimals).toString() // 500 in Gwei
   let lockTokenTxHash: string
   let burnTokenTxHash: string
-  let hrc20: HRC20Mintable
+  let hrc20: HRC20
   let ownerHrc20: HRC20
   let erc20Addr: string
   let bridgedToken: BridgedHRC20Token
@@ -57,7 +52,7 @@ describe('Bridge HRC20 Token', () => {
     ])
 
     // Create contract instances
-    hrc20 = new HRC20Mintable(hrc20Options.addr, hrc20Options.abi, WALLET_HMY_MASTER)
+    hrc20 = new HRC20(hrc20Options.addr, hrc20Options.abi, WALLET_HMY_MASTER)
     ownerHrc20 = new HRC20(hrc20Options.addr, hrc20Options.abi, WALLET_HMY_OWNER)
     hmyManager = new HRC20HmyManager(hmyManagerOptions.addr, WALLET_HMY_MASTER)
     ethManager = new HRC20EthManager(ethManagerOptions.addr, WALLET_ETH_MASTER)
@@ -92,9 +87,9 @@ describe('Bridge HRC20 Token', () => {
   })
 
   it(`hrc20 holder should have ${amount} tokens after mint`, async () => {
-    const mintTx = await hrc20.mint(HMY_OWNER_ADDRESS, amount)
+    const mintTx = await hrc20.mint(HMY_OWNER_ADDRESS, amount, E2E_TX_OPTIONS)
 
-    console.info('HRC20Mintable mint tx hash: ', mintTx.id)
+    console.info('HRC20 mint tx hash: ', mintTx.id)
 
     const balance = await hrc20.balanceOf(HMY_OWNER_ADDRESS, E2E_TX_OPTIONS)
 
@@ -133,7 +128,12 @@ describe('Bridge HRC20 Token', () => {
 
     console.info('HRC20HmyManager lockTokenFor tx hash: ', lockTokenTxHash)
 
-    await waitForNewBlock(parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6)
+    await waitForNewBlock(
+      parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6,
+      HARMONY_RPC_DEVNET_WS,
+      ChainType.Harmony,
+      4,
+    )
 
     const balanceAfterLock = await hrc20.balanceOf(HMY_OWNER_ADDRESS, E2E_TX_OPTIONS)
     const balanceHmyManager = await hrc20.balanceOf(hmyManager.address, E2E_TX_OPTIONS)
@@ -204,7 +204,7 @@ describe('Bridge HRC20 Token', () => {
     expect(unlockTokenTx.receipt?.blockNumber).to.not.be.undefined
     expect(unlockTokenTx.txStatus).eq(TxStatus.CONFIRMED)
 
-    console.info('HRC20HmyManager lockTokenFor tx hash: ', lockTokenTxHash)
+    console.info('HRC20HmyManager unlockTokenFor tx hash: ', unlockTokenTx.id)
 
     const balanceAfterUnLock = await hrc20.balanceOf(HMY_OWNER_ADDRESS, E2E_TX_OPTIONS)
 

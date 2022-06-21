@@ -1,12 +1,9 @@
 import { Signer } from '@ethersproject/abstract-signer'
 import { ContractFactory } from '@ethersproject/contracts'
 import { parseUnits, formatUnits } from '@ethersproject/units'
-import { Messenger, WSProvider, NewHeaders } from '@harmony-js/network'
 import { Transaction } from '@harmony-js/transaction'
-import { ChainType, hexToNumber } from '@harmony-js/utils'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-import { HARMONY_RPC_DEVNET_WS } from '../constants'
 import { BaseContract } from '../contracts'
 import { ContractProviderType } from '../interfaces'
 import { ContractName, E2E_TX_OPTIONS } from './constants'
@@ -70,21 +67,4 @@ export async function deployEthContract(
   console.info(`${contractName} deployed on address: ${contract.address}`)
 
   return { addr: contract.address, abi }
-}
-
-export function waitForNewBlock(expectedBlockNumber: number): Promise<void> {
-  const wsMessenger = new Messenger(new WSProvider(HARMONY_RPC_DEVNET_WS), ChainType.Harmony, 4)
-  const newBlockSubscription = new NewHeaders(wsMessenger)
-
-  return new Promise((res) => {
-    newBlockSubscription.on('data', (data: any) => {
-      const blockNumber = parseInt(hexToNumber(data.params.result.number), 10)
-
-      if (blockNumber <= expectedBlockNumber) {
-        console.log(`Currently at block ${blockNumber}, waiting for block ${expectedBlockNumber} to be confirmed`)
-      } else {
-        res()
-      }
-    })
-  })
 }
