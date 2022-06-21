@@ -11,7 +11,7 @@ import {
 import { BridgeType, DEFAULT_TX_OPTIONS, NetworkInfo, TokenType } from '../constants'
 const hrc20Address = "0x8202502dc1d2d0bf741ccafcf08bd973c0547bea"
 const hrc721Address = "0x3bd7ff8176daef64e81711027b50ed2f3d07c2f5"
-const hrc1155Address = "0xeafbeed7aa4609f44a4bed4a33b59d042d735e3a"
+const hrc1155Address = "0x245cd441f37d98122e5f9c8214228409ecb51869"
 
 describe('BRIDGE SOME HRC20 TOKENS', () => {
   it('Should send the tokens from Hmy to Eth', async () => {

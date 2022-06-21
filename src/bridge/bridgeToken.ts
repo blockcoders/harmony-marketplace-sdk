@@ -9,7 +9,9 @@ import {
 import { BridgeManagers, ContractsAddresses, ITransactionOptions, TokenInfo } from '../interfaces'
 import { HRC1155, HRC20, HRC721 } from '../contracts'
 import {
+  BridgedHRC1155Token,
   BridgedHRC20Token,
+  BridgedHRC721Token,
   HRC1155EthManager,
   HRC1155HmyManager,
   HRC1155TokenManager,
@@ -109,7 +111,7 @@ export class BridgeToken {
         ownerSignedEthManager = new HRC721EthManager(ethManagerAddress, this.ethOwnerWallet)
         tokenManager = new HRC721TokenManager(tokenManagerAddress, this.ethMasterWallet)
         const erc721Address = await ethManager.mappings(token.address)
-        bridgedToken = new BridgedHRC20Token(erc721Address, this.ethOwnerWallet)
+        bridgedToken = new BridgedHRC721Token(erc721Address, this.ethOwnerWallet)
         break
       case TokenType.HRC1155:
         ethManagerAddress = contractsAddresses.HRC1155.ethManagerAddress
@@ -123,7 +125,7 @@ export class BridgeToken {
         ownerSignedEthManager = new HRC1155EthManager(ethManagerAddress, this.ethOwnerWallet)
         tokenManager = new HRC1155TokenManager(tokenManagerAddress, this.ethMasterWallet)
         const erc1155Address = await ethManager.mappings(token.address)
-        bridgedToken = new BridgedHRC20Token(erc1155Address, this.ethOwnerWallet)
+        bridgedToken = new BridgedHRC1155Token(erc1155Address, this.ethOwnerWallet)
         break
       default:
         throw Error('This token bridge is not implemented yet')

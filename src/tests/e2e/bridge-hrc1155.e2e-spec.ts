@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { Transaction, TxStatus } from '@harmony-js/transaction'
+import { TxStatus } from '@harmony-js/transaction'
 import { ChainType, hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
