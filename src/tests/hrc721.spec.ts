@@ -2,6 +2,7 @@ import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
+import { HRC721EthManager, HRC721TokenManager } from '../bridge'
 import { AddressZero } from '../constants'
 import { HRC721 } from '../contracts'
 import {
@@ -13,6 +14,9 @@ import {
   WALLET_PROVIDER_TEST_1,
   TOKEN_SWORD,
   ContractName,
+  FAKE_SUPPLY,
+  TOKEN_GOLD_URI,
+  WALLET_ETH_MASTER,
 } from './constants'
 import { getContractMetadata } from './helpers'
 
@@ -326,6 +330,230 @@ describe('HRC721 Contract Interface', () => {
 
     it('should throw an error if params are not provided in HRC721', async () => {
       expect(contract.isApprovedForAll('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('totalSupply', () => {
+    it('should return the total supply of the contract', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('totalSupply', [], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(FAKE_SUPPLY))
+
+      const totalSupply = await contract.totalSupply(TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(totalSupply).to.be.equals(await stub.returnValues[0])
+    })
+  })
+
+  describe('tokenURI', () => {
+    it('should return the tokenURI for the given tokenId', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('tokenURI', [TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(TOKEN_GOLD_URI))
+
+      const tokenURI = await contract.tokenURI(TOKEN_GOLD, TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(tokenURI).to.be.equals(await stub.returnValues[0])
+    })
+
+    it('should return the tokenURI of the tokenId with tokenId as a string', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('tokenURI', [TOKEN_GOLD.toString()], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve(TEST_ADDRESS_1))
+
+      const tokenURI = await contract.tokenURI(TOKEN_GOLD.toString(), TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(tokenURI).to.be.equals(await stub.returnValues[0])
+    })
+
+    it('should throw an error if tokenId is a non existent token', async () => {
+      expect(contract.tokenURI(6, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(contract.tokenURI('')).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if tokenId is not valid', async () => {
+      expect(contract.tokenURI('fakeInvalidId')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('symbol', () => {
+    it('should return the symbol of the NFT', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('symbol', [], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve("BCFake"))
+
+      const symbol = await contract.symbol(TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(symbol).to.be.equals(await stub.returnValues[0])
+    })
+  })
+
+  describe('name', () => {
+    it('should return the name on the NFT', async () => {
+      const stub = sinon.stub(contract, 'call').withArgs('name', [], TX_OPTIONS)
+      stub.resolves().returns(Promise.resolve("BlockCodersFake"))
+
+      const name = await contract.name(TX_OPTIONS)
+
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+      expect(name).to.be.equals(await stub.returnValues[0])
+    })
+  })
+
+  describe('increaseAllowance', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('increaseAllowance', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.increaseAllowance(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if spender is not provided', async () => {
+      expect(contract.increaseAllowance('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if value is not provided', async () => {
+      expect(contract.increaseAllowance(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(contract.increaseAllowance('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('decreaseAllowance', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('decreaseAllowance', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.decreaseAllowance(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if spender is not provided', async () => {
+      expect(contract.decreaseAllowance('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if value is not provided', async () => {
+      expect(contract.decreaseAllowance(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(contract.decreaseAllowance('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('mint', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('mint', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.mint(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if account is not provided', async () => {
+      expect(contract.mint('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(contract.mint(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(contract.mint('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('safeMint', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('safeMint', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.safeMint(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if account is not provided', async () => {
+      expect(contract.safeMint('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(contract.safeMint(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+
+    it('should throw an error if params are not provided', async () => {
+      expect(contract.safeMint('', '')).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('burn', () => {
+    it('should return the transaction', async () => {
+      const stub = sinon.stub(contract, 'send').withArgs('burn', [TOKEN_GOLD], TX_OPTIONS)
+      stub.resolves()
+
+      await contract.burn(TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.calledOnce).to.be.true
+      expect(stub.callCount).to.be.equals(1)
+    })
+
+    it('should throw an error if tokenId is not provided', async () => {
+      expect(contract.burn('', TX_OPTIONS)).to.be.rejectedWith(Error)
+    })
+  })
+
+  describe('getBridgedTokenAddress', () => {
+    it('should return the bridged token address', async () => {
+      const expectedAddress = "0xfake"
+      const callStub = sinon.stub(contract, 'call')
+      callStub.withArgs('name', [], TX_OPTIONS).returns(Promise.resolve("BlockCodersFake"))
+      callStub.withArgs('symbol', [], TX_OPTIONS).returns(Promise.resolve("BCFake"))
+      callStub.withArgs('tokenURI', [TOKEN_GOLD], TX_OPTIONS).returns(Promise.resolve(TOKEN_GOLD_URI))
+      
+      const fakeEthManager = new HRC721EthManager("0x", WALLET_ETH_MASTER)
+      const stub = sinon.stub(fakeEthManager, "mappings").withArgs(contract.address)
+      stub.resolves().returns(Promise.resolve(expectedAddress))
+
+      const fakeTokenManager = new HRC721TokenManager("0x", WALLET_ETH_MASTER)
+      
+      const erc721Address = await contract.getBridgedTokenAddress(fakeEthManager, fakeTokenManager, TOKEN_GOLD, TX_OPTIONS)
+      
+      expect(erc721Address).to.be.equals(expectedAddress)
+    })
+
+    it('should return the bridged token address after adding the new token', async () => {
+      const expectedAddress = "0xfake"
+      const callStub = sinon.stub(contract, 'call')
+      callStub.withArgs('name', [], TX_OPTIONS).returns(Promise.resolve("BlockCodersFake"))
+      callStub.withArgs('symbol', [], TX_OPTIONS).returns(Promise.resolve("BCFake"))
+      callStub.withArgs('tokenURI', [TOKEN_GOLD], TX_OPTIONS).returns(Promise.resolve(TOKEN_GOLD_URI))
+      
+      const fakeEthManager = new HRC721EthManager("0x", WALLET_ETH_MASTER)
+      const stub = sinon.stub(fakeEthManager, "mappings").withArgs(contract.address)
+      stub.onCall(0).returns(Promise.resolve(AddressZero))
+      stub.onCall(1).returns(Promise.resolve(expectedAddress))
+
+      const addTokenStub = sinon.stub(fakeEthManager, "addToken")
+      addTokenStub.resolves()
+      const fakeTokenManager = new HRC721TokenManager("0x", WALLET_ETH_MASTER)
+      
+      const erc721Address = await contract.getBridgedTokenAddress(fakeEthManager, fakeTokenManager, TOKEN_GOLD, TX_OPTIONS)
+      expect(stub.callCount).to.be.equals(2)
+      expect(addTokenStub.calledOnce).to.be.true
+      expect(erc721Address).to.be.equals(expectedAddress)
     })
   })
 })

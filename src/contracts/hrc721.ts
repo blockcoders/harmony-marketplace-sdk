@@ -130,7 +130,7 @@ export class HRC721 extends BaseToken implements IBridgeToken {
     tokenManager: HRC721TokenManager,
     tokenId: number,
     txOptions: ITransactionOptions,
-  ) {
+  ): Promise<string> {
     // Get contract data
     const name = await this.name(txOptions)
     const symbol = await this.symbol(txOptions)
@@ -140,7 +140,7 @@ export class HRC721 extends BaseToken implements IBridgeToken {
     if (alreadyMapped === AddressZero) {
       // Add token manager
       const addTokenTx = await ethManager.addToken(tokenManager.address, this.address, name, symbol, tokenURI)
-      console.info('HRC721EthManager addToken tx hash: ', addTokenTx.transactionHash)
+      console.info('HRC721EthManager addToken tx hash: ', addTokenTx?.transactionHash)
     }
     return ethManager.mappings(this.address)
   }

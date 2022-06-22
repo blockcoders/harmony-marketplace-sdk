@@ -6,6 +6,7 @@ import { ChainID, Unit } from '@harmony-js/utils'
 import { ITransactionOptions, HDOptions } from 'src/interfaces'
 import { HarmonyShards } from '../interfaces'
 import { PrivateKey } from '../wallets'
+import BN from 'bn.js'
 
 export const TEST_PK_1 = process.env.TEST_PK_1 ?? ''
 export const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
@@ -65,6 +66,7 @@ export const ETH_MASTER_ADDRESS = WALLET_ETH_MASTER.address.toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const TOKEN_GOLD = 0
+export const TOKEN_GOLD_URI = "fake token gold URI"
 export const TOKEN_SILVER = 1
 export const TOKEN_THORS_HAMMER = 2
 export const TOKEN_SWORD = 3
@@ -86,6 +88,8 @@ export const FAKE_TX_HRC721 = new Transaction({
 })
 
 export const FAKE_BALANCE_HRC1155 = '999999999999999999999889'
+
+export const FAKE_SUPPLY: BN = new BN(100)
 
 export const HD_KEY_OPTIONS: HDOptions = {
   numberOfAddresses: 1,
