@@ -161,7 +161,7 @@ export class HRC721 extends BaseToken implements IBridgeToken {
     ownerSignedHmyManager = ownerSignedHmyManager as HRC721HmyManager
 
     const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC721TokenManager rely tx hash: ', relyTx.transactionHash)
+    console.info('HRC721TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Verify parameters and balance
     const { tokenId } = tokenInfo.info as HRC721Info
@@ -179,29 +179,29 @@ export class HRC721 extends BaseToken implements IBridgeToken {
 
     // Approve manager to lock tokens on Harmony network
     const approveTx = await ownerHrc721.approve(hmyManager.address, tokenId, txOptions)
-    if (approveTx.txStatus !== TxStatus.CONFIRMED) {
+    if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
       throw new Error(`Failed to approve manager: ${approveTx}`)
     }
-    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx.txStatus)
+    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
 
     // Lock tokens on Harmony Network to mint on Ethereum Network
     const lockTokenTx = await ownerSignedHmyManager.lockNFT721Token(this.address, tokenId, recipient, txOptions)
-    if (lockTokenTx.txStatus !== TxStatus.CONFIRMED) {
+    if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
       throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
     }
-    console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx.txStatus)
+    console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
 
     // Wait for safety reasons
-    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6
+    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
     const RPC = getRpc(network)
     await waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, getChainId(network))
 
     // Mint tokens on Eth Network
     const mintTokenTx = await ethManagerContract.mintToken(erc721Addr, tokenId, recipient, lockTokenTx.id)
-    if (mintTokenTx.status !== 1) {
+    if (mintTokenTx?.status !== 1) {
       throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
     }
-    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx.transactionHash)
+    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
   }
 
   public async ethToHmy(

@@ -3,7 +3,7 @@ import { EtherscanProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID, Unit } from '@harmony-js/utils'
-import { ITransactionOptions, HDOptions } from 'src/interfaces'
+import { ITransactionOptions, HDOptions } from '../interfaces'
 import { HarmonyShards } from '../interfaces'
 import { PrivateKey } from '../wallets'
 import BN from 'bn.js'
@@ -66,7 +66,7 @@ export const ETH_MASTER_ADDRESS = WALLET_ETH_MASTER.address.toLowerCase()
 
 export const EMPTY_TEST_ADDRESS = '0x36f41b8a79eca329610d6158f3ea9676bec281b9'.toLowerCase()
 export const TOKEN_GOLD = 0
-export const TOKEN_GOLD_URI = "fake token gold URI"
+export const TOKEN_GOLD_URI = 'fake token gold URI'
 export const TOKEN_SILVER = 1
 export const TOKEN_THORS_HAMMER = 2
 export const TOKEN_SWORD = 3
@@ -86,6 +86,33 @@ export const FAKE_TX_HRC721 = new Transaction({
   nonce: 165,
   chainId: 2,
 })
+
+export const FAKE_TX_HRC721_LOCK = new Transaction({
+  shardID: 0,
+  from: 'one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a',
+  to: '0xa25006B0aF77c1d248685205771bdC848Cda53d1',
+  gasPrice: '100000000000',
+  gasLimit: '5000000',
+  toShardID: 0,
+  nonce: 165,
+  chainId: 2,
+})
+
+export const FAKE_TX_RECEIPT = {
+  transactionHash: 'fake',
+  transactionIndex: 'fake',
+  blockHash: 'fake',
+  blockNumber: '10',
+  from: 'fake',
+  to: 'fake',
+  gasUsed: 'fake',
+  cumulativeGasUsed: 'fake',
+  logs: [],
+  logsBloom: 'fake',
+  v: 'fake',
+  r: 'fake',
+  s: 'fake',
+}
 
 export const FAKE_BALANCE_HRC1155 = '999999999999999999999889'
 

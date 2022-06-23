@@ -2,8 +2,9 @@ import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { HRC721EthManager, HRC721TokenManager } from '../bridge'
-import { AddressZero } from '../constants'
+import { BridgeManagers, TokenInfo } from '../interfaces'
+import { BridgedHRC721Token, HRC721EthManager, HRC721HmyManager, HRC721TokenManager } from '../bridge'
+import { AddressZero, NetworkInfo, TokenType } from '../constants'
 import { HRC721 } from '../contracts'
 import {
   TEST_ADDRESS_1,
@@ -17,8 +18,14 @@ import {
   FAKE_SUPPLY,
   TOKEN_GOLD_URI,
   WALLET_ETH_MASTER,
+  HMY_OWNER_ADDRESS,
+  ETH_OWNER_ADDRESS,
+  WALLET_HMY_MASTER,
+  FAKE_TX_HRC721_LOCK,
+  FAKE_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
+import { TxStatus } from '@harmony-js/transaction'
 
 use(chaiAsPromised)
 
@@ -385,7 +392,7 @@ describe('HRC721 Contract Interface', () => {
   describe('symbol', () => {
     it('should return the symbol of the NFT', async () => {
       const stub = sinon.stub(contract, 'call').withArgs('symbol', [], TX_OPTIONS)
-      stub.resolves().returns(Promise.resolve("BCFake"))
+      stub.resolves().returns(Promise.resolve('BCFake'))
 
       const symbol = await contract.symbol(TX_OPTIONS)
 
@@ -398,7 +405,7 @@ describe('HRC721 Contract Interface', () => {
   describe('name', () => {
     it('should return the name on the NFT', async () => {
       const stub = sinon.stub(contract, 'call').withArgs('name', [], TX_OPTIONS)
-      stub.resolves().returns(Promise.resolve("BlockCodersFake"))
+      stub.resolves().returns(Promise.resolve('BlockCodersFake'))
 
       const name = await contract.name(TX_OPTIONS)
 
@@ -517,43 +524,115 @@ describe('HRC721 Contract Interface', () => {
 
   describe('getBridgedTokenAddress', () => {
     it('should return the bridged token address', async () => {
-      const expectedAddress = "0xfake"
+      const expectedAddress = '0xfake'
       const callStub = sinon.stub(contract, 'call')
-      callStub.withArgs('name', [], TX_OPTIONS).returns(Promise.resolve("BlockCodersFake"))
-      callStub.withArgs('symbol', [], TX_OPTIONS).returns(Promise.resolve("BCFake"))
+      callStub.withArgs('name', [], TX_OPTIONS).returns(Promise.resolve('BlockCodersFake'))
+      callStub.withArgs('symbol', [], TX_OPTIONS).returns(Promise.resolve('BCFake'))
       callStub.withArgs('tokenURI', [TOKEN_GOLD], TX_OPTIONS).returns(Promise.resolve(TOKEN_GOLD_URI))
-      
-      const fakeEthManager = new HRC721EthManager("0x", WALLET_ETH_MASTER)
-      const stub = sinon.stub(fakeEthManager, "mappings").withArgs(contract.address)
+
+      const fakeEthManager = new HRC721EthManager('0x', WALLET_ETH_MASTER)
+      const stub = sinon.stub(fakeEthManager, 'mappings').withArgs(contract.address)
       stub.resolves().returns(Promise.resolve(expectedAddress))
 
-      const fakeTokenManager = new HRC721TokenManager("0x", WALLET_ETH_MASTER)
-      
-      const erc721Address = await contract.getBridgedTokenAddress(fakeEthManager, fakeTokenManager, TOKEN_GOLD, TX_OPTIONS)
-      
+      const fakeTokenManager = new HRC721TokenManager('0x', WALLET_ETH_MASTER)
+
+      const erc721Address = await contract.getBridgedTokenAddress(
+        fakeEthManager,
+        fakeTokenManager,
+        TOKEN_GOLD,
+        TX_OPTIONS,
+      )
+
       expect(erc721Address).to.be.equals(expectedAddress)
     })
 
     it('should return the bridged token address after adding the new token', async () => {
-      const expectedAddress = "0xfake"
+      const expectedAddress = '0xfake'
       const callStub = sinon.stub(contract, 'call')
-      callStub.withArgs('name', [], TX_OPTIONS).returns(Promise.resolve("BlockCodersFake"))
-      callStub.withArgs('symbol', [], TX_OPTIONS).returns(Promise.resolve("BCFake"))
+      callStub.withArgs('name', [], TX_OPTIONS).returns(Promise.resolve('BlockCodersFake'))
+      callStub.withArgs('symbol', [], TX_OPTIONS).returns(Promise.resolve('BCFake'))
       callStub.withArgs('tokenURI', [TOKEN_GOLD], TX_OPTIONS).returns(Promise.resolve(TOKEN_GOLD_URI))
-      
-      const fakeEthManager = new HRC721EthManager("0x", WALLET_ETH_MASTER)
-      const stub = sinon.stub(fakeEthManager, "mappings").withArgs(contract.address)
+
+      const fakeEthManager = new HRC721EthManager('0x', WALLET_ETH_MASTER)
+      const stub = sinon.stub(fakeEthManager, 'mappings').withArgs(contract.address)
       stub.onCall(0).returns(Promise.resolve(AddressZero))
       stub.onCall(1).returns(Promise.resolve(expectedAddress))
 
-      const addTokenStub = sinon.stub(fakeEthManager, "addToken")
+      const addTokenStub = sinon.stub(fakeEthManager, 'addToken')
       addTokenStub.resolves()
-      const fakeTokenManager = new HRC721TokenManager("0x", WALLET_ETH_MASTER)
-      
-      const erc721Address = await contract.getBridgedTokenAddress(fakeEthManager, fakeTokenManager, TOKEN_GOLD, TX_OPTIONS)
+      const fakeTokenManager = new HRC721TokenManager('0x', WALLET_ETH_MASTER)
+
+      const erc721Address = await contract.getBridgedTokenAddress(
+        fakeEthManager,
+        fakeTokenManager,
+        TOKEN_GOLD,
+        TX_OPTIONS,
+      )
       expect(stub.callCount).to.be.equals(2)
       expect(addTokenStub.calledOnce).to.be.true
       expect(erc721Address).to.be.equals(expectedAddress)
+    })
+  })
+
+  describe('hmyToEth', () => {
+    it('should bridge one token from Harmony to Ethereum', async () => {
+      const sender = HMY_OWNER_ADDRESS
+      const recipient = ETH_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '',
+        type: TokenType.HRC721,
+        info: {
+          tokenId: TOKEN_GOLD,
+        },
+      }
+      const network = NetworkInfo.DEVNET
+      const tokenManager = new HRC721TokenManager('0x', WALLET_ETH_MASTER)
+      const ethManager = new HRC721EthManager('0x', WALLET_ETH_MASTER)
+      const hmyManager = new HRC721HmyManager('0x', WALLET_HMY_MASTER)
+      const managers: BridgeManagers = {
+        ethManager,
+        tokenManager,
+        ownerSignedEthManager: ethManager,
+        hmyManager,
+        ownerSignedHmyManager: hmyManager,
+        ownerSignedToken: contract,
+        token: contract,
+        bridgedToken: new BridgedHRC721Token('0x', WALLET_ETH_MASTER),
+      }
+      const erc721Addr = '0xFake'
+
+      const tokenManagerWriteStub = sinon.stub(tokenManager, 'write').withArgs(ethManager.address)
+      tokenManagerWriteStub.resolves()
+
+      const callStub = sinon.stub(contract, 'call').withArgs('balanceOf', [sender], TX_OPTIONS)
+      callStub.resolves().returns(Promise.resolve(new BN(1)))
+
+      const getBridgedTokenAddressStub = sinon.stub(contract, 'getBridgedTokenAddress')
+      getBridgedTokenAddressStub.resolves().returns(Promise.resolve(erc721Addr))
+
+      const ownerHRC721SendStub = sinon
+        .stub(contract, 'send')
+        .withArgs('approve', [hmyManager.address, TOKEN_GOLD], TX_OPTIONS)
+      ownerHRC721SendStub.resolves()
+
+      const tx = FAKE_TX_HRC721_LOCK
+      tx.setTxStatus(TxStatus.CONFIRMED)
+      tx.receipt = FAKE_TX_RECEIPT
+      const ownerSignedHmyManagerSendStub = sinon
+        .stub(hmyManager, 'send')
+        .withArgs('lockNFT721Token', [ethManager.address, TOKEN_GOLD, recipient], TX_OPTIONS)
+      ownerSignedHmyManagerSendStub.resolves().returns(Promise.resolve(tx))
+
+      const ethManagerSendStub = sinon.stub(ethManager, "write").withArgs("mint", [erc721Addr, TOKEN_GOLD, recipient, tx.id])
+      ethManagerSendStub.resolves()
+      contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
+
+      expect(tokenManagerWriteStub.calledOnce).to.be.true
+      expect(callStub.calledOnce).to.be.true
+      expect(getBridgedTokenAddressStub.calledOnce).to.be.true
+      expect(ownerHRC721SendStub.calledOnce).to.be.true
+      expect(ownerSignedHmyManagerSendStub.calledOnce).to.be.true
+      expect(ethManagerSendStub.calledOnce).to.be.true
     })
   })
 })
