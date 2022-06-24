@@ -40,10 +40,25 @@ use(chaiAsPromised)
 
 describe('HRC1155 Contract Interface', () => {
   let contract: HRC1155
-
+  const tokenManager = new HRC1155TokenManager('0x', WALLET_ETH_MASTER)
+  const ethManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
+  const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
+  const bridgedToken = new BridgedHRC1155Token('0xFake', WALLET_ETH_MASTER)
+  const erc1155Addr = '0xFake'
+  let managers: BridgeManagers
   before(async () => {
     const { abi } = await getContractMetadata(ContractName.BlockcodersHRC1155)
     contract = new HRC1155('0x', abi, WALLET_PROVIDER_TEST_1)
+    managers = {
+      ethManager,
+      tokenManager,
+      ownerSignedEthManager: ethManager,
+      hmyManager,
+      ownerSignedHmyManager: hmyManager,
+      ownerSignedToken: contract,
+      token: contract,
+      bridgedToken,
+    }
   })
 
   afterEach(async () => {
@@ -508,21 +523,6 @@ describe('HRC1155 Contract Interface', () => {
         },
       }
       const network = NetworkInfo.DEVNET
-      const tokenManager = new HRC1155TokenManager('0x', WALLET_ETH_MASTER)
-      const ethManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
-      const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
-      const managers: BridgeManagers = {
-        ethManager,
-        tokenManager,
-        ownerSignedEthManager: ethManager,
-        hmyManager,
-        ownerSignedHmyManager: hmyManager,
-        ownerSignedToken: contract,
-        token: contract,
-        bridgedToken: new BridgedHRC1155Token('0x', WALLET_ETH_MASTER),
-      }
-      const erc1155Addr = '0xFake'
-
       const tx = FAKE_TX
       tx.setTxStatus(TxStatus.CONFIRMED)
       tx.receipt = FAKE_TX_RECEIPT
@@ -577,21 +577,6 @@ describe('HRC1155 Contract Interface', () => {
           amounts: [1]
         },
       }
-      const tokenManager = new HRC1155TokenManager('0x', WALLET_ETH_MASTER)
-      const ethManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
-      const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
-      const bridgedToken = new BridgedHRC1155Token('0xFake', WALLET_ETH_MASTER)
-      const managers: BridgeManagers = {
-        ethManager,
-        tokenManager,
-        ownerSignedEthManager: ethManager,
-        hmyManager,
-        ownerSignedHmyManager: hmyManager,
-        ownerSignedToken: contract,
-        token: contract,
-        bridgedToken,
-      }
-      const erc1155Addr = '0xFake'
 
       const tx = FAKE_TX
       tx.setTxStatus(TxStatus.CONFIRMED)
@@ -624,6 +609,86 @@ describe('HRC1155 Contract Interface', () => {
       expect(bridgedTokenWriteStub.calledOnce).to.be.true
       expect(ownerSignedEthManagerSendStub.calledOnce).to.be.true
       expect(hmyManagerSendStub.calledOnce).to.be.true
+    })
+
+    it('should fail if tokenIds is empty', async () => {
+      const sender = ETH_OWNER_ADDRESS
+      const recipient = HMY_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [],
+          amounts: [1]
+        },
+      }
+      try {
+        await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
+        expect.fail("Should not get here!!")
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+    })
+
+    it('should fail if amounts is empty', async () => {
+      const sender = ETH_OWNER_ADDRESS
+      const recipient = HMY_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: []
+        },
+      }
+      try {
+        await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
+        expect.fail("Should not get here!!")
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+    })
+
+    it('should fail if amounts and tokenIds lengths are not equal', async () => {
+      const sender = ETH_OWNER_ADDRESS
+      const recipient = HMY_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [1,2]
+        },
+      }
+      try {
+        await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
+        expect.fail("Should not get here!!")
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+    })
+
+    it('should fail if balance is insufficient', async () => {
+      const sender = ETH_OWNER_ADDRESS
+      const recipient = HMY_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [2]
+        },
+      }
+      const bridgedTokenReadStub = sinon.stub(bridgedToken, 'read').withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]])
+      try {
+        bridgedTokenReadStub.resolves().returns(Promise.resolve([new BN(1)]))
+
+        await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
+        expect.fail("Should not get here!!")
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+      expect(bridgedTokenReadStub.calledOnce).to.be.true
     })
   })
 })
