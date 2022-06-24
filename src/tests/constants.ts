@@ -87,7 +87,7 @@ export const FAKE_TX_HRC721 = new Transaction({
   chainId: 2,
 })
 
-export const FAKE_TX_HRC721_LOCK = new Transaction({
+export const FAKE_TX_LOCK = new Transaction({
   shardID: 0,
   from: 'one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a',
   to: '0xa25006B0aF77c1d248685205771bdC848Cda53d1',

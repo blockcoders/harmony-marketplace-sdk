@@ -112,7 +112,7 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     return this.send('mint', [account, tokenId, amount, []], txOptions)
   }
 
-  private async getBridgedTokenAddress(
+  public async getBridgedTokenAddress(
     ethManager: HRC1155EthManager,
     tokenManager: HRC1155TokenManager,
     tokenId: BNish,
@@ -126,7 +126,7 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     if (alreadyMapped === AddressZero) {
       // Add token manager
       const addTokenTx = await ethManager.addToken(tokenManager.address, this.address, name, symbol, tokenURI)
-      console.info('HRC1155EthManager addToken tx hash: ', addTokenTx.transactionHash)
+      console.info('HRC1155EthManager addToken tx hash: ', addTokenTx?.transactionHash)
     }
     return ethManager.mappings(this.address)
   }

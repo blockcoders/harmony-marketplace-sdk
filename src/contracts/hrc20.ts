@@ -61,7 +61,7 @@ export class HRC20 extends BaseToken implements IBridgeToken {
     return this.send('burnFrom', [account, amount], txOptions)
   }
 
-  private async getBridgedTokenAddress(
+  public async getBridgedTokenAddress(
     ethManager: HRC20EthManager,
     tokenManager: HRC20TokenManager,
     txOptions: ITransactionOptions,
@@ -74,7 +74,7 @@ export class HRC20 extends BaseToken implements IBridgeToken {
     if (alreadyMapped === AddressZero) {
       // Add token manager
       const addTokenTx = await ethManager.addToken(tokenManager.address, this.address, name, symbol, decimals)
-      console.info('HRC20EthManager addToken tx hash: ', addTokenTx.transactionHash)
+      console.info('HRC20EthManager addToken tx hash: ', addTokenTx?.transactionHash)
     }
     return ethManager.mappings(this.address)
   }
@@ -104,7 +104,7 @@ export class HRC20 extends BaseToken implements IBridgeToken {
 
     // approve HRC20EthManager on HRC20TokenManager
     const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC20TokenManager rely tx hash: ', relyTx.transactionHash)
+    console.info('HRC20TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Get Bridged Token address
     const erc20Addr = await this.getBridgedTokenAddress(ethManager, tokenManager, txOptions)
@@ -112,29 +112,29 @@ export class HRC20 extends BaseToken implements IBridgeToken {
 
     // Approve hmyManager
     const approveTx = await (ownerHrc20 as HRC20).approve(hmyManager.address, amount, txOptions)
-    if (approveTx.txStatus !== TxStatus.CONFIRMED) {
+    if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
       throw new Error(`Failed to approve manager: ${approveTx}`)
     }
-    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx.txStatus)
+    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
 
     // Lock tokens on Hmy side to mint on Eth side
     const lockTokenTx = await hmyManager.lockTokenFor(this.address, sender, amount, recipient, txOptions)
-    if (lockTokenTx.txStatus !== TxStatus.CONFIRMED) {
+    if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
       throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
     }
-    console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx.txStatus)
+    console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
 
     // Wait for safety reasons
-    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6
+    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
     const RPC = getRpc(network)
     await waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, getChainId(network))
 
     // Mint tokens on Eth side
-    const mintTokenTx = await ethManager.mintToken(erc20Addr, amount, recipient, lockTokenTx.id)
-    if (mintTokenTx.status !== 1) {
+    const mintTokenTx = await ethManager.mintToken(erc20Addr, amount, recipient, lockTokenTx?.id)
+    if (mintTokenTx?.status !== 1) {
       throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
     }
-    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx.transactionHash)
+    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
   }
 
   public async ethToHmy(
@@ -165,19 +165,19 @@ export class HRC20 extends BaseToken implements IBridgeToken {
     const approveTx = await erc20.approve(ethManager.address, amount)
     console.info(
       'HRC20 approve EthManager to burn tokens on the Ethereum Network. Transaction Hash: ',
-      approveTx.transactionHash,
+      approveTx?.transactionHash,
     )
 
     // Burn tokens to unlock on Harmony Network
     const burnTx = await ownerSignedEthManager.burnToken(erc20Addr, amount, recipient)
-    const burnTokenTxHash = burnTx.transactionHash
+    const burnTokenTxHash = burnTx?.transactionHash
     console.info('HRC20EthManager burnToken on the Ethereum Network. Transaction Hash: ', burnTokenTxHash)
 
     // Unlock Tokens on Harmony Netowrk
     const unlockTokenTx = await hmyManager.unlockToken(this.address, amount, recipient, burnTokenTxHash, txOptions)
-    if (unlockTokenTx.txStatus !== TxStatus.CONFIRMED) {
-      throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx.txStatus}`)
+    if (unlockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
+      throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx?.txStatus}`)
     }
-    console.info('HRC20HmyManager unlockToken on Harmony Network. Transaction Hash: ', unlockTokenTx.id)
+    console.info('HRC20HmyManager unlockToken on Harmony Network. Transaction Hash: ', unlockTokenTx?.id)
   }
 }
