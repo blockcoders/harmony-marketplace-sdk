@@ -1,9 +1,16 @@
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { HRC1155EthManager, HRC1155TokenManager } from '../bridge'
-import { AddressZero } from '../constants'
+import { BridgeManagers, TokenInfo } from '../interfaces'
+import {
+  BridgedHRC1155Token,
+  HRC1155EthManager,
+  HRC1155HmyManager,
+  HRC1155TokenManager,
+} from '../bridge'
+import { AddressZero, NetworkInfo, TokenType } from '../constants'
 import { HRC1155 } from '../contracts'
+import * as Utils from '../utils'
 import {
   TEST_ADDRESS_1,
   EMPTY_TEST_ADDRESS,
@@ -17,8 +24,17 @@ import {
   TOKEN_GOLD_URI,
   FAKE_SUPPLY,
   WALLET_ETH_MASTER,
+  WALLET_HMY_MASTER,
+  HMY_OWNER_ADDRESS,
+  ETH_OWNER_ADDRESS,
+  TOKEN_SWORD,
+  FAKE_TX,
+  FAKE_ETH_TX_RECEIPT,
+  FAKE_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
+import { TxStatus } from '@harmony-js/transaction'
+import BN from 'bn.js'
 
 use(chaiAsPromised)
 
@@ -297,7 +313,7 @@ describe('HRC1155 Contract Interface', () => {
       expect(contract.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if addressOperator is not provided in HRC721', async () => {
+    it('should throw an error if addressOperator is not provided in HRC1155', async () => {
       expect(contract.isApprovedForAll(TEST_ADDRESS_1, '')).to.be.rejectedWith(Error)
     })
 
@@ -306,16 +322,16 @@ describe('HRC1155 Contract Interface', () => {
       expect(contract.isApprovedForAll('', '')).to.be.rejectedWith(Error)
     })
 
-    it('should throw an error if params are not provided in HRC721', async () => {
+    it('should throw an error if params are not provided in HRC1155', async () => {
       expect(contract.isApprovedForAll('', '')).to.be.rejectedWith(Error)
     })
   })
 
   describe('owner', () => {
     it('should return the owner', async () => {
-      const stub = sinon.stub(contract, "call").withArgs('owner', [], TX_OPTIONS)
+      const stub = sinon.stub(contract, 'call').withArgs('owner', [], TX_OPTIONS)
       stub.resolves().returns(Promise.resolve(TEST_ADDRESS_1))
-      
+
       const owner = await contract.owner(TX_OPTIONS)
 
       expect(stub.calledOnce).to.be.true
@@ -476,6 +492,138 @@ describe('HRC1155 Contract Interface', () => {
       expect(stub.callCount).to.be.equals(2)
       expect(addTokenStub.calledOnce).to.be.true
       expect(erc1155Address).to.be.equals(expectedAddress)
+    })
+  })
+
+  describe('hmyToEth', () => {
+    it('should bridge one token from Harmony to Ethereum', async () => {
+      const sender = HMY_OWNER_ADDRESS
+      const recipient = ETH_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [1],
+        },
+      }
+      const network = NetworkInfo.DEVNET
+      const tokenManager = new HRC1155TokenManager('0x', WALLET_ETH_MASTER)
+      const ethManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
+      const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
+      const managers: BridgeManagers = {
+        ethManager,
+        tokenManager,
+        ownerSignedEthManager: ethManager,
+        hmyManager,
+        ownerSignedHmyManager: hmyManager,
+        ownerSignedToken: contract,
+        token: contract,
+        bridgedToken: new BridgedHRC1155Token('0x', WALLET_ETH_MASTER),
+      }
+      const erc1155Addr = '0xFake'
+
+      const tx = FAKE_TX
+      tx.setTxStatus(TxStatus.CONFIRMED)
+      tx.receipt = FAKE_TX_RECEIPT
+
+      const callStub = sinon.stub(contract, 'call').withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]], TX_OPTIONS)
+      callStub.resolves().returns(Promise.resolve([new BN(1)]))
+
+      const tokenManagerWriteStub = sinon.stub(tokenManager, 'write').withArgs('rely', [ethManager.address])
+      tokenManagerWriteStub.resolves()
+
+      const getBridgedTokenAddressStub = sinon.stub(contract, 'getBridgedTokenAddress')
+      getBridgedTokenAddressStub.resolves().returns(Promise.resolve(erc1155Addr))
+
+      const ownerHRC1155SendStub = sinon
+        .stub(contract, 'send')
+        .withArgs('setApprovalForAll', [hmyManager.address, true], TX_OPTIONS)
+      ownerHRC1155SendStub.resolves().returns(Promise.resolve(tx))
+
+      const ownerSignedHmyManagerSendStub = sinon
+        .stub(hmyManager, 'send')
+        .withArgs('lockHRC1155Tokens', [contract.address, [TOKEN_SWORD], recipient, [1], []], TX_OPTIONS)
+      ownerSignedHmyManagerSendStub.resolves().returns(Promise.resolve(tx))
+
+      const ethManagerSendStub = sinon
+        .stub(ethManager, 'write')
+        .withArgs('mintTokens', [erc1155Addr, [TOKEN_SWORD], recipient, tx.id, [1], []])
+      ethManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
+
+      const utilsStub = sinon.stub(Utils, 'waitForNewBlock')
+      utilsStub.resolves()
+
+      await contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
+      expect(tokenManagerWriteStub.calledOnce).to.be.true
+      expect(callStub.calledOnce).to.be.true
+      expect(getBridgedTokenAddressStub.calledOnce).to.be.true
+      expect(ownerHRC1155SendStub.calledOnce).to.be.true
+      expect(ownerSignedHmyManagerSendStub.calledOnce).to.be.true
+      expect(ethManagerSendStub.calledOnce).to.be.true
+      expect(utilsStub.calledOnce).to.be.true
+    })
+  })
+
+  describe('ethToHmy', () => {
+    it('should bridge one token from Ethereum to Harmony', async () => {
+      const sender = ETH_OWNER_ADDRESS
+      const recipient = HMY_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [1]
+        },
+      }
+      const tokenManager = new HRC1155TokenManager('0x', WALLET_ETH_MASTER)
+      const ethManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
+      const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
+      const bridgedToken = new BridgedHRC1155Token('0xFake', WALLET_ETH_MASTER)
+      const managers: BridgeManagers = {
+        ethManager,
+        tokenManager,
+        ownerSignedEthManager: ethManager,
+        hmyManager,
+        ownerSignedHmyManager: hmyManager,
+        ownerSignedToken: contract,
+        token: contract,
+        bridgedToken,
+      }
+      const erc1155Addr = '0xFake'
+
+      const tx = FAKE_TX
+      tx.setTxStatus(TxStatus.CONFIRMED)
+      tx.receipt = FAKE_TX_RECEIPT
+
+      const bridgedTokenReadStub = sinon.stub(bridgedToken, 'read').withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]])
+      bridgedTokenReadStub.resolves().returns(Promise.resolve([new BN(1)]))
+
+      const bridgedTokenWriteStub = sinon
+        .stub(bridgedToken, 'write')
+        .withArgs('setApprovalForAll', [ethManager.address, true])
+      bridgedTokenWriteStub.resolves()
+
+      const ownerSignedEthManagerSendStub = sinon
+        .stub(ethManager, 'write')
+        .withArgs('burnTokens', [erc1155Addr, [TOKEN_SWORD], recipient, [1]])
+      ownerSignedEthManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
+
+      const hmyManagerSendStub = sinon
+        .stub(hmyManager, 'send')
+        .withArgs(
+          'unlockHRC1155Tokens',
+          [contract.address, [TOKEN_SWORD], recipient, FAKE_ETH_TX_RECEIPT.transactionHash, [1], []],
+          TX_OPTIONS,
+        )
+      hmyManagerSendStub.resolves().returns(Promise.resolve(tx))
+
+      await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
+      expect(bridgedTokenReadStub.calledOnce).to.be.true
+      expect(bridgedTokenWriteStub.calledOnce).to.be.true
+      expect(ownerSignedEthManagerSendStub.calledOnce).to.be.true
+      expect(hmyManagerSendStub.calledOnce).to.be.true
     })
   })
 })

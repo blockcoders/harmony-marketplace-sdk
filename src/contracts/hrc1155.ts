@@ -168,7 +168,7 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
 
     // approve HRC1155EthManager on HRC1155TokenManager
     const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC1155TokenManager rely tx hash: ', relyTx.transactionHash)
+    console.info('HRC1155TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Get Bridged Token address
     const erc1155Addr = await this.getBridgedTokenAddress(ethManager, tokenManager, tokenIds[0],txOptions)
@@ -176,10 +176,10 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
 
     // Approve hmyManager
     const approveTx = await ownerHrc1155.setApprovalForAll(hmyManager.address, true, txOptions)
-    if (approveTx.txStatus !== TxStatus.CONFIRMED) {
+    if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
       throw new Error(`Failed to approve manager: ${approveTx}`)
     }
-    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx.txStatus)
+    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
 
     // Lock tokens on Hmy side to mint on Eth side
     const lockTokenTx = await ownerSignedHmyManager.lockHRC1155Tokens(
@@ -190,22 +190,22 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
       [],
       txOptions,
     )
-    if (lockTokenTx.txStatus !== TxStatus.CONFIRMED) {
+    if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
       throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
     }
-    console.log('Tokens Locked (lockHRC1155Tokens) on Harmony Network. Transaction Status: ', lockTokenTx.txStatus)
+    console.log('Tokens Locked (lockHRC1155Tokens) on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
 
     // Wait for safety reasons
-    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6
+    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
     const RPC = Utils.getRpc(network)
     await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
     
     // Mint tokens on Eth side
-    const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, recipient, lockTokenTx.id, amounts, [])
-    if (mintTokenTx.status !== 1) {
+    const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, recipient, lockTokenTx?.id, amounts, [])
+    if (mintTokenTx?.status !== 1) {
       throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
     }
-    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx.transactionHash)
+    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
   }
 
   public async ethToHmy(
@@ -243,12 +243,12 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     const approveTx = await erc1155.setApprovalForAll(ethManager.address, true)
     console.info(
       'HRC1155 setApprovalForAll EthManager to burn tokens on the Ethereum Network. Transaction Hash: ',
-      approveTx.transactionHash,
+      approveTx?.transactionHash,
     )
 
     // Burn tokens to unlock on Harmony Network
     const burnTx = await ownerSignedEthManager.burnTokens(erc1155Addr, tokenIds, recipient, amounts)
-    const burnTokenTxHash = burnTx.transactionHash
+    const burnTokenTxHash = burnTx?.transactionHash
     console.info('HRC1155EthManager burnToken on the Ethereum Network. Transaction Hash: ', burnTokenTxHash)
 
     // Unlock Tokens on Harmony Netowrk
@@ -261,9 +261,9 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
       [],
       txOptions,
     )
-    if (unlockTokenTx.txStatus !== TxStatus.CONFIRMED) {
-      throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx.txStatus}`)
+    if (unlockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
+      throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx?.txStatus}`)
     }
-    console.info('HRC1155HmyManager unlockHRC1155Tokens on Harmony Network. Transaction Hash: ', unlockTokenTx.id)
+    console.info('HRC1155HmyManager unlockHRC1155Tokens on Harmony Network. Transaction Hash: ', unlockTokenTx?.id)
   }
 }
