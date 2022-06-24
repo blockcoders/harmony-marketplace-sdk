@@ -1,6 +1,6 @@
 import { Transaction, TxStatus } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { getChainId, getRpc, isBNish, waitForNewBlock } from '../utils'
+import * as Utils from '../utils'
 import { BridgedHRC1155Token, HRC1155EthManager, HRC1155HmyManager, HRC1155TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo } from '../constants'
 import { BNish, BridgeManagers, HRC1155Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
@@ -93,7 +93,7 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
   }
 
   public async tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
-    if (!isBNish(tokenId)) {
+    if (!Utils.isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'uri')
     }
 
@@ -197,8 +197,8 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
 
     // Wait for safety reasons
     const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx.receipt?.blockNumber ?? ''), 10) + 6
-    const RPC = getRpc(network)
-    await waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, getChainId(network))
+    const RPC = Utils.getRpc(network)
+    await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
     
     // Mint tokens on Eth side
     const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, recipient, lockTokenTx.id, amounts, [])

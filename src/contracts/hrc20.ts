@@ -4,8 +4,8 @@ import { AddressZero, DEFAULT_TX_OPTIONS, NetworkInfo } from '../constants'
 import { BNish, BridgeManagers, HRC20Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
 import { BaseToken } from './baseToken'
 import { ChainType, hexToNumber } from '@harmony-js/utils'
-import { getChainId, getRpc, waitForNewBlock } from '../utils'
-import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from 'src/bridge'
+import * as Utils from '../utils'
+import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../bridge'
 
 export class HRC20 extends BaseToken implements IBridgeToken {
   public async totalSupply(txOptions?: ITransactionOptions): Promise<BN> {
@@ -126,8 +126,8 @@ export class HRC20 extends BaseToken implements IBridgeToken {
 
     // Wait for safety reasons
     const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
-    const RPC = getRpc(network)
-    await waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, getChainId(network))
+    const RPC = Utils.getRpc(network)
+    await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
 
     // Mint tokens on Eth side
     const mintTokenTx = await ethManager.mintToken(erc20Addr, amount, recipient, lockTokenTx?.id)

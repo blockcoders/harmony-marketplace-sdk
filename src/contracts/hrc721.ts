@@ -4,7 +4,7 @@ import BN from 'bn.js'
 import { BridgedHRC721Token, HRC721EthManager, HRC721HmyManager, HRC721TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo } from '../constants'
 import { BNish, BridgeManagers, HRC721Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
-import { getChainId, getRpc, isBNish, waitForNewBlock } from '../utils'
+import * as Utils from '../utils'
 import { ContractError } from './baseContract'
 import { BaseToken } from './baseToken'
 
@@ -14,7 +14,7 @@ export class HRC721 extends BaseToken implements IBridgeToken {
   }
 
   public async ownerOf(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
-    if (!isBNish(tokenId)) {
+    if (!Utils.isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'ownerOf')
     }
 
@@ -53,7 +53,7 @@ export class HRC721 extends BaseToken implements IBridgeToken {
   }
 
   public async getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
-    if (!isBNish(tokenId)) {
+    if (!Utils.isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'getApproved')
     }
 
@@ -90,7 +90,7 @@ export class HRC721 extends BaseToken implements IBridgeToken {
   }
 
   public async tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise<string> {
-    if (!isBNish(tokenId)) {
+    if (!Utils.isBNish(tokenId)) {
       throw new ContractError('You must provide a tokenId', 'tokenURI')
     }
 
@@ -193,8 +193,8 @@ export class HRC721 extends BaseToken implements IBridgeToken {
 
     // Wait for safety reasons
     const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
-    const RPC = getRpc(network)
-    await waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, getChainId(network))
+    const RPC = Utils.getRpc(network)
+    await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
 
     // Mint tokens on Eth Network
     const mintTokenTx = await ethManagerContract.mintToken(erc721Addr, tokenId, recipient, lockTokenTx.id)
