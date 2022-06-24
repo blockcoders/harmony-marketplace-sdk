@@ -2,12 +2,7 @@ import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { BridgeManagers, TokenInfo } from '../interfaces'
-import {
-  BridgedHRC1155Token,
-  HRC1155EthManager,
-  HRC1155HmyManager,
-  HRC1155TokenManager,
-} from '../bridge'
+import { BridgedHRC1155Token, HRC1155EthManager, HRC1155HmyManager, HRC1155TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo, TokenType } from '../constants'
 import { HRC1155 } from '../contracts'
 import * as Utils from '../utils'
@@ -45,6 +40,8 @@ describe('HRC1155 Contract Interface', () => {
   const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
   const bridgedToken = new BridgedHRC1155Token('0xFake', WALLET_ETH_MASTER)
   const erc1155Addr = '0xFake'
+  const network = NetworkInfo.DEVNET
+
   let managers: BridgeManagers
   before(async () => {
     const { abi } = await getContractMetadata(ContractName.BlockcodersHRC1155)
@@ -522,7 +519,6 @@ describe('HRC1155 Contract Interface', () => {
           amounts: [1],
         },
       }
-      const network = NetworkInfo.DEVNET
       const tx = FAKE_TX
       tx.setTxStatus(TxStatus.CONFIRMED)
       tx.receipt = FAKE_TX_RECEIPT
@@ -563,6 +559,88 @@ describe('HRC1155 Contract Interface', () => {
       expect(ethManagerSendStub.calledOnce).to.be.true
       expect(utilsStub.calledOnce).to.be.true
     })
+
+    it('should fail if tokenIds is empty', async () => {
+      const sender = HMY_OWNER_ADDRESS
+      const recipient = ETH_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [],
+          amounts: [1],
+        },
+      }
+      try {
+        await contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
+        expect.fail('Should not get here!!')
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+    })
+
+    it('should fail if amounts is empty', async () => {
+      const sender = HMY_OWNER_ADDRESS
+      const recipient = ETH_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [],
+        },
+      }
+      try {
+        await contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
+        expect.fail('Should not get here!!')
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+    })
+
+    it('should fail if amounts and tokenIds lengths are not equal', async () => {
+      const sender = HMY_OWNER_ADDRESS
+      const recipient = ETH_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [1, 2],
+        },
+      }
+      try {
+        await contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
+        expect.fail('Should not get here!!')
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+    })
+
+    it('should fail if balance is insufficient', async () => {
+      const sender = HMY_OWNER_ADDRESS
+      const recipient = ETH_OWNER_ADDRESS
+      const tokenInfo: TokenInfo = {
+        tokenAddress: '0xfake',
+        type: TokenType.HRC1155,
+        info: {
+          tokenIds: [TOKEN_SWORD],
+          amounts: [2],
+        },
+      }
+      const callStub = sinon
+        .stub(contract, 'call')
+        .withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]], TX_OPTIONS)
+      try {
+        callStub.resolves().returns(Promise.resolve([new BN(1)]))
+
+        await contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
+        expect.fail('Should not get here!!')
+      } catch (error) {
+        expect(error).to.not.be.undefined
+      }
+      expect(callStub.calledOnce).to.be.true
+    })
   })
 
   describe('ethToHmy', () => {
@@ -574,7 +652,7 @@ describe('HRC1155 Contract Interface', () => {
         type: TokenType.HRC1155,
         info: {
           tokenIds: [TOKEN_SWORD],
-          amounts: [1]
+          amounts: [1],
         },
       }
 
@@ -582,7 +660,9 @@ describe('HRC1155 Contract Interface', () => {
       tx.setTxStatus(TxStatus.CONFIRMED)
       tx.receipt = FAKE_TX_RECEIPT
 
-      const bridgedTokenReadStub = sinon.stub(bridgedToken, 'read').withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]])
+      const bridgedTokenReadStub = sinon
+        .stub(bridgedToken, 'read')
+        .withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]])
       bridgedTokenReadStub.resolves().returns(Promise.resolve([new BN(1)]))
 
       const bridgedTokenWriteStub = sinon
@@ -619,12 +699,12 @@ describe('HRC1155 Contract Interface', () => {
         type: TokenType.HRC1155,
         info: {
           tokenIds: [],
-          amounts: [1]
+          amounts: [1],
         },
       }
       try {
         await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
-        expect.fail("Should not get here!!")
+        expect.fail('Should not get here!!')
       } catch (error) {
         expect(error).to.not.be.undefined
       }
@@ -638,12 +718,12 @@ describe('HRC1155 Contract Interface', () => {
         type: TokenType.HRC1155,
         info: {
           tokenIds: [TOKEN_SWORD],
-          amounts: []
+          amounts: [],
         },
       }
       try {
         await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
-        expect.fail("Should not get here!!")
+        expect.fail('Should not get here!!')
       } catch (error) {
         expect(error).to.not.be.undefined
       }
@@ -657,12 +737,12 @@ describe('HRC1155 Contract Interface', () => {
         type: TokenType.HRC1155,
         info: {
           tokenIds: [TOKEN_SWORD],
-          amounts: [1,2]
+          amounts: [1, 2],
         },
       }
       try {
         await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
-        expect.fail("Should not get here!!")
+        expect.fail('Should not get here!!')
       } catch (error) {
         expect(error).to.not.be.undefined
       }
@@ -676,15 +756,17 @@ describe('HRC1155 Contract Interface', () => {
         type: TokenType.HRC1155,
         info: {
           tokenIds: [TOKEN_SWORD],
-          amounts: [2]
+          amounts: [2],
         },
       }
-      const bridgedTokenReadStub = sinon.stub(bridgedToken, 'read').withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]])
+      const bridgedTokenReadStub = sinon
+        .stub(bridgedToken, 'read')
+        .withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]])
       try {
         bridgedTokenReadStub.resolves().returns(Promise.resolve([new BN(1)]))
 
         await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)
-        expect.fail("Should not get here!!")
+        expect.fail('Should not get here!!')
       } catch (error) {
         expect(error).to.not.be.undefined
       }
