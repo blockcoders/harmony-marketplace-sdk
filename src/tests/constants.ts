@@ -115,7 +115,7 @@ export const FAKE_TX_RECEIPT = {
   s: 'fake',
 }
 
-export const FAKE_MINT_TX_RECEIPT = {
+export const FAKE_ETH_TX_RECEIPT = {
   to: "",
   from: "",
   contractAddress: "",
@@ -124,7 +124,7 @@ export const FAKE_MINT_TX_RECEIPT = {
   gasUsed: BigNumber.from(0),
   logsBloom: "",
   blockHash: "",
-  transactionHash: "",
+  transactionHash: "0xfakeHash",
   logs: [],
   blockNumber: 0,
   confirmations: 0,

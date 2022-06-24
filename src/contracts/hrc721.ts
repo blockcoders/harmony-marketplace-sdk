@@ -232,12 +232,12 @@ export class HRC721 extends BaseToken implements IBridgeToken {
     const approveTx = await erc721.approve(ethManager.address, tokenId)
     console.info(
       'HRC721 approve EthManager to burn tokens on the Ethereum Network. Transaction Hash: ',
-      approveTx.transactionHash,
+      approveTx?.transactionHash,
     )
 
     // Burn tokens to unlock on Hamrnoy Network
     const burnTx = await ownerSignedEthManager.burnToken(erc721Addr, tokenId, recipient)
-    const burnTokenTxHash = burnTx.transactionHash
+    const burnTokenTxHash = burnTx?.transactionHash
     console.info('HRC20EthManager burnToken on the Ethereum Network. Transaction Hash: ', burnTokenTxHash)
 
     // Unlock tokens after burn
