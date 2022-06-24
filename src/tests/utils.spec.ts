@@ -72,7 +72,12 @@ describe('getRpc', () => {
     expect(rpc).to.be.equal(HARMONY_RPC_WS)
   })
   it('should throw an error if network info is invalid/not supported', () => {
-    expect(getRpc(5)).to.be.rejectedWith(Error)
+    try {
+      getRpc(5)
+      expect.fail("Should not get here!!")
+    } catch (error) {
+      expect(error).not.to.be.undefined
+    }
   })
 })
 
@@ -86,6 +91,11 @@ describe('getChainId', () => {
     expect(rpc).to.be.equal(4)
   })
   it('should throw an error if network info is invalid/not supported', () => {
-    expect(getChainId(5)).to.be.rejectedWith(Error)
+    try {
+      getChainId(5)
+      expect.fail("Should not get here!!")
+    } catch (error) {
+      expect(error).not.to.be.undefined
+    }
   })
 })

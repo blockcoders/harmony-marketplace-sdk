@@ -7,6 +7,7 @@ import { ITransactionOptions, HDOptions } from '../interfaces'
 import { HarmonyShards } from '../interfaces'
 import { PrivateKey } from '../wallets'
 import BN from 'bn.js'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export const TEST_PK_1 = process.env.TEST_PK_1 ?? ''
 export const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
@@ -87,7 +88,7 @@ export const FAKE_TX_HRC721 = new Transaction({
   chainId: 2,
 })
 
-export const FAKE_TX_LOCK = new Transaction({
+export const FAKE_TX = new Transaction({
   shardID: 0,
   from: 'one103su3u5z464w8cz8d5zn85sacsk94g2x2nty0a',
   to: '0xa25006B0aF77c1d248685205771bdC848Cda53d1',
@@ -102,7 +103,7 @@ export const FAKE_TX_RECEIPT = {
   transactionHash: 'fake',
   transactionIndex: 'fake',
   blockHash: 'fake',
-  blockNumber: '10',
+  blockNumber: '0x10',
   from: 'fake',
   to: 'fake',
   gasUsed: 'fake',
@@ -112,6 +113,26 @@ export const FAKE_TX_RECEIPT = {
   v: 'fake',
   r: 'fake',
   s: 'fake',
+}
+
+export const FAKE_MINT_TX_RECEIPT = {
+  to: "",
+  from: "",
+  contractAddress: "",
+  transactionIndex: 0,
+  root: "",
+  gasUsed: BigNumber.from(0),
+  logsBloom: "",
+  blockHash: "",
+  transactionHash: "",
+  logs: [],
+  blockNumber: 0,
+  confirmations: 0,
+  cumulativeGasUsed: BigNumber.from(0),
+  effectiveGasPrice: BigNumber.from(0),
+  byzantium: true,
+  type: 0,
+  status: 1
 }
 
 export const FAKE_BALANCE_HRC1155 = '999999999999999999999889'

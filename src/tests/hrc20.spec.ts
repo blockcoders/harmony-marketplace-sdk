@@ -20,7 +20,7 @@ import {
   ETH_OWNER_ADDRESS,
   WALLET_HMY_MASTER,
   FAKE_TX_RECEIPT,
-  FAKE_TX_LOCK,
+  FAKE_TX,
 } from './constants'
 import { getContractMetadata } from './helpers'
 import { TxStatus } from '@harmony-js/transaction'
@@ -303,7 +303,7 @@ describe('HRC20 Contract Interface', () => {
         .withArgs('approve', [hmyManager.address, TOKEN_GOLD], TX_OPTIONS)
       ownerHRC20SendStub.resolves()
 
-      const tx = FAKE_TX_LOCK
+      const tx = FAKE_TX
       tx.setTxStatus(TxStatus.CONFIRMED)
       tx.receipt = FAKE_TX_RECEIPT
       const ownerSignedHmyManagerSendStub = sinon

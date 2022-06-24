@@ -29,7 +29,7 @@ describe('EthBase Contract', () => {
 
   describe('write', () => {
     it('should throw an error if method is invalid', async () => {
-      expect(contract.write('test', [TOKEN_GOLD])).to.be.rejectedWith(Error)
+      expect(contract.write('test', [])).to.be.rejectedWith(Error)
     })
 
     it('should throw an error if there is no transaction response', async () => {
