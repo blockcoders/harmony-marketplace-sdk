@@ -1,11 +1,11 @@
 import { Transaction, TxStatus } from '@harmony-js/transaction'
+import { ChainType, hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
+import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../bridge'
 import { AddressZero, DEFAULT_TX_OPTIONS, NetworkInfo } from '../constants'
 import { BNish, BridgeManagers, HRC20Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
-import { BaseToken } from './baseToken'
-import { ChainType, hexToNumber } from '@harmony-js/utils'
 import * as Utils from '../utils'
-import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../bridge'
+import { BaseToken } from './baseToken'
 
 export class HRC20 extends BaseToken implements IBridgeToken {
   public async totalSupply(txOptions?: ITransactionOptions): Promise<BN> {
@@ -144,7 +144,7 @@ export class HRC20 extends BaseToken implements IBridgeToken {
     tokenInfo: TokenInfo,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
   ) {
-    let { ethManager, hmyManager, ownerSignedEthManager, bridgedToken } = managers || {}
+    const { ethManager, hmyManager, ownerSignedEthManager, bridgedToken } = managers || {}
     ownerSignedEthManager = ownerSignedEthManager as HRC20EthManager
     hmyManager = hmyManager as HRC20HmyManager
     const erc20 = bridgedToken as BridgedHRC20Token

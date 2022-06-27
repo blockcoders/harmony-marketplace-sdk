@@ -1,11 +1,12 @@
+import { TxStatus } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { BridgeManagers, TokenInfo } from '../interfaces'
 import { BridgedHRC721Token, HRC721EthManager, HRC721HmyManager, HRC721TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo, TokenType } from '../constants'
 import { HRC721 } from '../contracts'
+import { BridgeManagers, TokenInfo } from '../interfaces'
 import * as Utils from '../utils'
 import {
   TEST_ADDRESS_1,
@@ -27,7 +28,6 @@ import {
   FAKE_ETH_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
-import { TxStatus } from '@harmony-js/transaction'
 
 use(chaiAsPromised)
 
@@ -682,16 +682,20 @@ describe('HRC721 Contract Interface', () => {
       const bridgedTokenWriteStub = sinon
         .stub(bridgedToken, 'write')
         .withArgs('approve', [ethManager.address, TOKEN_SWORD])
-        bridgedTokenWriteStub.resolves()
+      bridgedTokenWriteStub.resolves()
 
       const ownerSignedEthManagerSendStub = sinon
         .stub(ethManager, 'write')
         .withArgs('burnToken', [erc721Addr, TOKEN_SWORD, recipient])
-        ownerSignedEthManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
+      ownerSignedEthManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
 
       const hmyManagerSendStub = sinon
         .stub(hmyManager, 'send')
-        .withArgs('unlockToken', [contract.address, TOKEN_SWORD, recipient, FAKE_ETH_TX_RECEIPT.transactionHash], TX_OPTIONS)
+        .withArgs(
+          'unlockToken',
+          [contract.address, TOKEN_SWORD, recipient, FAKE_ETH_TX_RECEIPT.transactionHash],
+          TX_OPTIONS,
+        )
       hmyManagerSendStub.resolves().returns(Promise.resolve(tx))
 
       await contract.ethToHmy(managers, sender, recipient, tokenInfo, TX_OPTIONS)

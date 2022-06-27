@@ -5,7 +5,9 @@ import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../../bridge'
+import { HARMONY_RPC_DEVNET_WS } from '../../constants'
 import { HRC20 } from '../../contracts'
+import { waitForNewBlock } from '../../utils'
 import {
   WALLET_HMY_MASTER,
   WALLET_ETH_MASTER,
@@ -19,8 +21,6 @@ import {
   E2E_TX_OPTIONS,
 } from '../constants'
 import { deployContract, deployEthContract } from '../helpers'
-import { HARMONY_RPC_DEVNET_WS } from '../../constants'
-import { waitForNewBlock } from '../../utils'
 
 use(chaiAsPromised)
 

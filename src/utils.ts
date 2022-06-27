@@ -1,9 +1,9 @@
 import { isArrayish, isHexString } from '@harmony-js/crypto'
-import BN from 'bn.js'
-import { BNish } from './interfaces'
 import { Messenger, WSProvider, NewHeaders } from '@harmony-js/network'
 import { ChainID, ChainType, hexToNumber } from '@harmony-js/utils'
+import BN from 'bn.js'
 import { HARMONY_RPC_DEVNET_WS, HARMONY_RPC_WS, NetworkInfo } from './constants'
+import { BNish } from './interfaces'
 
 export function isBNish(value: any): value is BNish {
   return (
@@ -17,8 +17,13 @@ export function isBNish(value: any): value is BNish {
   )
 }
 
-export function waitForNewBlock(expectedBlockNumber: number, RPC: string, chainType: ChainType, chainId: number): Promise<void> {
-  const wsMessenger = new Messenger(new WSProvider(RPC), chainType, chainId)
+export function waitForNewBlock(
+  expectedBlockNumber: number,
+  rpc: string,
+  chainType: ChainType,
+  chainId: number,
+): Promise<void> {
+  const wsMessenger = new Messenger(new WSProvider(rpc), chainType, chainId)
   const newBlockSubscription = new NewHeaders(wsMessenger)
 
   return new Promise((res) => {

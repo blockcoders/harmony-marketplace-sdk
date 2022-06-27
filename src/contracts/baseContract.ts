@@ -1,6 +1,7 @@
 import { Account, Wallet } from '@harmony-js/account'
 import { Contract as HmyContract } from '@harmony-js/contract'
 import { ContractOptions } from '@harmony-js/contract/dist/utils/options'
+import { Messenger } from '@harmony-js/network'
 import { Transaction } from '@harmony-js/transaction'
 import { hexToNumber, numberToHex } from '@harmony-js/utils'
 import { DEFAULT_GAS_PRICE } from '../constants'
@@ -34,6 +35,10 @@ export abstract class BaseContract {
 
   public get address(): string {
     return this._contract.address
+  }
+
+  public get messenger(): Messenger {
+    return this._provider.messenger
   }
 
   constructor(address: string, abi: any[], provider: ContractProviderType, options?: ContractOptions) {

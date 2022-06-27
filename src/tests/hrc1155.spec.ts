@@ -1,10 +1,12 @@
+import { TxStatus } from '@harmony-js/transaction'
+import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { BridgeManagers, TokenInfo } from '../interfaces'
 import { BridgedHRC1155Token, HRC1155EthManager, HRC1155HmyManager, HRC1155TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo, TokenType } from '../constants'
 import { HRC1155 } from '../contracts'
+import { BridgeManagers, TokenInfo } from '../interfaces'
 import * as Utils from '../utils'
 import {
   TEST_ADDRESS_1,
@@ -28,8 +30,6 @@ import {
   FAKE_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
-import { TxStatus } from '@harmony-js/transaction'
-import BN from 'bn.js'
 
 use(chaiAsPromised)
 
@@ -628,9 +628,7 @@ describe('HRC1155 Contract Interface', () => {
           amounts: [2],
         },
       }
-      const callStub = sinon
-        .stub(contract, 'call')
-        .withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]], TX_OPTIONS)
+      const callStub = sinon.stub(contract, 'call').withArgs('balanceOfBatch', [[sender], [TOKEN_SWORD]], TX_OPTIONS)
       try {
         callStub.resolves().returns(Promise.resolve([new BN(1)]))
 

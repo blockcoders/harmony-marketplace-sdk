@@ -3,7 +3,6 @@ import { expect } from 'chai'
 import { HARMONY_RPC_DEVNET_WS, HARMONY_RPC_WS, NetworkInfo } from '../constants'
 import { isBNish, getRpc, getChainId } from '../utils'
 
-
 describe('Utils', () => {
   it('should return true if param is a BNish type, as a number', async () => {
     const bnish = isBNish(0)
@@ -74,7 +73,7 @@ describe('getRpc', () => {
   it('should throw an error if network info is invalid/not supported', () => {
     try {
       getRpc(5)
-      expect.fail("Should not get here!!")
+      expect.fail('Should not get here!!')
     } catch (error) {
       expect(error).not.to.be.undefined
     }
@@ -93,7 +92,7 @@ describe('getChainId', () => {
   it('should throw an error if network info is invalid/not supported', () => {
     try {
       getChainId(5)
-      expect.fail("Should not get here!!")
+      expect.fail('Should not get here!!')
     } catch (error) {
       expect(error).not.to.be.undefined
     }

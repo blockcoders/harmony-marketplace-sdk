@@ -1,5 +1,6 @@
-import { TokenInfo } from '../../interfaces'
 import { BridgeToken } from '../../bridge/bridgeToken'
+import { BridgeType, DEFAULT_TX_OPTIONS, NetworkInfo, TokenType } from '../../constants'
+import { TokenInfo } from '../../interfaces'
 import {
   WALLET_ETH_MASTER,
   WALLET_HMY_MASTER,
@@ -8,10 +9,9 @@ import {
   HMY_OWNER_ADDRESS,
   ETH_OWNER_ADDRESS,
 } from '../constants'
-import { BridgeType, DEFAULT_TX_OPTIONS, NetworkInfo, TokenType } from '../../constants'
-const hrc20Address = "0x8202502dc1d2d0bf741ccafcf08bd973c0547bea"
-const hrc721Address = "0x3bd7ff8176daef64e81711027b50ed2f3d07c2f5"
-const hrc1155Address = "0x245cd441f37d98122e5f9c8214228409ecb51869"
+const hrc20Address = '0x8202502dc1d2d0bf741ccafcf08bd973c0547bea'
+const hrc721Address = '0x3bd7ff8176daef64e81711027b50ed2f3d07c2f5'
+const hrc1155Address = '0x245cd441f37d98122e5f9c8214228409ecb51869'
 
 describe('BRIDGE SOME HRC20 TOKENS', () => {
   it('Should send the tokens from Hmy to Eth', async () => {
@@ -79,7 +79,6 @@ describe('BRIDGE ONE HRC721 TOKEN', () => {
   })
 })
 
-
 describe('BRIDGE HRC1155 TOKEN', () => {
   it('Should send the tokens from Hmy to Eth', async () => {
     const bridge = new BridgeToken(WALLET_ETH_OWNER, WALLET_ETH_MASTER, WALLET_HMY_OWNER, WALLET_HMY_MASTER)
@@ -90,7 +89,7 @@ describe('BRIDGE HRC1155 TOKEN', () => {
       type: TokenType.HRC1155,
       info: {
         tokenIds: [1],
-        amounts: [1]
+        amounts: [1],
       },
     }
     const bridgeType = BridgeType.HMY_TO_ETH
@@ -106,7 +105,7 @@ describe('BRIDGE HRC1155 TOKEN', () => {
       type: TokenType.HRC1155,
       info: {
         tokenIds: [1],
-        amounts: [1]
+        amounts: [1],
       },
     }
     const bridgeType = BridgeType.ETH_TO_HMY

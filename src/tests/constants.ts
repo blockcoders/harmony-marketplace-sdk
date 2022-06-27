@@ -1,13 +1,13 @@
 import 'dotenv/config'
+import { BigNumber } from '@ethersproject/bignumber'
 import { EtherscanProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import { Transaction } from '@harmony-js/transaction'
 import { ChainID, Unit } from '@harmony-js/utils'
+import BN from 'bn.js'
 import { ITransactionOptions, HDOptions } from '../interfaces'
 import { HarmonyShards } from '../interfaces'
 import { PrivateKey } from '../wallets'
-import BN from 'bn.js'
-import { BigNumber } from '@ethersproject/bignumber'
 
 export const TEST_PK_1 = process.env.TEST_PK_1 ?? ''
 export const TEST_PK_2 = process.env.TEST_PK_2 ?? ''
@@ -116,15 +116,15 @@ export const FAKE_TX_RECEIPT = {
 }
 
 export const FAKE_ETH_TX_RECEIPT = {
-  to: "",
-  from: "",
-  contractAddress: "",
+  to: '',
+  from: '',
+  contractAddress: '',
   transactionIndex: 0,
-  root: "",
+  root: '',
   gasUsed: BigNumber.from(0),
-  logsBloom: "",
-  blockHash: "",
-  transactionHash: "0xfakeHash",
+  logsBloom: '',
+  blockHash: '',
+  transactionHash: '0xfakeHash',
   logs: [],
   blockNumber: 0,
   confirmations: 0,
@@ -132,7 +132,7 @@ export const FAKE_ETH_TX_RECEIPT = {
   effectiveGasPrice: BigNumber.from(0),
   byzantium: true,
   type: 0,
-  status: 1
+  status: 1,
 }
 
 export const FAKE_BALANCE_HRC1155 = '999999999999999999999889'

@@ -1,12 +1,12 @@
 import { Transaction, TxStatus } from '@harmony-js/transaction'
+import { hexToNumber, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
-import * as Utils from '../utils'
 import { BridgedHRC1155Token, HRC1155EthManager, HRC1155HmyManager, HRC1155TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo } from '../constants'
 import { BNish, BridgeManagers, HRC1155Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
+import * as Utils from '../utils'
 import { ContractError } from './baseContract'
 import { BaseToken } from './baseToken'
-import { hexToNumber, ChainType } from '@harmony-js/utils'
 
 export class HRC1155 extends BaseToken implements IBridgeToken {
   public async balanceOf(address: string, id: BNish, txOptions?: ITransactionOptions): Promise<BN> {
@@ -160,9 +160,11 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     // creates an array with the same account with a length equal to tokenIds
     const senderArray = tokenIds.map(() => sender)
     const balances = await this.balanceOfBatch(senderArray, tokenIds, txOptions)
-    balances.forEach((balance, index)=> {
+    balances.forEach((balance, index) => {
       if (balance < new BN(amounts[index])) {
-        throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`)
+        throw new Error(
+          `Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`,
+        )
       }
     })
 
@@ -171,7 +173,7 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     console.info('HRC1155TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Get Bridged Token address
-    const erc1155Addr = await this.getBridgedTokenAddress(ethManager, tokenManager, tokenIds[0],txOptions)
+    const erc1155Addr = await this.getBridgedTokenAddress(ethManager, tokenManager, tokenIds[0], txOptions)
     console.log('ERC1155 Bridged Token at address: ', erc1155Addr)
 
     // Approve hmyManager
@@ -199,7 +201,7 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
     const RPC = Utils.getRpc(network)
     await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
-    
+
     // Mint tokens on Eth side
     const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, recipient, lockTokenTx?.id, amounts, [])
     if (mintTokenTx?.status !== 1) {
@@ -233,9 +235,11 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
     // creates an array with the same account with a length equal to tokenIds
     const senderArray = tokenIds.map(() => sender)
     const balances = await erc1155.balanceOfBatch(senderArray, tokenIds)
-    balances.forEach((balance, index)=> {
+    balances.forEach((balance, index) => {
       if (balance.toNumber() < amounts[index]) {
-        throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`)
+        throw new Error(
+          `Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`,
+        )
       }
     })
 

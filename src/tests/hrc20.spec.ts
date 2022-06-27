@@ -1,12 +1,13 @@
+import { TxStatus } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { BridgeManagers, TokenInfo } from '../interfaces'
 import { BridgedHRC20Token, HRC20EthManager, HRC20HmyManager, HRC20TokenManager } from '../bridge'
 import { AddressZero, NetworkInfo, TokenType } from '../constants'
 import { HRC20 } from '../contracts'
-import * as Utils from "../utils"
+import { BridgeManagers, TokenInfo } from '../interfaces'
+import * as Utils from '../utils'
 import {
   TEST_ADDRESS_1,
   TEST_ADDRESS_2,
@@ -25,7 +26,6 @@ import {
   FAKE_ETH_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
-import { TxStatus } from '@harmony-js/transaction'
 
 use(chaiAsPromised)
 
@@ -228,11 +228,7 @@ describe('HRC20 Contract Interface', () => {
 
       const fakeTokenManager = new HRC20TokenManager('0x', WALLET_ETH_MASTER)
 
-      const erc20Address = await contract.getBridgedTokenAddress(
-        fakeEthManager,
-        fakeTokenManager,
-        TX_OPTIONS,
-      )
+      const erc20Address = await contract.getBridgedTokenAddress(fakeEthManager, fakeTokenManager, TX_OPTIONS)
 
       expect(erc20Address).to.be.equals(expectedAddress)
     })
@@ -253,11 +249,7 @@ describe('HRC20 Contract Interface', () => {
       addTokenStub.resolves()
       const fakeTokenManager = new HRC20TokenManager('0x', WALLET_ETH_MASTER)
 
-      const erc20Address = await contract.getBridgedTokenAddress(
-        fakeEthManager,
-        fakeTokenManager,
-        TX_OPTIONS,
-      )
+      const erc20Address = await contract.getBridgedTokenAddress(fakeEthManager, fakeTokenManager, TX_OPTIONS)
       expect(stub.callCount).to.be.equals(2)
       expect(addTokenStub.calledOnce).to.be.true
       expect(erc20Address).to.be.equals(expectedAddress)
@@ -304,22 +296,22 @@ describe('HRC20 Contract Interface', () => {
       const getBridgedTokenAddressStub = sinon.stub(contract, 'getBridgedTokenAddress')
       getBridgedTokenAddressStub.resolves().returns(Promise.resolve(erc20Addr))
 
-      const ownerHRC20SendStub = sinon
-        .stub(contract, 'send')
-        .withArgs('approve', [hmyManager.address, 10], TX_OPTIONS)
+      const ownerHRC20SendStub = sinon.stub(contract, 'send').withArgs('approve', [hmyManager.address, 10], TX_OPTIONS)
       ownerHRC20SendStub.resolves().returns(Promise.resolve(tx))
-      
+
       const ownerSignedHmyManagerSendStub = sinon
         .stub(hmyManager, 'send')
         .withArgs('lockTokenFor', [ethManager.address, sender, 10, recipient], TX_OPTIONS)
       ownerSignedHmyManagerSendStub.resolves().returns(Promise.resolve(tx))
 
-      const ethManagerSendStub = sinon.stub(ethManager, "write").withArgs("mintToken", [erc20Addr, 10, recipient, tx.id])
+      const ethManagerSendStub = sinon
+        .stub(ethManager, 'write')
+        .withArgs('mintToken', [erc20Addr, 10, recipient, tx.id])
       ethManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
 
       const utilsStub = sinon.stub(Utils, 'waitForNewBlock')
       utilsStub.resolves()
-      
+
       await contract.hmyToEth(managers, sender, recipient, tokenInfo, network, TX_OPTIONS)
 
       expect(tokenManagerWriteStub.calledOnce).to.be.true
@@ -366,15 +358,13 @@ describe('HRC20 Contract Interface', () => {
       const bridgedTokenReadStub = sinon.stub(bridgedToken, 'read').withArgs('balanceOf', [sender])
       bridgedTokenReadStub.resolves().returns(Promise.resolve(new BN(10)))
 
-      const bridgedTokenWriteStub = sinon
-        .stub(bridgedToken, 'write')
-        .withArgs('approve', [ethManager.address, 10])
-        bridgedTokenWriteStub.resolves()
+      const bridgedTokenWriteStub = sinon.stub(bridgedToken, 'write').withArgs('approve', [ethManager.address, 10])
+      bridgedTokenWriteStub.resolves()
 
       const ownerSignedEthManagerSendStub = sinon
         .stub(ethManager, 'write')
         .withArgs('burnToken', [erc20Addr, 10, recipient])
-        ownerSignedEthManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
+      ownerSignedEthManagerSendStub.resolves().returns(Promise.resolve(FAKE_ETH_TX_RECEIPT))
 
       const hmyManagerSendStub = sinon
         .stub(hmyManager, 'send')
