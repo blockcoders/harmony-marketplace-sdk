@@ -101,15 +101,6 @@ export class BridgeHRC721Token extends BridgeToken {
     tokenInfo: HRC721Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
   ): Promise<TransactionReceipt> {
-    const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
-      ? MAINNET_HRC721_CONTRACTS_ADDRESSES
-      : DEVNET_HRC721_CONTRACTS_ADDRESSES
-      
-    const hmyManager = new HRC721HmyManager(hmyManagerAddress, this.hmyMasterWallet)
-    const ownerSignedHmyManager = new HRC721HmyManager(hmyManagerAddress, this.hmyOwnerWallet)
-    const ethManager = new HRC721EthManager(ethManagerAddress, this.ethMasterWallet)
-    const tokenManager = new HRC721TokenManager(tokenManagerAddress, this.ethMasterWallet)
-    const ownerHrc721 = new HRC721(token.address, ABI, this.hmyOwnerWallet)
     const { tokenId } = tokenInfo
 
     // Verify parameters and balance
@@ -120,6 +111,16 @@ export class BridgeHRC721Token extends BridgeToken {
     if (balance < new BN(1)) {
       throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenId}`)
     }
+    
+    const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
+      ? MAINNET_HRC721_CONTRACTS_ADDRESSES
+      : DEVNET_HRC721_CONTRACTS_ADDRESSES
+      
+    const hmyManager = new HRC721HmyManager(hmyManagerAddress, this.hmyMasterWallet)
+    const ownerSignedHmyManager = new HRC721HmyManager(hmyManagerAddress, this.hmyOwnerWallet)
+    const ethManager = new HRC721EthManager(ethManagerAddress, this.ethMasterWallet)
+    const tokenManager = new HRC721TokenManager(tokenManagerAddress, this.ethMasterWallet)
+    const ownerHrc721 = new HRC721(token.address, ABI, this.hmyOwnerWallet)
 
     const relyTx = await tokenManager.rely(ethManager.address)
     console.info('HRC721TokenManager rely tx hash: ', relyTx?.transactionHash)

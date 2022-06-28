@@ -118,16 +118,6 @@ export class BridgeHRC1155Token extends BridgeToken {
     tokenInfo: HRC1155Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
   ): Promise<TransactionReceipt> {
-    const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
-      ? MAINNET_HRC1155_CONTRACTS_ADDRESSES
-      : DEVNET_HRC1155_CONTRACTS_ADDRESSES
-
-    const hmyManager = new HRC1155HmyManager(hmyManagerAddress, this.hmyMasterWallet)
-    const ownerSignedHmyManager = new HRC1155HmyManager(hmyManagerAddress, this.hmyOwnerWallet)
-    const ethManager = new HRC1155EthManager(ethManagerAddress, this.ethMasterWallet)
-    const tokenManager = new HRC1155TokenManager(tokenManagerAddress, this.ethMasterWallet)
-    const ownerHrc1155 = new HRC1155(token.address, ABI, this.hmyOwnerWallet)
-    
     // Validate parameters and balance
     const { tokenIds, amounts } = tokenInfo
     if (!tokenIds || tokenIds.length === 0) {
@@ -139,6 +129,17 @@ export class BridgeHRC1155Token extends BridgeToken {
     if (amounts.length !== tokenIds.length) {
       throw Error('Error in tokenInfo, amounts length must be same as tokensIds length')
     }
+    
+    const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
+      ? MAINNET_HRC1155_CONTRACTS_ADDRESSES
+      : DEVNET_HRC1155_CONTRACTS_ADDRESSES
+
+    const hmyManager = new HRC1155HmyManager(hmyManagerAddress, this.hmyMasterWallet)
+    const ownerSignedHmyManager = new HRC1155HmyManager(hmyManagerAddress, this.hmyOwnerWallet)
+    const ethManager = new HRC1155EthManager(ethManagerAddress, this.ethMasterWallet)
+    const tokenManager = new HRC1155TokenManager(tokenManagerAddress, this.ethMasterWallet)
+    const ownerHrc1155 = new HRC1155(token.address, ABI, this.hmyOwnerWallet)
+    
     // creates an array with the same account with a length equal to tokenIds
     const senderArray = tokenIds.map(() => sender)
     const balances = await token.balanceOfBatch(senderArray, tokenIds, txOptions)
