@@ -1,6 +1,7 @@
 import { Signer, VoidSigner } from '@ethersproject/abstract-signer'
-import { Provider } from '@ethersproject/providers'
+import { Provider, TransactionReceipt } from '@ethersproject/providers'
 import { Wallet } from '@harmony-js/account'
+import { Transaction } from '@harmony-js/transaction'
 import {
   BridgeType,
   DEFAULT_TX_OPTIONS,
@@ -11,18 +12,23 @@ import {
   NetworkInfo,
 } from '../constants'
 import { HRC1155, HRC20, HRC721 } from '../contracts'
-import { ITransactionOptions, HRC20Info, HRC1155Info, HRC721Info } from '../interfaces'
+import { ITransactionOptions, HRC20Info, HRC1155Info, HRC721Info, IBridgeToken } from '../interfaces'
 import { Key } from '../wallets'
 
-export abstract class BridgeToken {
+export abstract class BridgeToken implements IBridgeToken {
   protected readonly ethMasterWallet: Signer
   protected readonly hmyMasterWallet: Wallet
   protected readonly ethOwnerWallet: Signer
   protected readonly hmyOwnerWallet: Wallet
-  protected readonly isMainnet: boolean
+  protected readonly network: NetworkInfo
 
-  constructor(hmyOwnerWallet: Wallet, ethOwnerWallet: Signer, ethProvider: Provider, isMainnet = true) {
-    this.isMainnet = isMainnet
+  constructor(
+    hmyOwnerWallet: Wallet,
+    ethOwnerWallet: Signer,
+    ethProvider: Provider,
+    network: NetworkInfo = NetworkInfo.MAINNET,
+  ) {
+    this.network = network
 
     if (this.isMainnet) {
       this.ethMasterWallet = new VoidSigner(MAINNET_MULTISIG_WALLET)
@@ -39,25 +45,29 @@ export abstract class BridgeToken {
     this.ethOwnerWallet = ethOwnerWallet
   }
 
+  public get isMainnet(): boolean {
+    return this.network === NetworkInfo.MAINNET
+  }
+
   public async ethToHmy(
     sender: string,
     recipient: string,
-    network: NetworkInfo,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<Transaction> {
     throw Error('Error on BridgeToken ethToHmy needs to be implemented in child class.')
   }
 
   public async hmyToEth(
     sender: string,
     recipient: string,
-    network: NetworkInfo,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<TransactionReceipt> {
     throw Error('Error on BridgeToken hmyToEth needs to be implemented in child class.')
   }
 
@@ -65,15 +75,14 @@ export abstract class BridgeToken {
     type: BridgeType,
     sender: string,
     recipient: string,
-    network: NetworkInfo,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
   ) {
     if (type === BridgeType.ETH_TO_HMY) {
-      return this.ethToHmy(sender, recipient, network, token, tokenInfo, txOptions)
+      return this.ethToHmy(sender, recipient, token, tokenInfo, txOptions)
     } else {
-      return this.hmyToEth(sender, recipient, network, token, tokenInfo, txOptions)
+      return this.hmyToEth(sender, recipient, token, tokenInfo, txOptions)
     }
   }
 }

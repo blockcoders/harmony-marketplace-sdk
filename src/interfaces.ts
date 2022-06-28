@@ -1,6 +1,8 @@
+import { TransactionReceipt } from '@ethersproject/providers'
 import { Wallet } from '@harmony-js/account'
 import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
+import { Transaction } from '@harmony-js/transaction'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
 import { BridgedHRC1155Token, BridgedHRC20Token, BridgedHRC721Token } from './bridge'
@@ -13,7 +15,7 @@ import { HRC20TokenManager } from './bridge/hrc20TokenManager'
 import { HRC721EthManager } from './bridge/hrc721EthManager'
 import { HRC721HmyManager } from './bridge/hrc721HmyManager'
 import { HRC721TokenManager } from './bridge/hrc721TokenManager'
-import { NetworkInfo, TokenType } from './constants'
+import { TokenType } from './constants'
 import { HRC1155, HRC20, HRC721 } from './contracts'
 import { Key, MnemonicKey, PrivateKey } from './wallets'
 
@@ -83,12 +85,6 @@ export interface TokenInfo {
   info: HRC20Info | HRC721Info | HRC1155Info
 }
 
-export interface ContractsAddresses {
-  HRC20: ContractAddresses
-  HRC721: ContractAddresses
-  HRC1155: ContractAddresses
-}
-
 export interface ContractAddresses {
   ethManagerAddress: string
   hmyManagerAddress: string
@@ -108,18 +104,17 @@ export interface BridgeManagers {
 
 export interface IBridgeToken {
   ethToHmy(
-    managers: BridgeManagers,
     sender: string,
     recipient: string,
-    tokenInfo: TokenInfo,
+    token: HRC20 | HRC721 | HRC1155,
+    tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions,
-  ): void
+  ): Promise<Transaction>
   hmyToEth(
-    managers: BridgeManagers,
     sender: string,
     recipient: string,
-    tokenInfo: TokenInfo,
-    network: NetworkInfo,
+    token: HRC20 | HRC721 | HRC1155,
+    tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions,
-  ): void
+  ): Promise<TransactionReceipt>
 }
