@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import { BridgeHRC1155Token } from '../bridge/bridgeHrc1155Token'
 import { HRC1155EthManager, HRC1155TokenManager } from '../bridge'
-import { AddressZero } from '../constants'
+import { NetworkInfo } from '../constants'
 import { HRC1155 } from '../contracts'
 import {
   TOKEN_GOLD,
@@ -25,7 +25,7 @@ describe('HRC1155 Contract Interface', () => {
   before(async () => {
     const { abi } = await getContractMetadata(ContractName.BlockcodersHRC1155)
     contract = new HRC1155('0x', abi, WALLET_PROVIDER_TEST_1)
-    bridge = new BridgeHRC1155Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, false)
+    bridge = new BridgeHRC1155Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, NetworkInfo.DEVNET)
   })
 
   afterEach(async () => {
@@ -70,7 +70,7 @@ describe('HRC1155 Contract Interface', () => {
 
       const fakeEthManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
       const stub = sinon.stub(fakeEthManager, 'mappings').withArgs(contract.address)
-      stub.onCall(0).returns(Promise.resolve(AddressZero))
+      stub.onCall(0).returns(Promise.reject())
       stub.onCall(1).returns(Promise.resolve(expectedAddress))
 
       const addTokenStub = sinon.stub(fakeEthManager, 'addToken')

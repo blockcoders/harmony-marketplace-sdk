@@ -1,13 +1,9 @@
-import { TxStatus } from '@harmony-js/transaction'
 import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { BridgedHRC721Token, HRC721EthManager, HRC721HmyManager, HRC721TokenManager } from '../bridge'
-import { AddressZero, NetworkInfo, TokenType } from '../constants'
+import { AddressZero } from '../constants'
 import { HRC721 } from '../contracts'
-import { BridgeManagers, TokenInfo } from '../interfaces'
-import * as Utils from '../utils'
 import {
   TEST_ADDRESS_1,
   TEST_ADDRESS_2,
@@ -19,13 +15,6 @@ import {
   ContractName,
   FAKE_SUPPLY,
   TOKEN_GOLD_URI,
-  WALLET_ETH_MASTER,
-  HMY_OWNER_ADDRESS,
-  ETH_OWNER_ADDRESS,
-  WALLET_HMY_MASTER,
-  FAKE_TX,
-  FAKE_TX_RECEIPT,
-  FAKE_ETH_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
 

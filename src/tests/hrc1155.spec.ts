@@ -1,13 +1,8 @@
-import { TxStatus } from '@harmony-js/transaction'
-import BN from 'bn.js'
 import { expect, use } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import { BridgedHRC1155Token, HRC1155EthManager, HRC1155HmyManager, HRC1155TokenManager } from '../bridge'
-import { AddressZero, NetworkInfo, TokenType } from '../constants'
+import { AddressZero } from '../constants'
 import { HRC1155 } from '../contracts'
-import { BridgeManagers, TokenInfo } from '../interfaces'
-import * as Utils from '../utils'
 import {
   TEST_ADDRESS_1,
   EMPTY_TEST_ADDRESS,
@@ -20,14 +15,6 @@ import {
   ContractName,
   TOKEN_GOLD_URI,
   FAKE_SUPPLY,
-  WALLET_ETH_MASTER,
-  WALLET_HMY_MASTER,
-  HMY_OWNER_ADDRESS,
-  ETH_OWNER_ADDRESS,
-  TOKEN_SWORD,
-  FAKE_TX,
-  FAKE_ETH_TX_RECEIPT,
-  FAKE_TX_RECEIPT,
 } from './constants'
 import { getContractMetadata } from './helpers'
 
@@ -35,27 +22,10 @@ use(chaiAsPromised)
 
 describe('HRC1155 Contract Interface', () => {
   let contract: HRC1155
-  const tokenManager = new HRC1155TokenManager('0x', WALLET_ETH_MASTER)
-  const ethManager = new HRC1155EthManager('0x', WALLET_ETH_MASTER)
-  const hmyManager = new HRC1155HmyManager('0x', WALLET_HMY_MASTER)
-  const bridgedToken = new BridgedHRC1155Token('0xFake', WALLET_ETH_MASTER)
-  const erc1155Addr = '0xFake'
-  const network = NetworkInfo.DEVNET
 
-  let managers: BridgeManagers
   before(async () => {
     const { abi } = await getContractMetadata(ContractName.BlockcodersHRC1155)
     contract = new HRC1155('0x', abi, WALLET_PROVIDER_TEST_1)
-    managers = {
-      ethManager,
-      tokenManager,
-      ownerSignedEthManager: ethManager,
-      hmyManager,
-      ownerSignedHmyManager: hmyManager,
-      ownerSignedToken: contract,
-      token: contract,
-      bridgedToken,
-    }
   })
 
   afterEach(async () => {
