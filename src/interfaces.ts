@@ -83,12 +83,6 @@ export interface TokenInfo {
   info: HRC20Info | HRC721Info | HRC1155Info
 }
 
-export interface ContractsAddresses {
-  HRC20: ContractAddresses
-  HRC721: ContractAddresses
-  HRC1155: ContractAddresses
-}
-
 export interface ContractAddresses {
   ethManagerAddress: string
   hmyManagerAddress: string

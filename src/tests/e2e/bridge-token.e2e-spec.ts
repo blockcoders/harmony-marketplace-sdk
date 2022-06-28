@@ -1,6 +1,6 @@
 import { HRC1155, HRC20, HRC721 } from '../../contracts'
 import { BridgeHRC20Token } from '../../bridge/bridgeHrc20Token'
-import { BridgeType, DEFAULT_TX_OPTIONS } from '../../constants'
+import { BridgeType, DEFAULT_TX_OPTIONS, NetworkInfo } from '../../constants'
 import { HRC1155Info, HRC20Info, HRC721Info } from '../../interfaces'
 import {
   WALLET_ETH_MASTER,
@@ -25,7 +25,7 @@ let token: HRC20 | HRC721 | HRC1155
 
 describe.only('BRIDGE SOME HRC20 TOKENS', () => {
   before(() => {
-    bridge = new BridgeHRC20Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, false)
+    bridge = new BridgeHRC20Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, NetworkInfo.DEVNET)
     token = new HRC20(hrc20Address, HRC20ABI, WALLET_HMY_MASTER)
   })
   it('Should send the tokens from Hmy to Eth', async () => {
@@ -48,7 +48,7 @@ describe.only('BRIDGE SOME HRC20 TOKENS', () => {
 
 describe('BRIDGE ONE HRC721 TOKEN', () => {
   before(() => {
-    bridge = new BridgeHRC721Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, false)
+    bridge = new BridgeHRC721Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, NetworkInfo.DEVNET)
     token = new HRC721(hrc721Address, HRC721ABI, WALLET_HMY_MASTER)
   })
   it('Should send the tokens from Hmy to Eth', async () => {
@@ -71,7 +71,7 @@ describe('BRIDGE ONE HRC721 TOKEN', () => {
 
 describe('BRIDGE HRC1155 TOKEN', () => {
   before(() => {
-    bridge = new BridgeHRC1155Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, false)
+    bridge = new BridgeHRC1155Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, NetworkInfo.DEVNET)
     token = new HRC1155(hrc1155Address, HRC1155ABI, WALLET_HMY_MASTER)
   })
   it('Should send the tokens from Hmy to Eth', async () => {

@@ -1,17 +1,13 @@
-import { TxStatus } from '@harmony-js/transaction'
+import { TransactionReceipt } from '@ethersproject/providers'
+import { Transaction, TxStatus } from '@harmony-js/transaction'
 import { hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
-import {
-  AddressZero,
-  DEFAULT_TX_OPTIONS,
-  DEVNET_HRC20_CONTRACTS_ADDRESSES,
-  MAINNET_HRC20_CONTRACTS_ADDRESSES,
-} from '../constants'
+import { DEFAULT_TX_OPTIONS, DEVNET_HRC20_CONTRACTS_ADDRESSES, MAINNET_HRC20_CONTRACTS_ADDRESSES } from '../constants'
 import { HRC20 } from '../contracts'
 import { HRC20Info, ITransactionOptions } from '../interfaces'
 import { waitForNewBlock } from '../utils'
-import { BridgedHRC20Token } from './bridgedHrc20Token'
 import { BridgeToken } from './bridgeToken'
+import { BridgedHRC20Token } from './bridgedHrc20Token'
 import { HRC20EthManager } from './hrc20EthManager'
 import { HRC20HmyManager } from './hrc20HmyManager'
 import { HRC20TokenManager } from './hrc20TokenManager'
@@ -23,13 +19,14 @@ export class BridgeHRC20Token extends BridgeToken {
     token: HRC20,
     tokenInfo: HRC20Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<Transaction> {
     const { ethManagerAddress, hmyManagerAddress } = this.isMainnet
       ? MAINNET_HRC20_CONTRACTS_ADDRESSES
       : DEVNET_HRC20_CONTRACTS_ADDRESSES
     const hmyManager = new HRC20HmyManager(hmyManagerAddress, this.hmyMasterWallet)
-    const ownerSignedEthManager = new HRC20EthManager(ethManagerAddress, this.ethOwnerWallet)
-    const ethManager = new HRC20EthManager(ethManagerAddress, this.ethMasterWallet)
+    const ethManager = new HRC20EthManager(ethManagerAddress, this.ethOwnerWallet)
+
+    
     const erc20Address = await ethManager.mappings(token.address)
     const erc20 = new BridgedHRC20Token(erc20Address, this.ethOwnerWallet)
     console.log('ERC20 Bridged Token at address: ', erc20Address)
@@ -52,7 +49,7 @@ export class BridgeHRC20Token extends BridgeToken {
     )
 
     // Burn tokens to unlock on Harmony Network
-    const burnTx = await ownerSignedEthManager.burnToken(erc20Address, amount, recipient)
+    const burnTx = await ethManager.burnToken(erc20Address, amount, recipient)
     const burnTokenTxHash = burnTx?.transactionHash
     console.info('HRC20EthManager burnToken on the Ethereum Network. Transaction Hash: ', burnTokenTxHash)
 
@@ -62,6 +59,7 @@ export class BridgeHRC20Token extends BridgeToken {
       throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx?.txStatus}`)
     }
     console.info('HRC20HmyManager unlockToken on Harmony Network. Transaction Hash: ', unlockTokenTx?.id)
+    return unlockTokenTx
   }
 
   public async getBridgedTokenAddress(
@@ -70,17 +68,25 @@ export class BridgeHRC20Token extends BridgeToken {
     tokenManager: HRC20TokenManager,
     txOptions: ITransactionOptions,
   ): Promise<string> {
-    // Get contract data
-    const name = await token.name(txOptions)
-    const symbol = await token.symbol(txOptions)
-    const decimals = await token.decimals(txOptions)
-    const alreadyMapped = await ethManager.mappings(token.address)
-    if (alreadyMapped === AddressZero) {
-      // Add token manager
+    let erc20Addr = undefined
+    // can throw an error if the mapping do not exist.
+    try {
+      erc20Addr = await ethManager.mappings(token.address)
+    } catch (err) {}
+
+    if (!erc20Addr) {
+      const [name, symbol, decimals] = await Promise.all([
+        token.name(txOptions),
+        token.symbol(txOptions),
+        token.decimals(txOptions),
+      ])
+
       const addTokenTx = await ethManager.addToken(tokenManager.address, token.address, name, symbol, decimals)
       console.info('HRC20EthManager addToken tx hash: ', addTokenTx?.transactionHash)
+
+      erc20Addr = await ethManager.mappings(token.address)
     }
-    return ethManager.mappings(token.address)
+    return erc20Addr
   }
 
   public async hmyToEth(
@@ -89,7 +95,19 @@ export class BridgeHRC20Token extends BridgeToken {
     token: HRC20,
     tokenInfo: HRC20Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<TransactionReceipt> {
+    const { amount } = tokenInfo
+
+    if (!amount) {
+      throw Error('Error in tokenInfo, amount cannot be undefined for HRC20')
+    }
+
+    const balance = await token.balanceOf(sender, txOptions)
+
+    if (balance < new BN(amount)) {
+      throw new Error(`Insufficient funds. Balance: ${balance}. Amount: ${amount}`)
+    }
+
     const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
       ? MAINNET_HRC20_CONTRACTS_ADDRESSES
       : DEVNET_HRC20_CONTRACTS_ADDRESSES
@@ -97,15 +115,6 @@ export class BridgeHRC20Token extends BridgeToken {
     const hmyManager = new HRC20HmyManager(hmyManagerAddress, this.hmyMasterWallet)
     const ethManager = new HRC20EthManager(ethManagerAddress, this.ethMasterWallet)
     const tokenManager = new HRC20TokenManager(tokenManagerAddress, this.ethMasterWallet)
-    const { amount } = tokenInfo
-
-    if (!amount) {
-      throw Error('Error in tokenInfo, amount cannot be undefined for HRC20')
-    }
-    const balance = await token.balanceOf(sender, txOptions)
-    if (balance < new BN(amount)) {
-      throw new Error(`Insufficient funds. Balance: ${balance}. Amount: ${amount}`)
-    }
 
     // approve HRC20EthManager on HRC20TokenManager
     const relyTx = await tokenManager.rely(ethManager.address)
@@ -145,5 +154,7 @@ export class BridgeHRC20Token extends BridgeToken {
       throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
     }
     console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
+
+    return mintTokenTx
   }
 }

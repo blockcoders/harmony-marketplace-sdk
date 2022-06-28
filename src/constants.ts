@@ -1,10 +1,5 @@
 import { ChainID, ChainType, Unit } from '@harmony-js/utils'
-import {
-  ContractAddresses,
-  HarmonyRpcConfig,
-  HarmonyShards,
-  ITransactionOptions,
-} from './interfaces'
+import { ContractAddresses, HarmonyRpcConfig, HarmonyShards, ITransactionOptions } from './interfaces'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const DEFAULT_GAS_PRICE = '1000000000'

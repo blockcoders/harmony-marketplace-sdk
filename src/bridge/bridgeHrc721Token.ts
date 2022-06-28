@@ -1,8 +1,7 @@
-import { TxStatus } from '@harmony-js/transaction'
+import { Transaction, TxStatus } from '@harmony-js/transaction'
 import { hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
 import {
-  AddressZero,
   DEFAULT_TX_OPTIONS,
   DEVNET_HRC721_CONTRACTS_ADDRESSES,
   MAINNET_HRC721_CONTRACTS_ADDRESSES,
@@ -16,6 +15,7 @@ import { BridgeToken } from './bridgeToken'
 import { HRC721EthManager } from './hrc721EthManager'
 import { HRC721HmyManager } from './hrc721HmyManager'
 import { HRC721TokenManager } from './hrc721TokenManager'
+import { TransactionReceipt } from '@ethersproject/providers'
 
 export class BridgeHRC721Token extends BridgeToken {
   public async ethToHmy(
@@ -24,7 +24,7 @@ export class BridgeHRC721Token extends BridgeToken {
     token: HRC721,
     tokenInfo: HRC721Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<Transaction>  {
     const { ethManagerAddress, hmyManagerAddress } = this.isMainnet
       ? MAINNET_HRC721_CONTRACTS_ADDRESSES
       : DEVNET_HRC721_CONTRACTS_ADDRESSES
@@ -63,6 +63,7 @@ export class BridgeHRC721Token extends BridgeToken {
       throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx.txStatus}`)
     }
     console.info('HRC721HmyManager unlockToken on Harmony Network. Transaction Hash: ', unlockTokenTx.id)
+    return unlockTokenTx
   }
 
   public async getBridgedTokenAddress(
@@ -72,17 +73,25 @@ export class BridgeHRC721Token extends BridgeToken {
     tokenManager: HRC721TokenManager,
     txOptions: ITransactionOptions,
   ): Promise<string> {
-    // Get contract data
-    const name = await token.name(txOptions)
-    const symbol = await token.symbol(txOptions)
-    const tokenURI = await token.tokenURI(tokenId, txOptions)
-    const alreadyMapped = await ethManager.mappings(token.address)
-    if (alreadyMapped === AddressZero) {
-      // Add token manager
+    let erc721Addr = undefined
+    // can throw an error if the mapping do not exist.
+    try {
+      erc721Addr = await ethManager.mappings(token.address)
+    } catch (err) {}
+
+    if (!erc721Addr) {
+      const [name, symbol, tokenURI] = await Promise.all([
+        token.name(txOptions),
+        token.symbol(txOptions),
+        token.tokenURI(tokenId, txOptions),
+      ])
+
       const addTokenTx = await ethManager.addToken(tokenManager.address, token.address, name, symbol, tokenURI)
-      console.info('HRC721EthManager addToken tx hash: ', addTokenTx?.transactionHash)
+      console.info('HRC20EthManager addToken tx hash: ', addTokenTx?.transactionHash)
+
+      erc721Addr = await ethManager.mappings(token.address)
     }
-    return ethManager.mappings(token.address)
+    return erc721Addr
   }
 
   public async hmyToEth(
@@ -91,7 +100,7 @@ export class BridgeHRC721Token extends BridgeToken {
     token: HRC721,
     tokenInfo: HRC721Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<TransactionReceipt> {
     const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
       ? MAINNET_HRC721_CONTRACTS_ADDRESSES
       : DEVNET_HRC721_CONTRACTS_ADDRESSES
@@ -148,5 +157,6 @@ export class BridgeHRC721Token extends BridgeToken {
       throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
     }
     console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
+    return mintTokenTx
   }
 }

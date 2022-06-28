@@ -1,6 +1,5 @@
 import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-
 import { BNish, ITransactionOptions } from '../interfaces'
 import { BaseToken } from './baseToken'
 
