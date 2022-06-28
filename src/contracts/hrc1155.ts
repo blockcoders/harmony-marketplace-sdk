@@ -1,14 +1,12 @@
-import { Transaction, TxStatus } from '@harmony-js/transaction'
-import { hexToNumber, ChainType } from '@harmony-js/utils'
+import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { BridgedHRC1155Token, HRC1155EthManager, HRC1155HmyManager, HRC1155TokenManager } from '../bridge'
-import { AddressZero, NetworkInfo } from '../constants'
-import { BNish, BridgeManagers, HRC1155Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
+import { AddressZero } from '../constants'
+import { BNish, ITransactionOptions } from '../interfaces'
 import * as Utils from '../utils'
 import { ContractError } from './baseContract'
 import { BaseToken } from './baseToken'
 
-export class HRC1155 extends BaseToken implements IBridgeToken {
+export class HRC1155 extends BaseToken {
   public async balanceOf(address: string, id: BNish, txOptions?: ITransactionOptions): Promise<BN> {
     return this.getBalance(address, id, txOptions)
   }
@@ -110,164 +108,5 @@ export class HRC1155 extends BaseToken implements IBridgeToken {
 
   public mint(account: string, tokenId: BNish, amount: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('mint', [account, tokenId, amount, []], txOptions)
-  }
-
-  public async getBridgedTokenAddress(
-    ethManager: HRC1155EthManager,
-    tokenManager: HRC1155TokenManager,
-    tokenId: BNish,
-    txOptions: ITransactionOptions,
-  ): Promise<string> {
-    // Get contract data
-    const name = await this.name(txOptions)
-    const symbol = await this.symbol(txOptions)
-    const tokenURI = await this.tokenURI(tokenId, txOptions)
-    const alreadyMapped = await ethManager.mappings(this.address)
-    if (alreadyMapped === AddressZero) {
-      // Add token manager
-      const addTokenTx = await ethManager.addToken(tokenManager.address, this.address, name, symbol, tokenURI)
-      console.info('HRC1155EthManager addToken tx hash: ', addTokenTx?.transactionHash)
-    }
-    return ethManager.mappings(this.address)
-  }
-
-  public async hmyToEth(
-    managers: BridgeManagers,
-    sender: string,
-    recipient: string,
-    tokenInfo: TokenInfo,
-    network: NetworkInfo,
-    txOptions: ITransactionOptions,
-  ) {
-    let { ethManager, hmyManager, tokenManager, ownerSignedToken: ownerHrc1155, ownerSignedHmyManager } = managers || {}
-    ethManager = ethManager as HRC1155EthManager
-    hmyManager = hmyManager as HRC1155HmyManager
-    tokenManager = tokenManager as HRC1155TokenManager
-    ownerHrc1155 = ownerHrc1155 as HRC1155
-    ownerSignedHmyManager = ownerSignedHmyManager as HRC1155HmyManager
-
-    // Validate parameters and balance
-    const { tokenIds, amounts } = tokenInfo.info as HRC1155Info
-    if (!tokenIds || tokenIds.length === 0) {
-      throw Error('Error in tokenInfo, tokenIds cannot be undefined nor empty for HRC1155')
-    }
-    if (!amounts || amounts.length === 0) {
-      throw Error('Error in tokenInfo, amounts cannot be undefined nor empty for HRC1155')
-    }
-    if (amounts.length !== tokenIds.length) {
-      throw Error('Error in tokenInfo, amounts length must be same as tokensIds length')
-    }
-    // creates an array with the same account with a length equal to tokenIds
-    const senderArray = tokenIds.map(() => sender)
-    const balances = await this.balanceOfBatch(senderArray, tokenIds, txOptions)
-    balances.forEach((balance, index) => {
-      if (balance < new BN(amounts[index])) {
-        throw new Error(
-          `Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`,
-        )
-      }
-    })
-
-    // approve HRC1155EthManager on HRC1155TokenManager
-    const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC1155TokenManager rely tx hash: ', relyTx?.transactionHash)
-
-    // Get Bridged Token address
-    const erc1155Addr = await this.getBridgedTokenAddress(ethManager, tokenManager, tokenIds[0], txOptions)
-    console.log('ERC1155 Bridged Token at address: ', erc1155Addr)
-
-    // Approve hmyManager
-    const approveTx = await ownerHrc1155.setApprovalForAll(hmyManager.address, true, txOptions)
-    if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to approve manager: ${approveTx}`)
-    }
-    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
-
-    // Lock tokens on Hmy side to mint on Eth side
-    const lockTokenTx = await ownerSignedHmyManager.lockHRC1155Tokens(
-      this.address,
-      tokenIds,
-      recipient,
-      amounts,
-      [],
-      txOptions,
-    )
-    if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
-    }
-    console.log('Tokens Locked (lockHRC1155Tokens) on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
-
-    // Wait for safety reasons
-    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
-    const RPC = Utils.getRpc(network)
-    await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
-
-    // Mint tokens on Eth side
-    const mintTokenTx = await ethManager.mintTokens(erc1155Addr, tokenIds, recipient, lockTokenTx?.id, amounts, [])
-    if (mintTokenTx?.status !== 1) {
-      throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
-    }
-    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
-  }
-
-  public async ethToHmy(
-    managers: BridgeManagers,
-    sender: string,
-    recipient: string,
-    tokenInfo: TokenInfo,
-    txOptions: ITransactionOptions,
-  ) {
-    let { ethManager, hmyManager, ownerSignedEthManager, bridgedToken } = managers || {}
-    ownerSignedEthManager = ownerSignedEthManager as HRC1155EthManager
-    hmyManager = hmyManager as HRC1155HmyManager
-    const erc1155 = bridgedToken as BridgedHRC1155Token
-    const erc1155Addr = erc1155.address
-    console.log('ERC1155 Bridged Token at address: ', erc1155Addr)
-
-    // Verify parameters and balances
-    const { tokenIds, amounts } = tokenInfo.info as HRC1155Info
-    if (!tokenIds || tokenIds.length === 0) {
-      throw Error('Error in tokenInfo, tokenIds cannot be undefined nor empty for HRC1155')
-    }
-    if (!amounts || amounts.length === 0) {
-      throw Error('Error in tokenInfo, amounts cannot be undefined nor empty for HRC1155')
-    }
-    // creates an array with the same account with a length equal to tokenIds
-    const senderArray = tokenIds.map(() => sender)
-    const balances = await erc1155.balanceOfBatch(senderArray, tokenIds)
-    balances.forEach((balance, index) => {
-      if (balance.toNumber() < amounts[index]) {
-        throw new Error(
-          `Insufficient funds. Balance: ${balance}. TokenId: ${tokenIds[index]}. Amount: ${amounts[index]}`,
-        )
-      }
-    })
-
-    // Approve EthManager to burn the tokens on the Ethereum Network
-    const approveTx = await erc1155.setApprovalForAll(ethManager.address, true)
-    console.info(
-      'HRC1155 setApprovalForAll EthManager to burn tokens on the Ethereum Network. Transaction Hash: ',
-      approveTx?.transactionHash,
-    )
-
-    // Burn tokens to unlock on Harmony Network
-    const burnTx = await ownerSignedEthManager.burnTokens(erc1155Addr, tokenIds, recipient, amounts)
-    const burnTokenTxHash = burnTx?.transactionHash
-    console.info('HRC1155EthManager burnToken on the Ethereum Network. Transaction Hash: ', burnTokenTxHash)
-
-    // Unlock Tokens on Harmony Netowrk
-    const unlockTokenTx = await hmyManager.unlockHRC1155Tokens(
-      this.address,
-      tokenIds,
-      recipient,
-      burnTokenTxHash,
-      amounts,
-      [],
-      txOptions,
-    )
-    if (unlockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx?.txStatus}`)
-    }
-    console.info('HRC1155HmyManager unlockHRC1155Tokens on Harmony Network. Transaction Hash: ', unlockTokenTx?.id)
   }
 }

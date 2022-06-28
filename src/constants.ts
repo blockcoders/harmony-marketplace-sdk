@@ -1,7 +1,6 @@
 import { ChainID, ChainType, Unit } from '@harmony-js/utils'
 import {
   ContractAddresses,
-  ContractsAddresses,
   HarmonyRpcConfig,
   HarmonyShards,
   ITransactionOptions,

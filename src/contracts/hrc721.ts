@@ -1,14 +1,12 @@
-import { Transaction, TxStatus } from '@harmony-js/transaction'
-import { ChainType, hexToNumber } from '@harmony-js/utils'
+import { Transaction } from '@harmony-js/transaction'
 import BN from 'bn.js'
-import { BridgedHRC721Token, HRC721EthManager, HRC721HmyManager, HRC721TokenManager } from '../bridge'
-import { AddressZero, NetworkInfo } from '../constants'
-import { BNish, BridgeManagers, HRC721Info, IBridgeToken, ITransactionOptions, TokenInfo } from '../interfaces'
+import { AddressZero } from '../constants'
+import { BNish, ITransactionOptions } from '../interfaces'
 import * as Utils from '../utils'
 import { ContractError } from './baseContract'
 import { BaseToken } from './baseToken'
 
-export class HRC721 extends BaseToken implements IBridgeToken {
+export class HRC721 extends BaseToken {
   public async balanceOf(address: string, txOptions?: ITransactionOptions): Promise<BN> {
     return await this.getBalance(address, undefined, txOptions)
   }
@@ -123,128 +121,5 @@ export class HRC721 extends BaseToken implements IBridgeToken {
 
   public burn(tokenId: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('burn', [tokenId], txOptions)
-  }
-
-  public async getBridgedTokenAddress(
-    ethManager: HRC721EthManager,
-    tokenManager: HRC721TokenManager,
-    tokenId: number,
-    txOptions: ITransactionOptions,
-  ): Promise<string> {
-    // Get contract data
-    const name = await this.name(txOptions)
-    const symbol = await this.symbol(txOptions)
-    const tokenURI = await this.tokenURI(tokenId, txOptions)
-
-    const alreadyMapped = await ethManager.mappings(this.address)
-    if (alreadyMapped === AddressZero) {
-      // Add token manager
-      const addTokenTx = await ethManager.addToken(tokenManager.address, this.address, name, symbol, tokenURI)
-      console.info('HRC721EthManager addToken tx hash: ', addTokenTx?.transactionHash)
-    }
-    return ethManager.mappings(this.address)
-  }
-
-  public async hmyToEth(
-    managers: BridgeManagers,
-    sender: string,
-    recipient: string,
-    tokenInfo: TokenInfo,
-    network: NetworkInfo,
-    txOptions: ITransactionOptions,
-  ) {
-    let { ethManager, hmyManager, tokenManager, ownerSignedToken: ownerHrc721, ownerSignedHmyManager } = managers || {}
-    const ethManagerContract = ethManager as HRC721EthManager
-    hmyManager = hmyManager as HRC721HmyManager
-    tokenManager = tokenManager as HRC721TokenManager
-    ownerHrc721 = ownerHrc721 as HRC721
-    ownerSignedHmyManager = ownerSignedHmyManager as HRC721HmyManager
-
-    const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC721TokenManager rely tx hash: ', relyTx?.transactionHash)
-
-    // Verify parameters and balance
-    const { tokenId } = tokenInfo.info as HRC721Info
-    if (!tokenId) {
-      throw Error('Error in tokenInfo, tokenId cannot be undefined for HRC721')
-    }
-    const balance = await this.balanceOf(sender, txOptions)
-    if (balance < new BN(1)) {
-      throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenId}`)
-    }
-
-    // Get Bridged Token address
-    const erc721Addr = await this.getBridgedTokenAddress(ethManagerContract, tokenManager, tokenId, txOptions)
-    console.log('ERC721 Bridged Token at address: ', erc721Addr)
-
-    // Approve manager to lock tokens on Harmony network
-    const approveTx = await ownerHrc721.approve(hmyManager.address, tokenId, txOptions)
-    if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to approve manager: ${approveTx}`)
-    }
-    console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
-
-    // Lock tokens on Harmony Network to mint on Ethereum Network
-    const lockTokenTx = await ownerSignedHmyManager.lockNFT721Token(this.address, tokenId, recipient, txOptions)
-    if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
-    }
-    console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
-
-    // Wait for safety reasons
-    const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
-    const RPC = Utils.getRpc(network)
-    await Utils.waitForNewBlock(expectedBlockNumber, RPC, ChainType.Harmony, Utils.getChainId(network))
-
-    // Mint tokens on Eth Network
-    const mintTokenTx = await ethManagerContract.mintToken(erc721Addr, tokenId, recipient, lockTokenTx.id)
-    if (mintTokenTx?.status !== 1) {
-      throw new Error(`Failed to mint tokens: ${mintTokenTx}`)
-    }
-    console.log('Minted tokens on the Ethereum Network. Transaction Hash: ', mintTokenTx?.transactionHash)
-  }
-
-  public async ethToHmy(
-    managers: BridgeManagers,
-    sender: string,
-    recipient: string,
-    tokenInfo: TokenInfo,
-    txOptions: ITransactionOptions,
-  ) {
-    let { ethManager, hmyManager, ownerSignedEthManager, bridgedToken } = managers || {}
-    ownerSignedEthManager = ownerSignedEthManager as HRC721EthManager
-    hmyManager = hmyManager as HRC721HmyManager
-    const erc721 = bridgedToken as BridgedHRC721Token
-    const erc721Addr = erc721.address
-    console.log('ERC721 Bridged Token at address: ', erc721Addr)
-
-    // Verify parameters and balance
-    const balance = await erc721.balanceOf(sender)
-    if (balance.toNumber() < 1) {
-      throw Error('Insufficient funds')
-    }
-    const { tokenId } = tokenInfo.info as HRC721Info
-    if (!tokenId) {
-      throw Error('Error in tokenInfo, tokenId cannot be undefined for HRC721')
-    }
-
-    // Approve ethManager to burn tokens on the Ethereum Network
-    const approveTx = await erc721.approve(ethManager.address, tokenId)
-    console.info(
-      'HRC721 approve EthManager to burn tokens on the Ethereum Network. Transaction Hash: ',
-      approveTx?.transactionHash,
-    )
-
-    // Burn tokens to unlock on Hamrnoy Network
-    const burnTx = await ownerSignedEthManager.burnToken(erc721Addr, tokenId, recipient)
-    const burnTokenTxHash = burnTx?.transactionHash
-    console.info('HRC20EthManager burnToken on the Ethereum Network. Transaction Hash: ', burnTokenTxHash)
-
-    // Unlock tokens after burn
-    const unlockTokenTx = await hmyManager.unlockToken(this.address, tokenId, recipient, burnTokenTxHash, txOptions)
-    if (unlockTokenTx.txStatus !== TxStatus.CONFIRMED) {
-      throw Error(`Failed to unlock tokens. Status: ${unlockTokenTx.txStatus}`)
-    }
-    console.info('HRC721HmyManager unlockToken on Harmony Network. Transaction Hash: ', unlockTokenTx.id)
   }
 }

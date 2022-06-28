@@ -13,7 +13,7 @@ import { HRC20TokenManager } from './bridge/hrc20TokenManager'
 import { HRC721EthManager } from './bridge/hrc721EthManager'
 import { HRC721HmyManager } from './bridge/hrc721HmyManager'
 import { HRC721TokenManager } from './bridge/hrc721TokenManager'
-import { NetworkInfo, TokenType } from './constants'
+import { TokenType } from './constants'
 import { HRC1155, HRC20, HRC721 } from './contracts'
 import { Key, MnemonicKey, PrivateKey } from './wallets'
 
@@ -104,22 +104,4 @@ export interface BridgeManagers {
   ownerSignedToken: HRC20 | HRC721 | HRC1155
   token: HRC20 | HRC721 | HRC1155
   bridgedToken: BridgedHRC20Token | BridgedHRC721Token | BridgedHRC1155Token
-}
-
-export interface IBridgeToken {
-  ethToHmy(
-    managers: BridgeManagers,
-    sender: string,
-    recipient: string,
-    tokenInfo: TokenInfo,
-    txOptions: ITransactionOptions,
-  ): void
-  hmyToEth(
-    managers: BridgeManagers,
-    sender: string,
-    recipient: string,
-    tokenInfo: TokenInfo,
-    network: NetworkInfo,
-    txOptions: ITransactionOptions,
-  ): void
 }

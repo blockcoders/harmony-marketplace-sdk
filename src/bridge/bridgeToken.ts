@@ -8,7 +8,6 @@ import {
   HARMONY_RPC_SHARD_0_DEVNET_URL,
   HARMONY_RPC_SHARD_0_URL,
   MAINNET_MULTISIG_WALLET,
-  NetworkInfo,
 } from '../constants'
 import { HRC1155, HRC20, HRC721 } from '../contracts'
 import { ITransactionOptions, HRC20Info, HRC1155Info, HRC721Info } from '../interfaces'
@@ -42,7 +41,6 @@ export abstract class BridgeToken {
   public async ethToHmy(
     sender: string,
     recipient: string,
-    network: NetworkInfo,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
@@ -53,7 +51,6 @@ export abstract class BridgeToken {
   public async hmyToEth(
     sender: string,
     recipient: string,
-    network: NetworkInfo,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
@@ -65,15 +62,14 @@ export abstract class BridgeToken {
     type: BridgeType,
     sender: string,
     recipient: string,
-    network: NetworkInfo,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
   ) {
     if (type === BridgeType.ETH_TO_HMY) {
-      return this.ethToHmy(sender, recipient, network, token, tokenInfo, txOptions)
+      return this.ethToHmy(sender, recipient, token, tokenInfo, txOptions)
     } else {
-      return this.hmyToEth(sender, recipient, network, token, tokenInfo, txOptions)
+      return this.hmyToEth(sender, recipient, token, tokenInfo, txOptions)
     }
   }
 }
