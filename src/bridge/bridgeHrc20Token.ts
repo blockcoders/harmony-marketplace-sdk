@@ -96,18 +96,6 @@ export class BridgeHRC20Token extends BridgeToken {
     tokenInfo: HRC20Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
   ): Promise<TransactionReceipt> {
-    const { amount } = tokenInfo
-
-    if (!amount) {
-      throw Error('Error in tokenInfo, amount cannot be undefined for HRC20')
-    }
-
-    const balance = await token.balanceOf(sender, txOptions)
-
-    if (balance < new BN(amount)) {
-      throw new Error(`Insufficient funds. Balance: ${balance}. Amount: ${amount}`)
-    }
-
     const { ethManagerAddress, hmyManagerAddress, tokenManagerAddress } = this.isMainnet
       ? MAINNET_HRC20_CONTRACTS_ADDRESSES
       : DEVNET_HRC20_CONTRACTS_ADDRESSES
@@ -115,6 +103,16 @@ export class BridgeHRC20Token extends BridgeToken {
     const hmyManager = new HRC20HmyManager(hmyManagerAddress, this.hmyMasterWallet)
     const ethManager = new HRC20EthManager(ethManagerAddress, this.ethMasterWallet)
     const tokenManager = new HRC20TokenManager(tokenManagerAddress, this.ethMasterWallet)
+
+    // Verify parameters and balance
+    const { amount } = tokenInfo
+    if (!amount) {
+      throw Error('Error in tokenInfo, amount cannot be undefined for HRC20')
+    }
+    const balance = await token.balanceOf(sender, txOptions)
+    if (balance < new BN(amount)) {
+      throw new Error(`Insufficient funds. Balance: ${balance}. Amount: ${amount}`)
+    }
 
     // approve HRC20EthManager on HRC20TokenManager
     const relyTx = await tokenManager.rely(ethManager.address)

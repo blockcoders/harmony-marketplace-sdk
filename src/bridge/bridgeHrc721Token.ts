@@ -112,9 +112,6 @@ export class BridgeHRC721Token extends BridgeToken {
     const ownerHrc721 = new HRC721(token.address, ABI, this.hmyOwnerWallet)
     const { tokenId } = tokenInfo
 
-    const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC721TokenManager rely tx hash: ', relyTx?.transactionHash)
-
     // Verify parameters and balance
     if (!tokenId) {
       throw Error('Error in tokenInfo, tokenId cannot be undefined for HRC721')
@@ -123,6 +120,9 @@ export class BridgeHRC721Token extends BridgeToken {
     if (balance < new BN(1)) {
       throw new Error(`Insufficient funds. Balance: ${balance}. TokenId: ${tokenId}`)
     }
+
+    const relyTx = await tokenManager.rely(ethManager.address)
+    console.info('HRC721TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Get Bridged Token address
     const erc721Addr = await this.getBridgedTokenAddress(token, tokenId, ethManager, tokenManager, txOptions)
