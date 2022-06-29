@@ -38,7 +38,7 @@ export abstract class BridgeToken {
       this.hmyMasterWallet = new Key(HARMONY_RPC_SHARD_0_DEVNET_URL)
     }
 
-    this.ethMasterWallet.connect(ethProvider)
+    this.ethMasterWallet = this.ethMasterWallet.connect(ethProvider)
     this.hmyMasterWallet.setSigner(MAINNET_MULTISIG_WALLET)
 
     this.hmyOwnerWallet = hmyOwnerWallet

@@ -116,42 +116,40 @@ export class BridgeHRC721Token extends BridgeToken {
       ? MAINNET_HRC721_CONTRACTS_ADDRESSES
       : DEVNET_HRC721_CONTRACTS_ADDRESSES
       
-    const hmyManager = new HRC721HmyManager(hmyManagerAddress, this.hmyMasterWallet)
     const ownerSignedHmyManager = new HRC721HmyManager(hmyManagerAddress, this.hmyOwnerWallet)
     const ethManager = new HRC721EthManager(ethManagerAddress, this.ethMasterWallet)
     const tokenManager = new HRC721TokenManager(tokenManagerAddress, this.ethMasterWallet)
     const ownerHrc721 = new HRC721(token.address, ABI, this.hmyOwnerWallet)
-
-    const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC721TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Get Bridged Token address
     const erc721Addr = await this.getBridgedTokenAddress(token, tokenId, ethManager, tokenManager, txOptions)
     console.log('ERC721 Bridged Token at address: ', erc721Addr)
 
     // Approve manager to lock tokens on Harmony network
-    const approveTx = await ownerHrc721.approve(hmyManager.address, tokenId, txOptions)
+    const approveTx = await ownerHrc721.approve(hmyManagerAddress, tokenId, txOptions)
     if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to approve manager: ${approveTx}`)
+      throw new Error(`Failed to approve manager: ${approveTx?.txStatus}`)
     }
     console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
 
     // Lock tokens on Harmony Network to mint on Ethereum Network
     const lockTokenTx = await ownerSignedHmyManager.lockNFT721Token(token.address, tokenId, recipient, txOptions)
     if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
+      throw new Error(`Failed to lock tokens: ${lockTokenTx?.txStatus}`)
     }
     console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
 
     // Wait for safety reasons
     const expectedBlockNumber = parseInt(hexToNumber(lockTokenTx?.receipt?.blockNumber ?? ''), 10) + 6
 
+    console.log(`Waiting for block ${expectedBlockNumber} for safety reasons`)
     await waitForNewBlock(
       expectedBlockNumber,
       token.messenger.provider.url,
       token.messenger.chainType,
       token.messenger.chainId,
     )
+    console.log("Expected block number reached")
     // Mint tokens on Eth Network
     const mintTokenTx = await ethManager.mintToken(erc721Addr, tokenId, recipient, lockTokenTx.id)
     if (mintTokenTx?.status !== 1) {

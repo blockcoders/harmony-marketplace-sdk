@@ -109,13 +109,9 @@ export class BridgeHRC20Token extends BridgeToken {
       ? MAINNET_HRC20_CONTRACTS_ADDRESSES
       : DEVNET_HRC20_CONTRACTS_ADDRESSES
 
-    const hmyManager = new HRC20HmyManager(hmyManagerAddress, this.hmyMasterWallet)
+    const hmyManager = new HRC20HmyManager(hmyManagerAddress, this.hmyOwnerWallet)
     const ethManager = new HRC20EthManager(ethManagerAddress, this.ethMasterWallet)
     const tokenManager = new HRC20TokenManager(tokenManagerAddress, this.ethMasterWallet)
-
-    // approve HRC20EthManager on HRC20TokenManager
-    const relyTx = await tokenManager.rely(ethManager.address)
-    console.info('HRC20TokenManager rely tx hash: ', relyTx?.transactionHash)
 
     // Get Bridged Token address
     const erc20Addr = await this.getBridgedTokenAddress(token, ethManager, tokenManager, txOptions)
@@ -124,14 +120,14 @@ export class BridgeHRC20Token extends BridgeToken {
     // Approve hmyManager
     const approveTx = await token.approve(hmyManager.address, amount, txOptions)
     if (approveTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to approve manager: ${approveTx}`)
+      throw new Error(`Failed to approve manager: ${approveTx?.txStatus}`)
     }
     console.log('Approve Harmony Manager to Lock Tokens. Transaction Status: ', approveTx?.txStatus)
 
     // Lock tokens on Hmy side to mint on Eth side
     const lockTokenTx = await hmyManager.lockTokenFor(token.address, sender, amount, recipient, txOptions)
     if (lockTokenTx?.txStatus !== TxStatus.CONFIRMED) {
-      throw new Error(`Failed to lock tokens: ${lockTokenTx}`)
+      throw new Error(`Failed to lock tokens: ${lockTokenTx?.txStatus}`)
     }
     console.log('Tokens Locked on Harmony Network. Transaction Status: ', lockTokenTx?.txStatus)
 
