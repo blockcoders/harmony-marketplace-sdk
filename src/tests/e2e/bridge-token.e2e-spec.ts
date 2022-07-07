@@ -306,7 +306,7 @@ describe('Bridge Token', () => {
 
       const balancesAfterBurn = await bridgedToken.balanceOfBatch(accounts, tokenIds)
 
-      balancesAfterBurn.forEach((balanceAfterBurn, i) => {
+      balancesAfterBurn.forEach((balanceAfterBurn) => {
         expect(balanceAfterBurn.isZero()).to.be.true
       })
 
