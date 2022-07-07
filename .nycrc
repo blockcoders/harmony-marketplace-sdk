@@ -14,7 +14,9 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "src/tests/**/*",
-    "src/index.ts"
+    "src/bridge/**/*",
+    "src/index.ts",
+    "src/contracts/ethBaseContract.ts"
   ],
   "sourceMap": true,
   "reporter": [

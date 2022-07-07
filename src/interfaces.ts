@@ -3,15 +3,13 @@ import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { Key } from './key'
-import { MnemonicKey } from './mnemonic-key'
-import { PrivateKey } from './private-key'
+import { Key, MnemonicKey, PrivateKey } from './wallets'
 
 export type BNish = BN | Arrayish | bigint | number
 
 export interface ITransactionOptions {
-  gasLimit?: number | string
-  gasPrice: number | string
+  gasLimit?: BN | number | string
+  gasPrice: BN | number | string
 }
 
 export interface HarmonyRpcConfig {
@@ -25,10 +23,7 @@ export enum HarmonyShards {
   SHARD_1 = 'SHARD_1',
   SHARD_2 = 'SHARD_2',
   SHARD_3 = 'SHARD_3',
-  SHARD_0_TESTNET = 'SHARD_0_TESTNET',
-  SHARD_1_TESTNET = 'SHARD_1_TESTNET',
-  SHARD_2_TESTNET = 'SHARD_2_TESTNET',
-  SHARD_3_TESTNET = 'SHARD_3_TESTNET',
+  SHARD_0_DEVNET = 'SHARD_0_DEVNET',
 }
 
 export type RpcProviderType = string | HttpProvider | WSProvider | HarmonyShards
@@ -55,4 +50,33 @@ export interface HDOptions extends MnemonicOptions {
   shardId?: number
   gasLimit?: string
   gasPrice?: string
+}
+
+export interface TokenInfo {
+  ws?: string
+  waitingFor?: number
+}
+
+export interface HRC20Info extends TokenInfo {
+  amount: number | string
+}
+
+export interface HRC721Info extends TokenInfo {
+  tokenId: number | string
+}
+
+export interface HRC1155Info extends TokenInfo {
+  tokenIds: number[]
+  amounts: number[]
+}
+
+export interface ContractAddresses {
+  ethManagerAddress: string
+  hmyManagerAddress: string
+  tokenManagerAddress: string
+}
+
+export interface BridgeResponse {
+  addr: string
+  receiptId: string
 }
