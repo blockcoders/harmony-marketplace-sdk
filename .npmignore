@@ -15,3 +15,7 @@ tsconfig.json
 .nvmrc
 .editorconfig
 .nycrc
+hardhat.config.js
+.env.sample
+.env
+.vscode/settings.json
