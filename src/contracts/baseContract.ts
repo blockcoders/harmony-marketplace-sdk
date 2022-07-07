@@ -30,20 +30,16 @@ export class HarmonyContract extends HmyContract {
 }
 
 export abstract class BaseContract {
+  public readonly address: string
+  public readonly messenger: Messenger
   protected readonly _contract: HarmonyContract
   protected readonly _provider: ContractProviderType
-
-  public get address(): string {
-    return this._contract.address
-  }
-
-  public get messenger(): Messenger {
-    return this._provider.messenger
-  }
 
   constructor(address: string, abi: any[], provider: ContractProviderType, options?: ContractOptions) {
     this._contract = new HarmonyContract(abi, address, provider, options)
     this._provider = provider
+    this.address = this._contract.address
+    this.messenger = this._provider.messenger
   }
 
   protected sanitizeAddress(address: string): string {

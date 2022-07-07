@@ -21,20 +21,20 @@
     "test": "NODE_ENV=test mocha -t 120000 --require ts-node/register src/**/*.spec.ts --exit",
     "pretest:watch": "npm run build:contracts",
     "test:watch": "NODE_ENV=test mocha -t 120000 --watch --watch-files src/**/*.ts --require ts-node/register src/**/*.spec.ts",
-    "pretest:cov": "npm run build:contracts",
     "test:cov": "nyc npm run test",
     "pretest:e2e": "npm run build:contracts",
     "test:e2e": "NODE_ENV=test mocha -t 360000 --require ts-node/register src/**/*.e2e-spec.ts --exit",
     "build:contracts": "hardhat compile",
     "clean": "rm -rf ./lib ./lib.esm ./lib.esnext",
     "build": "tsc --build ./tsconfig.json",
+    "prebuild-all": "npm run clean",
     "build-all": "npm run build-cjs && npm run build-esnext && npm run build-esm",
     "build-cjs": "tsc -p tsconfig.json --outDir lib -t es3 -m commonjs",
     "build-esnext": "tsc -p tsconfig.json --outDir lib.esnext -t es2015 -m commonjs",
     "build-esm": "tsc -p tsconfig.json --outDir lib.esm -t es2015 -m es2015",
     "lint:ci": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "prepublishOnly": "npm run lint:ci && npm run test && npm run clean && npm run build-all"
+    "prepublishOnly": "npm run lint:ci && npm run test && npm run build-all"
   },
   "precommit": [
     "lint:ci",
@@ -58,13 +58,18 @@
     "url": "https://github.com/blockcoders/harmony-marketplace-sdk/issues"
   },
   "homepage": "https://github.com/blockcoders/harmony-marketplace-sdk#readme",
-  "devDependencies": {
+  "dependencies": {
+    "@harmony-js/contract": "^0.1.56",
+    "@harmony-js/core": "^0.1.57",
+    "@harmony-js/transaction": "^0.1.56",
     "@ethersproject/abstract-signer": "^5.6.2",
     "@ethersproject/bignumber": "^5.6.2",
     "@ethersproject/contracts": "^5.6.2",
     "@ethersproject/providers": "^5.6.8",
     "@ethersproject/units": "^5.6.1",
-    "@ethersproject/wallet": "^5.6.2",
+    "@ethersproject/wallet": "^5.6.2"
+  },
+  "devDependencies": {
     "@openzeppelin/contracts": "^2.5.1",
     "@types/bip39": "^2.4.2",
     "@types/chai": "^4.3.0",
@@ -91,11 +96,6 @@
     "sinon": "^13.0.1",
     "ts-node": "^10.7.0",
     "typescript": "4.6.2"
-  },
-  "dependencies": {
-    "@harmony-js/contract": "^0.1.56",
-    "@harmony-js/core": "^0.1.57",
-    "@harmony-js/transaction": "^0.1.56"
   },
   "peerDependencies": {
     "@harmony-js/account": "0.1.56",

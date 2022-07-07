@@ -5,14 +5,12 @@ import { Provider, TransactionReceipt } from '@ethersproject/providers'
 import { parseUnits, formatUnits } from '@ethersproject/units'
 
 export class EthBaseContract {
+  public readonly address: string
   public readonly _contract: Contract
 
   constructor(address: string, abi: ContractInterface, signerOrProvider: Signer | Provider) {
     this._contract = new Contract(address, abi, signerOrProvider)
-  }
-
-  public get address(): string {
-    return this._contract.address
+    this.address = this._contract.address
   }
 
   private async getGasLimit(methodName: string, args: any[]): Promise<BigNumber> {

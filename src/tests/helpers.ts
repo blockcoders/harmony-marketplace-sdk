@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { ContractFactory } from '@ethersproject/contracts'
 import { parseUnits, formatUnits } from '@ethersproject/units'
 import { Transaction } from '@harmony-js/transaction'
-import { readFile } from 'fs/promises'
+import { readFile } from 'fs'
 import { join } from 'path'
 import { BaseContract } from '../contracts'
 import { ContractProviderType } from '../interfaces'
@@ -24,13 +24,19 @@ class DeployContract extends BaseContract {
 }
 
 export async function getContractMetadata(contractName: ContractName): Promise<ContractMetadata> {
-  const data = await readFile(
-    `${join(__dirname, `./artifacts/src/tests/contracts/${contractName}.sol`)}/${contractName}.json`,
-    { encoding: 'utf8' },
-  )
-  const metadata = JSON.parse(data)
+  return new Promise((res, rej) => {
+    readFile(
+      `${join(__dirname, `./artifacts/src/tests/contracts/${contractName}.sol`)}/${contractName}.json`,
+      'utf8',
+      (err, data) => {
+        if (err) rej(err)
 
-  return { abi: metadata.abi, bytecode: metadata.bytecode }
+        const metadata = JSON.parse(data)
+
+        res({ abi: metadata.abi, bytecode: metadata.bytecode })
+      },
+    )
+  })
 }
 
 export async function deployContract(

@@ -15,6 +15,7 @@ import { ITransactionOptions, HRC20Info, HRC1155Info, HRC721Info, BridgeResponse
 import { Key } from '../wallets'
 
 export abstract class BridgeToken {
+  public readonly isMainnet: boolean
   protected readonly ethMasterWallet: Signer
   protected readonly hmyMasterWallet: Wallet
   protected readonly ethOwnerWallet: Signer
@@ -28,6 +29,7 @@ export abstract class BridgeToken {
     network: NetworkInfo = NetworkInfo.MAINNET,
   ) {
     this.network = network
+    this.isMainnet = this.network === NetworkInfo.MAINNET
 
     if (this.isMainnet) {
       this.ethMasterWallet = new VoidSigner(MAINNET_MULTISIG_WALLET)
@@ -42,10 +44,6 @@ export abstract class BridgeToken {
 
     this.hmyOwnerWallet = hmyOwnerWallet
     this.ethOwnerWallet = ethOwnerWallet
-  }
-
-  public get isMainnet(): boolean {
-    return this.network === NetworkInfo.MAINNET
   }
 
   public abstract ethToHmy(
