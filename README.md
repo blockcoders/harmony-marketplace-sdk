@@ -7,8 +7,6 @@
 
 Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
 
-Currently under developement 🤓
-
 ## Install
 
 ```sh
@@ -157,17 +155,36 @@ const key = new HDKey(new HttpProvider(HarmonyShards.SHARD_0), options)
 
 The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
 
-### Common Methods
+## HRC20 API
 
-This methods are common for [HRC721](#hrc721-api) and [HRC1155](#hrc1155-api).
+The `HRC20` implements the abstract class [Base Token](#base-token).
 
-#### setApprovalForAll
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc20) will look for a specific list of functions and events to identify HRC20 tokens. You can validate if the bytecode of your HRC20 is valid [here](https://explorer.harmony.one/tools/checkHrc).
 
-Approve or remove operator as an operator for the caller.
+Expected Methods:
+| Method | Description |
+| ------------- | ------------- |
+| totalSupply | Total amount of tokens stored by the contract. |
+| decimals | Returns the decimals places of the token. |
+| transfer | Moves amount tokens from the caller’s account to to. |
+| balanceOf | Returns the amount of tokens owned by account. |
+| symbol | Returns the symbol of the token. |
+| name | Returns the name of the token. |
+| approve | Sets amount as the allowance of spender over the caller’s tokens. |
 
-```ts
+Expected Events
+| Event | Description |
+| ------------- | ------------- |
+| Transfer | Emitted when a token id is transferred from an address to another. |
+| Approval | Emitted when owner enables approved to manage the tokenId token. |
+
+You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) in this address [0x...0a0a](https://explorer.ps.hmny.io/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
+
+### Initializing
+
+```typescript
 import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, BaseToken } from 'harmony-marketplace-sdk'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
@@ -175,22 +192,33 @@ const wallet = new PrivateKey(
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
-class TestNFT extends BaseToken {}
-
 // A contract instance
-const contract = new TestNFT('0x...00', ABI, wallet)
+const contract = new HRC20('0x...00', ABI, wallet)
 
-// returns a Harmony Transaction instance.
-const tx = await contract.setApprovalForAll('0x...01', true)
+// A contract instance with options
+const contract = new HRC20('0x...00', ABI, wallet, {
+  data: '0x',
+  shardID: 0,
+  address: '0x...00',
+  defaultAccount: wallet.getAccount('0x...00'),
+  defaultBlock: 'lastest',
+  defaultGas: '21000',
+  defaultGasPrice: '1',
+  transactionBlockTimeout: 2000,
+  transactionConfirmationBlocks: '10',
+  transactionPollingTimeout: 200,
+})
 ```
 
-#### isApprovedForAll
+### Methods
 
-Returns if the operator is allowed to manage all of the assets of owner.
+#### balanceOf
+
+Returns the number of tokens in owner's account.
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, BaseToken } from 'harmony-marketplace-sdk'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
@@ -198,13 +226,158 @@ const wallet = new PrivateKey(
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
-class TestNFT extends BaseToken {}
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a BN instance.
+const balance = await contract.balanceOf('0x...01')
+```
+
+#### transfer
+
+Moves amount tokens from the caller’s account to to.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
 
 // A contract instance
-const contract = new TestNFT('0x...00', ABI, wallet)
+const contract = new HRC20('0x...00', ABI, wallet)
 
-// returns a boolean.
-const approved = await contract.isApprovedForAll('0x...01', '0x...02')
+// returns a Harmony Transaction instance.
+const tx = await contract.transfer('0x...01', '1')
+```
+
+#### allowance
+
+Moves amount tokens from the caller’s account to to.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a BN instance.
+const tx = await contract.allowance('0x...01', '0x...02')
+```
+
+#### approve
+
+Moves amount tokens from the caller’s account to to.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.approve('0x...01', 100)
+```
+
+#### transferFrom
+
+Moves amount tokens from the caller’s account to to.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.transferFrom('0x...01', '0x...02', 100)
+```
+
+#### symbol
+
+Returns the token symbol.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a string value.
+const symbol = await contract.symbol() // BC
+```
+
+#### name
+
+Returns the token name.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a string value.
+const name = await contract.name() // Blockcoders
+```
+
+#### decimals
+
+Returns the decimals places of the token.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a number value.
+const name = await contract.decimals() // 18
 ```
 
 ## HRC721 API
@@ -232,7 +405,7 @@ Expected Events
 | Transfer | Emitted when a token id is transferred from an address to another. |
 | Approval | Emitted when owner enables approved to manage the tokenId token. |
 
-You can find an example of [HRC721](./src/tests/contracts/HRC721/BlockcodersHRC721.sol) in this address [0x...0a0a](https://explorer.pops.one/address/0xbba5d03304318b8fe765d977081eb392eb170a0a?activeTab=0).
+You can find an example of [HRC721](./src/tests/contracts/BlockcodersHRC721.sol) in this address [0x...0a0a](https://explorer.pops.one/address/0xbba5d03304318b8fe765d977081eb392eb170a0a?activeTab=0).
 
 ### Initializing
 
@@ -496,7 +669,7 @@ Expected Events
 | TransferSingle | Emitted when a token id are transferred from an address to another by operator. |
 | TransferBatch | Emitted when a token ids are transferred from an address to another by operator. |
 
-You can find an example of [HRC1155](./src/tests/contracts/HRC1155/BlockcodersHRC1155.sol) in this address [0x...b264](https://explorer.pops.one/address/0x16703afb468e4ba88380c2a2fda1aa4c5ec7b264).
+You can find an example of [HRC1155](./src/tests/contracts/BlockcodersHRC1155.sol) in this address [0x...b264](https://explorer.pops.one/address/0x16703afb468e4ba88380c2a2fda1aa4c5ec7b264).
 
 ### Initializing
 
@@ -677,6 +850,53 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const uri = await contract.contractURI()
 ```
 
+## BridgeToken API
+
+Harmony -> Ethereum way bridge 
+
+### Initializing
+
+```typescript
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const ethOwner = new Wallet(
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e',
+  new EtherscanProvider(
+    { chainId: 1 },
+    API_KEY,
+  )
+) 
+const hmyOwner = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+const bridge = new BridgeHRC20Token(hmyOwner, ethOwner)
+const token = new HRC20('0x...00', ABI, hmyOwner)
+const sender =  hmyOwner.accounts[0].toLowerCase()
+const recipient =  ethOwner.address.toLowerCase()
+const tokenInfo = { amount: 1000000000 }
+
+// Send tokens from Harmony to Ethereum
+const { addr, receiptId } = await bridge.sendToken(
+  BridgeType.HMY_TO_ETH,
+  sender,
+  recipient,
+  token,
+  tokenInfo,
+)
+
+// Send tokens from Ethereum to Harmony
+const { addr, receiptId } = await bridge.sendToken(
+  BridgeType.ETH_TO_HMY,
+  sender,
+  recipient,
+  token,
+  tokenInfo,
+)
+```
+
 ## Change Log
 
 See [Changelog](CHANGELOG.md) for more information.
@@ -690,6 +910,7 @@ Contributions welcome! See [Contributing](CONTRIBUTING.md).
 - [**Jose Ramirez**](https://github.com/0xslipk)
 - [**Brian Zuker**](https://github.com/bzuker)
 - [**Ana Riera**](https://github.com/AnnRiera)
+- [**Fernando Sirni**](https://github.com/fersirni)
 
 ## Acknowledgements
 

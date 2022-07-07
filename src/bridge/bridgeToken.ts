@@ -1,5 +1,4 @@
 import { Signer, VoidSigner } from '@ethersproject/abstract-signer'
-import { Provider } from '@ethersproject/providers'
 import { Wallet } from '@harmony-js/account'
 import {
   BridgeType,
@@ -22,12 +21,7 @@ export abstract class BridgeToken {
   protected readonly hmyOwnerWallet: Wallet
   protected readonly network: NetworkInfo
 
-  constructor(
-    hmyOwnerWallet: Wallet,
-    ethOwnerWallet: Signer,
-    ethProvider: Provider,
-    network: NetworkInfo = NetworkInfo.MAINNET,
-  ) {
+  constructor(hmyOwnerWallet: Wallet, ethOwnerWallet: Signer, network: NetworkInfo = NetworkInfo.MAINNET) {
     this.network = network
     this.isMainnet = this.network === NetworkInfo.MAINNET
 
@@ -39,7 +33,11 @@ export abstract class BridgeToken {
       this.hmyMasterWallet = new Key(HARMONY_RPC_SHARD_0_DEVNET_URL)
     }
 
-    this.ethMasterWallet = this.ethMasterWallet.connect(ethProvider)
+    if (!ethOwnerWallet.provider) {
+      throw new Error('Ethereum signer should have a rpc provider set.')
+    }
+
+    this.ethMasterWallet = this.ethMasterWallet.connect(ethOwnerWallet.provider)
     this.hmyMasterWallet.setSigner(MAINNET_MULTISIG_WALLET)
 
     this.hmyOwnerWallet = hmyOwnerWallet

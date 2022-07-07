@@ -66,7 +66,7 @@ describe('Bridge Token', () => {
       await token.mint(HMY_OWNER_ADDRESS, amount, E2E_TX_OPTIONS)
 
       hrc20 = new HRC20(addr, abi, WALLET_HMY_OWNER)
-      bridge = new BridgeHRC20Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, NetworkInfo.DEVNET)
+      bridge = new BridgeHRC20Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, NetworkInfo.DEVNET)
     })
 
     it('Should send the tokens from Hmy to Eth', async () => {
@@ -149,7 +149,7 @@ describe('Bridge Token', () => {
       await token.mint(HMY_OWNER_ADDRESS, tokenId, E2E_TX_OPTIONS)
 
       hrc721 = new HRC721(addr, abi, WALLET_HMY_OWNER)
-      bridge = new BridgeHRC721Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, WALLET_ETH_MASTER.provider, NetworkInfo.DEVNET)
+      bridge = new BridgeHRC721Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, NetworkInfo.DEVNET)
     })
 
     it('Should send the tokens from Hmy to Eth', async () => {
@@ -236,12 +236,7 @@ describe('Bridge Token', () => {
       await token.mintBatch(HMY_OWNER_ADDRESS, tokenIds, amounts, E2E_TX_OPTIONS)
 
       hrc1155 = new HRC1155(addr, abi, WALLET_HMY_OWNER)
-      bridge = new BridgeHRC1155Token(
-        WALLET_HMY_OWNER,
-        WALLET_ETH_OWNER,
-        WALLET_ETH_MASTER.provider,
-        NetworkInfo.DEVNET,
-      )
+      bridge = new BridgeHRC1155Token(WALLET_HMY_OWNER, WALLET_ETH_OWNER, NetworkInfo.DEVNET)
     })
 
     it('Should send the tokens from Hmy to Eth', async () => {
