@@ -42,4 +42,14 @@ contract BlockcodersHRC1155 is ERC1155, ERC1155MintBurn, ERC1155Metadata, Minter
     ) public onlyMinter {
         _mint(_to, _id, _quantity, _data);
     }
+    
+    function mintBatch(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public onlyMinter returns (bool) {
+        _batchMint(to, ids, amounts, data);
+        return true;
+    }
 }

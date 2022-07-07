@@ -103,7 +103,7 @@ contract HRC20EthManager {
         uint256 amount,
         address recipient,
         bytes32 receiptId
-    ) public onlyWallet {
+    ) public {
         require(
             !usedEvents_[receiptId],
             "EthManager/The lock event cannot be reused"

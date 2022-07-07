@@ -123,7 +123,7 @@ contract HRC721EthManager {
         uint256 tokenId,
         address recipient,
         bytes32 receiptId
-    ) public onlyWallet {
+    ) public {
         require(
             !usedEvents_[receiptId],
             "HmyManager/The lock event cannot be reused"
@@ -146,7 +146,7 @@ contract HRC721EthManager {
         uint256[] memory tokenIds,
         address recipient,
         bytes32 receiptId
-    ) public onlyWallet {
+    ) public {
         require(
             !usedEvents_[receiptId],
             "HmyManager/The lock event cannot be reused"

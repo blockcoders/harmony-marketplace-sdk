@@ -148,7 +148,7 @@ contract HRC1155EthManager {
         bytes32 receiptId,
         uint256 amount,
         bytes memory data
-    ) public onlyWallet {
+    ) public {
         require(
             !usedEvents_[receiptId],
             "HmyManager/The lock event cannot be reused"
@@ -174,7 +174,7 @@ contract HRC1155EthManager {
         bytes32 receiptId,
         uint256[] memory amounts,
         bytes memory data
-    ) public onlyWallet {
+    ) public {
         require(
             !usedEvents_[receiptId],
             "HmyManager/The lock event cannot be reused"

@@ -85,21 +85,21 @@ export const MAINNET_HRC1155_CONTRACTS_ADDRESSES: ContractAddresses = {
 export const DEVNET_MULTISIG_WALLET = '0xC12208C19f895df6BD589fD4F574CCf53992B9F5'
 
 export const DEVNET_HRC20_CONTRACTS_ADDRESSES: ContractAddresses = {
-  ethManagerAddress: '0x2912885736Ce25E437c0113200254140a709a58d',
-  hmyManagerAddress: '0xe0c1267f1c63e83472d2b3e25d970740940d752b',
-  tokenManagerAddress: '0x92591545c6462ad0751c890D15DF5F47846fF4Bf',
+  ethManagerAddress: '0xb6bE28Dc813D52A4740c3FA9C0c04e6542cce48d',
+  hmyManagerAddress: '0xe494ebf0290833ee655e4edecca95ef82ae60c4e',
+  tokenManagerAddress: '0x4a9832Aa2b22417Be739b15391Ec386403461f4b',
 }
 
 export const DEVNET_HRC721_CONTRACTS_ADDRESSES: ContractAddresses = {
-  ethManagerAddress: '0xCb4C1fdB075Ab6De7c28670cab7C33C5318e7a3e',
-  hmyManagerAddress: '0xe7e9b2b777f1d76a3065932b4f10dd919385827a',
-  tokenManagerAddress: '0x591Ba8eC8F739DE393b19A6b074C100107901CB0',
+  ethManagerAddress: '0x5c8a5cC4b46C8cdD2C50b3357984086814956DA7',
+  hmyManagerAddress: '0x2150cbd4a66f8922a21eec68c1c9cafdaca5eddc',
+  tokenManagerAddress: '0xCda2C033FDD220D987555e9F4934E6E69C5BC4Bd',
 }
 
 export const DEVNET_HRC1155_CONTRACTS_ADDRESSES: ContractAddresses = {
-  ethManagerAddress: '0xec78b27F983eD13d2a134E7d0078D8Bf61Df8966',
-  hmyManagerAddress: '0xb857764aacfa4113335bd560da0a08d8aff13a5c',
-  tokenManagerAddress: '0xEAfBeeD7aA4609F44A4BEd4A33B59D042d735e3a',
+  ethManagerAddress: '0x30Ec2A1002D1b099537d243b8A753A328A8f5ff1',
+  hmyManagerAddress: '0x7bf2fbfd386e61776085bd4b69821145fb8b059f',
+  tokenManagerAddress: '0x61BC4C52cE08A4BF5A3d5CBcF5d1664842c64f53',
 }
 
 export const DEFAULT_TX_OPTIONS: ITransactionOptions = {

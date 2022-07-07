@@ -109,4 +109,13 @@ export class HRC1155 extends BaseToken {
   public mint(account: string, tokenId: BNish, amount: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('mint', [account, tokenId, amount, []], txOptions)
   }
+
+  public mintBatch(
+    account: string,
+    tokenIds: BNish[],
+    amounts: BNish[],
+    txOptions?: ITransactionOptions,
+  ): Promise<Transaction> {
+    return this.send('mintBatch', [account, tokenIds, amounts, []], txOptions)
+  }
 }

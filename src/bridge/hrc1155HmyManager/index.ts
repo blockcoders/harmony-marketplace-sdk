@@ -34,9 +34,9 @@ export class HRC1155HmyManager extends BaseContract {
   public async unlockHRC1155Token(
     ethTokenAddr: string,
     tokenId: BNish,
+    amount: BNish,
     recipient: string,
     receiptId: string,
-    amount: BNish,
     data: string[],
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {
@@ -46,9 +46,9 @@ export class HRC1155HmyManager extends BaseContract {
   public async unlockHRC1155Tokens(
     ethTokenAddr: string,
     tokenIds: BNish[],
+    amounts: BNish[],
     recipient: string,
     receiptId: string,
-    amounts: BNish[],
     data: string[],
     txOptions?: ITransactionOptions,
   ): Promise<Transaction> {

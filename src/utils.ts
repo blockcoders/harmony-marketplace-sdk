@@ -1,8 +1,7 @@
 import { isArrayish, isHexString } from '@harmony-js/crypto'
 import { Messenger, WSProvider, NewHeaders } from '@harmony-js/network'
-import { ChainID, ChainType, hexToNumber } from '@harmony-js/utils'
+import { ChainType, hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
-import { HARMONY_RPC_DEVNET_WS, HARMONY_RPC_WS, NetworkInfo } from './constants'
 import { BNish } from './interfaces'
 
 export function isBNish(value: any): value is BNish {
@@ -37,26 +36,4 @@ export function waitForNewBlock(
       }
     })
   })
-}
-
-export const getRpc = (network: NetworkInfo) => {
-  switch (network) {
-    case NetworkInfo.MAINNET:
-      return HARMONY_RPC_WS
-    case NetworkInfo.DEVNET:
-      return HARMONY_RPC_DEVNET_WS
-    default:
-      throw Error('Invalid network')
-  }
-}
-
-export const getChainId = (network: NetworkInfo) => {
-  switch (network) {
-    case NetworkInfo.MAINNET:
-      return ChainID.HmyMainnet
-    case NetworkInfo.DEVNET:
-      return 4
-    default:
-      throw Error('Invalid network')
-  }
 }

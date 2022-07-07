@@ -23,13 +23,13 @@ import {
 import { deployContract, deployEthContract } from '../helpers'
 
 use(chaiAsPromised)
-const name = 'Blockcoders NFT'
-const symbol = 'Blockcoders'
-const tokenURI = 'https://fakeURI.com'
 
 describe('Bridge HRC1155 Token', () => {
-  const tokenIds = [1, 2]
-  const amounts = [1, 2]
+  const name = 'Blockcoders NFT'
+  const symbol = 'Blockcoders'
+  const tokenURI = 'https://fakeURI.com'
+  const tokenIds = [0, 1, 2]
+  const amounts = [10, 20, 30]
   let lockTokenTxHash: string
   let burnTokenTxHash: string
   let hrc1155: HRC1155
@@ -133,7 +133,6 @@ describe('Bridge HRC1155 Token', () => {
         E2E_TX_OPTIONS,
       )
 
-      console.log(lockTokenTx)
       lockTokenTxHash = lockTokenTx.id
 
       expect(lockTokenTxHash).to.not.be.undefined
@@ -170,9 +169,9 @@ describe('Bridge HRC1155 Token', () => {
       const mintTokenTx = await ethManager.mintTokens(
         erc1155Addr,
         tokenIds,
+        amounts,
         ETH_OWNER_ADDRESS,
         lockTokenTxHash,
-        amounts,
         [],
       )
 
@@ -232,9 +231,9 @@ describe('Bridge HRC1155 Token', () => {
       const unlockTokenTx = await hmyManager.unlockHRC1155Tokens(
         hrc1155.address,
         tokenIds,
+        amounts,
         HMY_OWNER_ADDRESS,
         burnTokenTxHash,
-        amounts,
         [],
         E2E_TX_OPTIONS,
       )

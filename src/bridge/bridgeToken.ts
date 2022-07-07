@@ -1,7 +1,6 @@
 import { Signer, VoidSigner } from '@ethersproject/abstract-signer'
-import { Provider, TransactionReceipt } from '@ethersproject/providers'
+import { Provider } from '@ethersproject/providers'
 import { Wallet } from '@harmony-js/account'
-import { Transaction } from '@harmony-js/transaction'
 import {
   BridgeType,
   DEFAULT_TX_OPTIONS,
@@ -12,7 +11,7 @@ import {
   NetworkInfo,
 } from '../constants'
 import { HRC1155, HRC20, HRC721 } from '../contracts'
-import { ITransactionOptions, HRC20Info, HRC1155Info, HRC721Info } from '../interfaces'
+import { ITransactionOptions, HRC20Info, HRC1155Info, HRC721Info, BridgeResponse } from '../interfaces'
 import { Key } from '../wallets'
 
 export abstract class BridgeToken {
@@ -49,27 +48,20 @@ export abstract class BridgeToken {
     return this.network === NetworkInfo.MAINNET
   }
 
-  public async ethToHmy(
+  public abstract ethToHmy(
     sender: string,
     recipient: string,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ): Promise<Transaction> {
-    throw Error('Error on BridgeToken ethToHmy needs to be implemented in child class.')
-  }
+  ): Promise<BridgeResponse>
 
-  public async hmyToEth(
+  public abstract hmyToEth(
     sender: string,
     recipient: string,
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ): Promise<TransactionReceipt> {
-    throw Error('Error on BridgeToken hmyToEth needs to be implemented in child class.')
-  }
+    txOptions: ITransactionOptions,
+  ): Promise<BridgeResponse>
 
   public async sendToken(
     type: BridgeType,
@@ -78,9 +70,9 @@ export abstract class BridgeToken {
     token: HRC20 | HRC721 | HRC1155,
     tokenInfo: HRC20Info | HRC721Info | HRC1155Info,
     txOptions: ITransactionOptions = DEFAULT_TX_OPTIONS,
-  ) {
+  ): Promise<BridgeResponse> {
     if (type === BridgeType.ETH_TO_HMY) {
-      return this.ethToHmy(sender, recipient, token, tokenInfo, txOptions)
+      return this.ethToHmy(sender, recipient, token, tokenInfo)
     } else {
       return this.hmyToEth(sender, recipient, token, tokenInfo, txOptions)
     }

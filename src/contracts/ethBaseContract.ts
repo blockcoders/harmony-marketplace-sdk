@@ -20,16 +20,16 @@ export class EthBaseContract {
 
     try {
       gasEstimate = await this._contract.estimateGas[methodName](...args)
-    } catch (gasError) {
+    } catch (gasError: any) {
       try {
         const errorResult = await this._contract.callStatic[methodName](...args)
 
-        console.debug('Unexpected successful call after failed estimate gas', gasError, errorResult)
-      } catch (callStaticError) {
-        console.error(callStaticError)
+        throw new Error(
+          `Unexpected successful call after failed estimate gas. Gas error: ${gasError.message}, Error: ${errorResult.message}`,
+        )
+      } catch (callStaticError: any) {
+        throw new Error(`Unexpected issue with estimating the gas, ${callStaticError.message}. Please try again.`)
       }
-
-      throw new Error('Unexpected issue with estimating the gas. Please try again.')
     }
 
     return gasEstimate.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))

@@ -64,9 +64,9 @@ export class HRC1155EthManager extends EthBaseContract {
   public async mintTokens(
     oneToken: string,
     tokenIds: BigNumberish[],
+    amounts: BigNumberish[],
     recipient: string,
     receiptId: string,
-    amounts: BigNumberish[],
     data: string[],
     txOptions?: CallOverrides,
   ): Promise<TransactionReceipt> {
