@@ -103,14 +103,6 @@ export class HRC721 extends BaseToken {
     return this.call<string>('name', [], txOptions)
   }
 
-  public async increaseAllowance(spender: string, value: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
-    return this.send('increaseAllowance', [spender, value], txOptions)
-  }
-
-  public async decreaseAllowance(spender: string, value: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
-    return this.send('decreaseAllowance', [spender, value], txOptions)
-  }
-
   public mint(account: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('mint', [account, tokenId], txOptions)
   }
