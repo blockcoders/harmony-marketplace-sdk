@@ -787,6 +787,48 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2'], [1, 1], '0x')
 ```
 
+#### setApprovalForAll
+
+Grants or revokes permission to operator to transfer the caller’s tokens, according to approved.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.setApprovalForAll('0x...01', true)
+```
+
+#### isApprovedForAll
+
+Returns true if operator is approved to transfer account's tokens.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns an boolean value.
+const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
+```
+
 #### owner
 
 Returns the address of the current owner.
@@ -848,6 +890,134 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns an string value.
 const uri = await contract.contractURI()
+```
+
+
+#### totalSupply
+
+Total amount of tokens in with a given id.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a number value.
+const total = await contract.totalSupply(1)
+```
+
+#### tokenURI
+
+Returns the Uniform Resource Identifier (URI) for tokenId token.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a string value.
+const uri = await contract.tokenURI()
+```
+
+
+#### symbol
+
+Returns the token collection symbol.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a string value.
+const symbol = await contract.symbol() // Blockcoders
+```
+
+#### name
+
+Returns the token collection name.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a string value.
+const name = await contract.name() // Blockcoders NFT
+```
+
+#### mint
+
+Creates amount tokens of token type id, and assigns them to to.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.mint('0x...01', 1, 10)
+```
+
+#### mintBatch
+
+Batched version of [mint](#mint).
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.mintBatch('0x...01', [1, 2, 3], [10, 5, 20])
 ```
 
 ## BridgeToken API
