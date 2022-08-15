@@ -379,6 +379,68 @@ const contract = new HRC20('0x...00', ABI, wallet)
 // returns a number value.
 const name = await contract.decimals() // 18
 ```
+#### mint
+
+Mints an amount of tokens and transfers them to the account increasing the total supply.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.mint('0x...01', 10)
+```
+
+#### burn
+
+Destroys an amount of tokens from the account, reducing the total supply.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.burn(10)
+```
+
+#### burnFrom
+
+Destroys amount tokens from account, deducting from the caller’s allowance.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.burnFrom('0x...01', 10)
+```
 
 ## HRC721 API
 
@@ -647,6 +709,69 @@ const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a string value.
 const name = await contract.name() // Blockcoders NFT
+```
+
+#### mint
+
+Mints a token with tokenId and transfers it to the account.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.mint('0x...01', 1)
+```
+
+#### safeMint
+
+Safely mints a token with tokenId and transfers it to the account.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.mint('0x...01', 1)
+```
+
+#### burn
+
+Destroys tokenId. The caller must own tokenId or be an approved operator.
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.burn(1)
 ```
 
 ## HRC1155 API

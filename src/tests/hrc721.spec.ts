@@ -406,52 +406,6 @@ describe('HRC721 Contract Interface', () => {
     })
   })
 
-  describe('increaseAllowance', () => {
-    it('should return the transaction', async () => {
-      const stub = sinon.stub(contract, 'send').withArgs('increaseAllowance', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
-      stub.resolves()
-
-      await contract.increaseAllowance(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
-      expect(stub.calledOnce).to.be.true
-      expect(stub.callCount).to.be.equals(1)
-    })
-
-    it('should throw an error if spender is not provided', async () => {
-      expect(contract.increaseAllowance('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
-    })
-
-    it('should throw an error if value is not provided', async () => {
-      expect(contract.increaseAllowance(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
-    })
-
-    it('should throw an error if params are not provided', async () => {
-      expect(contract.increaseAllowance('', '')).to.be.rejectedWith(Error)
-    })
-  })
-
-  describe('decreaseAllowance', () => {
-    it('should return the transaction', async () => {
-      const stub = sinon.stub(contract, 'send').withArgs('decreaseAllowance', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
-      stub.resolves()
-
-      await contract.decreaseAllowance(TEST_ADDRESS_1, TOKEN_GOLD, TX_OPTIONS)
-      expect(stub.calledOnce).to.be.true
-      expect(stub.callCount).to.be.equals(1)
-    })
-
-    it('should throw an error if spender is not provided', async () => {
-      expect(contract.decreaseAllowance('', TOKEN_GOLD, TX_OPTIONS)).to.be.rejectedWith(Error)
-    })
-
-    it('should throw an error if value is not provided', async () => {
-      expect(contract.decreaseAllowance(TEST_ADDRESS_1, '', TX_OPTIONS)).to.be.rejectedWith(Error)
-    })
-
-    it('should throw an error if params are not provided', async () => {
-      expect(contract.decreaseAllowance('', '')).to.be.rejectedWith(Error)
-    })
-  })
-
   describe('mint', () => {
     it('should return the transaction', async () => {
       const stub = sinon.stub(contract, 'send').withArgs('mint', [TEST_ADDRESS_1, TOKEN_GOLD], TX_OPTIONS)
