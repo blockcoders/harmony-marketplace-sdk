@@ -165,12 +165,18 @@ Expected Methods:
 | Method | Description |
 | ------------- | ------------- |
 | totalSupply | Total amount of tokens stored by the contract. |
-| decimals | Returns the decimals places of the token. |
-| transfer | Moves amount tokens from the caller’s account to to. |
 | balanceOf | Returns the amount of tokens owned by account. |
+| transfer | Moves amount tokens from the caller’s account to another account. |
+| allowance | Returns the remaining number of tokens that spender will be allowed to spend on behalf of owner through transferFrom |
+| approve | Sets amount as the allowance of spender over the caller’s tokens. |
+| transferFrom | Moves amount tokens from an account to another account using the allowance mechanism. |
 | symbol | Returns the symbol of the token. |
 | name | Returns the name of the token. |
-| approve | Sets amount as the allowance of spender over the caller’s tokens. |
+| decimals | Returns the decimals places of the token. |
+| mint | Creates amount tokens and assigns them to account. |
+| burn | Destroys amount tokens from account. |
+| burnFrom | Destroys amount tokens from an account. |
+
 
 Expected Events
 | Event | Description |
@@ -212,9 +218,25 @@ const contract = new HRC20('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf
+#### totalSupply(): Promise&lt;BN&gt;
 
-Returns the number of tokens in owner's account.
+<p>Returns the amount of tokens in existence.</p>
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, HttpProvider)
+
+// returns the totalSupply
+const totalSupply = await contract.totalSupply()
+```
+
+#### balanceOf(address: string): Promise&lt;BN&gt;
+
+<p>Returns the number of tokens owned by <code>address</code>.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -233,9 +255,9 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01')
 ```
 
-#### transfer
+#### transfer(to: string, amount: BNish): Promise&lt;Transaction&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Moves <code>amount</code> tokens from the caller’s account to <code>to</code>.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -254,9 +276,10 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.transfer('0x...01', '1')
 ```
 
-#### allowance
+#### allowance(owner: string, spender: string): Promise&lt;BN&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Returns the remaining number of tokens that <code>spender</code> will be allowed to spend on behalf of <code>owner</code> through transferFrom. This is zero by default.</p>
+<p>This value changes when approve or transferFrom are called.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -275,9 +298,10 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.allowance('0x...01', '0x...02')
 ```
 
-#### approve
+#### approve(spender: string, amount: BNish): Promise&lt;Transaction&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Sets <code>amount</code> as the allowance of <code>spender</code> over the caller’s tokens. </p>
+<p>Emits an Approval event.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -296,9 +320,9 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.approve('0x...01', 100)
 ```
 
-#### transferFrom
+#### transferFrom(from: string, to: string, amount: BNish): Promise&lt;Transaction&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Moves <code>amount</code> tokens from <code>from</code> account to <code>to</code>.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -317,30 +341,9 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.transferFrom('0x...01', '0x...02', 100)
 ```
 
-#### symbol
+#### symbol(): Promise&lt;string&gt;
 
-Returns the token symbol.
-
-```ts
-import { HttpProvider } from '@harmony-js/network'
-import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC20('0x...00', ABI, wallet)
-
-// returns a string value.
-const symbol = await contract.symbol() // BC
-```
-
-#### name
-
-Returns the token name.
+<p>Returns the token symbol.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -356,12 +359,33 @@ const wallet = new PrivateKey(
 const contract = new HRC20('0x...00', ABI, wallet)
 
 // returns a string value.
-const name = await contract.name() // Blockcoders
+const symbol = await contract.symbol()
 ```
 
-#### decimals
+#### name(): Promise&lt;string&gt;
 
-Returns the decimals places of the token.
+<p>Returns the token name.</p>
+
+```ts
+import { HttpProvider } from '@harmony-js/network'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a string value.
+const name = await contract.name()
+```
+
+#### decimals(): Promise&lt;number&gt;
+
+<p>Returns the decimals places of the token.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -379,9 +403,15 @@ const contract = new HRC20('0x...00', ABI, wallet)
 // returns a number value.
 const name = await contract.decimals() // 18
 ```
-#### mint
+#### mint(account: string, amount: BNish): Promise&lt;Transaction&gt;
 
-Mints an amount of tokens and transfers them to the account increasing the total supply.
+<p>Mints an <code>amount</code> of tokens and transfers them to the <code>account</code> increasing the total supply.</p>
+<p>Emits a transfer event with from set to the zero address.</p>
+<p>Requirements
+  <ul>
+    <li>account cannot be the zero address.</li>
+  </ul>
+</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -400,9 +430,16 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.mint('0x...01', 10)
 ```
 
-#### burn
+#### burn(amount: number)
 
-Destroys an amount of tokens from the account, reducing the total supply.
+<p>Destroys an <code>amount</code> of tokens from the caller wallet, reducing the total supply.</p>
+<p>Emits a transfer event with to set to the zero address.</p>
+<p>Requirements
+  <ul>
+    <li>account cannot be the zero address.</li>
+    <li>account must have at least amount tokens.</li>
+  </ul>
+</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -421,9 +458,14 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.burn(10)
 ```
 
-#### burnFrom
+#### burnFrom(account: string, amount: number)
 
-Destroys amount tokens from account, deducting from the caller’s allowance.
+<p>Destroys <code>amount</code> tokens from <code>account</code>, deducting from the caller’s allowance.</p>
+<p>Requirements
+  <ul>
+    <li>the caller must have allowance for accounts's tokens of at least amount.</li>    
+  </ul>
+</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -451,15 +493,21 @@ The `HRC721` implements the abstract class [Base Token](#base-token).
 Expected Methods:
 | Method | Description |
 | ------------- | ------------- |
-| transferFrom | Transfers tokenId token from an address to another. |
-| safeTransferFrom | Safely transfers tokenId token from an address to another. |
 | balanceOf | The number of tokens in owner's account. |
-| approve | Gives permission to to to transfer tokenId token to another account. |
+| ownerOf | The owner of a token. |
+| safeTransferFrom | Safely transfers a token from an address to another. |
+| transferFrom | Transfers a token from an address to another address. |
+| approve | Gives permission to to to transfer a token to another account. |
+| getApproved | Returns the account approved for a token. |
+| setApprovalForAll | Approve or remove operator as an operator for the caller. |
+| isApprovedForAll | Returns if the operator is allowed to manage all of the assets of owner. |
 | totalSupply | Total amount of tokens stored by the contract. |
-| ownerOf | The owner of the tokenId token. |
-| tokenURI | The Uniform Resource Identifier (URI) for tokenId token. |
+| tokenURI | The Uniform Resource Identifier (URI) for a token. |
 | symbol | The token collection symbol. |
 | name | The token collection name. |
+| mint | Mints tokenId and transfers it to an address. |
+| safeMint | Safely mints a token and transfers it to an address. |
+| burn | Destroys a token |
 
 Expected Events
 | Event | Description |
@@ -501,9 +549,9 @@ const contract = new HRC721('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf
+#### balanceOf(address owner) → uint256 balance
 
-Returns the number of tokens in owner's account.
+<p>Returns the number of tokens in *owner*'s account.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -522,9 +570,14 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01')
 ```
 
-#### ownerOf
+#### ownerOf(uint256 tokenId) → address owner
 
-Returns the owner of the tokenId token.
+<p>Returns the owner of the *tokenId* token.</p>
+<p>Requirements
+  <ul>
+    <li>tokenId must exist.</li>    
+  </ul>
+</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
@@ -543,9 +596,19 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const owner = await contract.ownerOf('1')
 ```
 
-#### safeTransferFrom
+#### safeTransferFrom(address from, address to, uint256 tokenId, bytes data)
 
-Safely transfers tokenId token from an address to another.
+<p>Safely transfers *tokenId* token from *from* to *to*.</p>
+<p>Requirements
+  <ul>
+    <li>*from* cannot be the zero address.</li>
+    <li>*to* cannot be the zero address.</li>
+    <li>*tokenId* token must exist and be owned by *from*.</li>
+    <li>tokenId must exist.</li>
+    <li>tokenId must exist.</li>
+  </ul>
+</p>
+<p>Emits a Transfer event.</p>
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
