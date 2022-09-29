@@ -218,7 +218,7 @@ const contract = new HRC20('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### totalSupply(): Promise&lt;BN&gt;
+#### totalSupply(txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Returns the amount of tokens in existence.</p>
 
@@ -239,7 +239,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const totalSupply = await contract.totalSupply()
 ```
 
-#### balanceOf(address: string): Promise&lt;BN&gt;
+#### balanceOf(address: string, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Returns the number of tokens owned by <code>address</code>.</p>
 
@@ -260,7 +260,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01')
 ```
 
-#### transfer(to: string, amount: BNish): Promise&lt;Transaction&gt;
+#### transfer(to: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Moves <code>amount</code> tokens from the caller’s account to <code>to</code>.</p>
 
@@ -281,7 +281,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.transfer('0x...01', '1')
 ```
 
-#### allowance(owner: string, spender: string): Promise&lt;BN&gt;
+#### allowance(owner: string, spender: string, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Returns the remaining number of tokens that <code>spender</code> will be allowed to spend on behalf of <code>owner</code> through transferFrom. This is zero by default.</p>
 <p>This value changes when <code>approve</code> or <code>transferFrom</code> are called.</p>
@@ -303,7 +303,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.allowance('0x...01', '0x...02')
 ```
 
-#### approve(spender: string, amount: BNish): Promise&lt;Transaction&gt;
+#### approve(spender: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Sets <code>amount</code> as the allowance of <code>spender</code> over the caller’s tokens. </p>
 <p>Emits an <code>Approval</code> event.</p>
@@ -325,7 +325,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.approve('0x...01', 100)
 ```
 
-#### transferFrom(from: string, to: string, amount: BNish): Promise&lt;Transaction&gt;
+#### transferFrom(from: string, to: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Moves <code>amount</code> tokens from <code>from</code> account to <code>to</code>.</p>
 
@@ -346,7 +346,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.transferFrom('0x...01', '0x...02', 100)
 ```
 
-#### symbol(): Promise&lt;string&gt;
+#### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token symbol.</p>
 
@@ -367,7 +367,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const symbol = await contract.symbol()
 ```
 
-#### name(): Promise&lt;string&gt;
+#### name(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token name.</p>
 
@@ -388,7 +388,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const name = await contract.name()
 ```
 
-#### decimals(): Promise&lt;number&gt;
+#### decimals(txOptions?: ITransactionOptions): Promise&lt;number&gt;
 
 <p>Returns the decimals places of the token.</p>
 
@@ -408,7 +408,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 // returns a number value.
 const name = await contract.decimals() // 18
 ```
-#### mint(account: string, amount: BNish): Promise&lt;Transaction&gt;
+#### mint(account: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Mints an <code>amount</code> of tokens and transfers them to the <code>account</code> increasing the total supply.</p>
 <p>Emits a <code>Transfer</code> event with from set to the zero address.</p>
@@ -435,7 +435,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.mint('0x...01', 10)
 ```
 
-#### burn(amount: number)
+#### burn(amount: number, txOptions?: ITransactionOptions)
 
 <p>Destroys an <code>amount</code> of tokens from the caller wallet, reducing the total supply.</p>
 <p>Emits a <code>Transfer</code> event with to set to the zero address.</p>
@@ -463,7 +463,7 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.burn(10)
 ```
 
-#### burnFrom(account: string, amount: number)
+#### burnFrom(account: string, amount: number, txOptions?: ITransactionOptions)
 
 <p>Destroys <code>amount</code> tokens from <code>account</code>, deducting from the caller’s allowance.</p>
 <p>Requirements
@@ -554,7 +554,7 @@ const contract = new HRC721('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf(address: string): Promise&lt;BN&gt;
+#### balanceOf(address: string, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Returns the number of tokens in <code>address</code>'s account.</p>
 
@@ -575,7 +575,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01')
 ```
 
-#### ownerOf(tokenId: BNish): Promise&lt;string&gt;
+#### ownerOf(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the owner of the <code>tokenId</code> token.</p>
 <p>Requirements
@@ -601,7 +601,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const owner = await contract.ownerOf('1')
 ```
 
-#### safeTransferFrom(from: string, to: string, tokenId: BNish, data?: any): Promise&lt;Transaction&gt;
+#### safeTransferFrom(from: string, to: string, tokenId: BNish, data?: any, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Safely transfers <code>tokenId</code> token from <code>from</code> to <code>to</code>.</p>
 <p>Requirements
@@ -632,7 +632,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1')
 ```
 
-#### transferFrom(from: string, to: string, tokenId: BNish): Promise&lt;Transaction&gt;
+#### transferFrom(from: string, to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Transfers <code>tokenId</code> token from <code>from</code> to <code>to</code>. Usage of this method is discouraged, use <code>safeTransferFrom</code> whenever possible.</p>
 <p>Requirements
@@ -662,7 +662,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.transferFrom('0x...01', '0x...02', '1')
 ```
 
-#### approve(to: string, tokenId: BNish): Promise&lt;Transaction&gt;
+#### approve(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Gives permission to <code>to</code> to transfer <code>tokenId</code> token to another account. The approval is cleared when the token is transferred.</p>
 <p>Only a single account can be approved at a time, so approving the zero address clears previous approvals.</p>
@@ -692,7 +692,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.approve('0x...01', '1')
 ```
 
-#### getApproved(tokenId: BNish): Promise&lt;string&gt;
+#### getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the account approved for <code>tokenId</code> token.<p>
 <p>Requirements
@@ -718,7 +718,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const address = await contract.getApproved('1')
 ```
 
-#### setApprovalForAll(addressOperator: string, approved: boolean): Promise&lt;Transaction&gt;
+#### setApprovalForAll(addressOperator: string, approved: boolean, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Approve or remove <code>addressOperator</code> as an operator for the caller. Operators can call <code>transferFrom</code> or <code>safeTransferFrom</code> for any token owned by the caller.<p>
 <p>Requirements
@@ -745,7 +745,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.setApprovalForAll('0x...01', true)
 ```
 
-#### isApprovedForAll(owner: string, operator: string): Promise&lt;boolean&gt;
+#### isApprovedForAll(owner: string, operator: string, txOptions?: ITransactionOptions): Promise&lt;boolean&gt;
 
 <p>Returns if the <code>operator</code> is allowed to manage all of the assets of <code>owner</code>.</p>
 <p>See <code>setApprovalForAll</code></p>
@@ -767,7 +767,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 ```
   
-####  totalSupply(): Promise&lt;BN&gt;
+####  totalSupply(txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Returns the total amount of tokens stored by the contract.</p>
 
@@ -788,7 +788,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const supply = await contract.totalSupply()
 ```
 
-#### tokenURI(tokenId: BNish): Promise&lt;string&gt;
+#### tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the Uniform Resource Identifier (URI) for <code>tokenId</code> token.</p>
 
@@ -809,7 +809,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const uri = await contract.tokenURI('10')
 ```
 
-#### symbol(): Promise&lt;string&gt;
+#### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token collection symbol.</p>
 
@@ -830,7 +830,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const symbol = await contract.symbol() 
 ```
 
-#### name(): Promise&lt;string&gt;
+#### name(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token collection name.</p>
 
@@ -851,7 +851,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const name = await contract.name()
 ```
 
-#### mint(account: string, tokenId: BNish): Promise&lt;Transaction&gt;
+#### mint(account: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Mints a token with <code>tokenId</code> and transfers it to the <code>account</code>.</p>
 <p>Usage of this method is discouraged, use <code>safeMint</code> whenever possible</p>
@@ -880,7 +880,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.mint('0x...01', '1')
 ```
 
-#### safeMint(to: string, tokenId: BNish): Promise&lt;Transaction&gt;
+#### safeMint(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Safely mints a token with <code>tokenId</code> and transfers it to <code>to</code>.</p>
 <p>Requirements
@@ -908,7 +908,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.mint('0x...01', '1')
 ```
 
-#### burn(tokenId: BNish): Promise&lt;Transaction&gt;
+#### burn(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Destroys <code>tokenId</code>. The caller must own <code>tokenId</code> or be an approved operator.</p>
 <p>Requirements
@@ -1000,7 +1000,7 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf(address: string, id: BNish): Promise&lt;BN&gt;
+#### balanceOf(address: string, id: BNish, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Returns the amount of tokens of token type (id) <code>id</code> owned by <code>address</code>.</p>
 
@@ -1021,7 +1021,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01', '1')
 ```
 
-#### balanceOfBatch(accounts: string[], ids: BNish[]): Promise&lt;BN[]&gt;
+#### balanceOfBatch(accounts: string[], ids: BNish[], txOptions?: ITransactionOptions): Promise&lt;BN[]&gt;
 
 <p>Batched version of <code>balanceOf</code>.</p>
 
@@ -1042,7 +1042,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const balances = await contract.balanceOfBatch(['0x...01', '0x...02'], ['1', '2'])
 ```
 
-#### safeTransferFrom(from: string, to: string, id: BNish, amount: BNish, data: any): Promise&lt;Transaction&gt;
+#### safeTransferFrom(from: string, to: string, id: BNish, amount: BNish, data: any, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Transfers <code>amount</code> tokens of token type (id) <code>id</code> from <code>from</code> to <code>to</code>.</p>
 
@@ -1063,7 +1063,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', '1', [])
 ```
 
-#### safeBatchTransferFrom(from: string, to: string, ids: BNish[], amounts: BNish[], data: any): Promise&lt;Transaction&gt;
+#### safeBatchTransferFrom(from: string, to: string, ids: BNish[], amounts: BNish[], data: any, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Batched version of <code>safeTransferFrom</code>.</p>
 
@@ -1084,7 +1084,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2'], ['1', '1'], [])
 ```
 
-#### setApprovalForAll(addressOperator: string, approved: boolean): Promise&lt;Transaction&gt;
+#### setApprovalForAll(addressOperator: string, approved: boolean, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Grants or revokes permission to <code>operator</code> to transfer the caller’s tokens, according to <code>approved</code>.</p>
 <p>Emits an <code>ApprovalForAll</code> event.</p>
@@ -1111,7 +1111,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.setApprovalForAll('0x...01', true)
 ```
 
-#### isApprovedForAll(owner: string, operator: string): Promise&lt;boolean&gt;
+#### isApprovedForAll(owner: string, operator: string, txOptions?: ITransactionOptions): Promise&lt;boolean&gt;
 
 <p>Returns true if <code>operator</code> is approved to transfer <code>account</code>'s tokens.</p>
 
@@ -1132,7 +1132,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 ```
 
-#### owner(): Promise&lt;string&gt;
+#### owner(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the address of the current owner.</p>
 
@@ -1153,7 +1153,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const owner = await contract.owner()
 ```
 
-#### tokenURIPrefix(): Promise&lt;string&gt;
+#### tokenURIPrefix(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token URI prefix.</p>
 
@@ -1174,7 +1174,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const uri = await contract.tokenURIPrefix()
 ```
 
-#### contractURI(): Promise&lt;string&gt;
+#### contractURI(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>returns a URL for the storefront-level metadata for your contract.</p>
 
@@ -1196,7 +1196,7 @@ const uri = await contract.contractURI()
 ```
 
 
-#### totalSupply(id: BNish): Promise&lt;BN&gt;
+#### totalSupply(id: BNish, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
 <p>Total amount of tokens with a given token <code>id</code>.</p>
 
@@ -1217,7 +1217,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const total = await contract.totalSupply('1')
 ```
 
-#### tokenURI(tokenId: BNish): Promise&lt;string&gt;
+#### tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the Uniform Resource Identifier (URI) for <code>tokenId</code> token.</p>
 
@@ -1239,7 +1239,7 @@ const uri = await contract.tokenURI('1')
 ```
 
 
-#### symbol(): Promise&lt;string&gt;
+#### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token collection symbol.</p>
 
@@ -1260,7 +1260,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const symbol = await contract.symbol()
 ```
 
-#### name(): Promise&lt;string&gt;
+#### name(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token collection name.</p>
 
@@ -1281,7 +1281,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const name = await contract.name()
 ```
 
-#### mint(account: string, tokenId: BNish, amount: BNish): Promise&lt;Transaction&gt;
+#### mint(account: string, tokenId: BNish, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Creates <code>amount</code> tokens of token type (id) <code>tokenId</code>, and assigns them to <code>to</code>.</p>
 <p>Emits a <code>TransferSingle</code> event.</p>
@@ -1309,7 +1309,7 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.mint('0x...01', '1', '10')
 ```
 
-#### mintBatch(account: string, tokenIds: BNish[], amounts: BNish[]): Promise&lt;Transaction&gt;
+#### mintBatch(account: string, tokenIds: BNish[], amounts: BNish[], txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
 <p>Batched version of <code>mint</code>.<p>
 <p>Emits a <code>TransferBatch</code> event.</p>
