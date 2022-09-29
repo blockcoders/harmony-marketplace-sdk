@@ -165,12 +165,18 @@ Expected Methods:
 | Method | Description |
 | ------------- | ------------- |
 | totalSupply | Total amount of tokens stored by the contract. |
-| decimals | Returns the decimals places of the token. |
-| transfer | Moves amount tokens from the caller’s account to to. |
 | balanceOf | Returns the amount of tokens owned by account. |
+| transfer | Moves amount tokens from the caller’s account to another account. |
+| allowance | Returns the remaining number of tokens that spender will be allowed to spend on behalf of owner through transferFrom |
+| approve | Sets amount as the allowance of spender over the caller’s tokens. |
+| transferFrom | Moves amount tokens from an account to another account using the allowance mechanism. |
 | symbol | Returns the symbol of the token. |
 | name | Returns the name of the token. |
-| approve | Sets amount as the allowance of spender over the caller’s tokens. |
+| decimals | Returns the decimals places of the token. |
+| mint | Creates amount tokens and assigns them to account. |
+| burn | Destroys amount tokens from account. |
+| burnFrom | Destroys amount tokens from an account. |
+
 
 Expected Events
 | Event | Description |
@@ -211,9 +217,29 @@ const contract = new HRC20('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf
+#### totalSupply(txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
-Returns the number of tokens in owner's account.
+<p>Returns the amount of tokens in existence.</p>
+
+```ts
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns the totalSupply as a BN instance
+const totalSupply = await contract.totalSupply()
+```
+
+#### balanceOf(address: string, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
+
+<p>Returns the number of tokens owned by <code>address</code>.</p>
 
 ```ts
 
@@ -232,9 +258,9 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01')
 ```
 
-#### transfer
+#### transfer(to: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Moves <code>amount</code> tokens from the caller’s account to <code>to</code>.</p>
 
 ```ts
 
@@ -253,9 +279,10 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.transfer('0x...01', '1')
 ```
 
-#### allowance
+#### allowance(owner: string, spender: string, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Returns the remaining number of tokens that <code>spender</code> will be allowed to spend on behalf of <code>owner</code> through transferFrom. This is zero by default.</p>
+<p>This value changes when <code>approve</code> or <code>transferFrom</code> are called.</p>
 
 ```ts
 
@@ -274,9 +301,10 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.allowance('0x...01', '0x...02')
 ```
 
-#### approve
+#### approve(spender: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Sets <code>amount</code> as the allowance of <code>spender</code> over the caller’s tokens. </p>
+<p>Emits an <code>Approval</code> event.</p>
 
 ```ts
 
@@ -295,9 +323,9 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.approve('0x...01', 100)
 ```
 
-#### transferFrom
+#### transferFrom(from: string, to: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Moves amount tokens from the caller’s account to to.
+<p>Moves <code>amount</code> tokens from <code>from</code> account to <code>to</code>.</p>
 
 ```ts
 
@@ -316,30 +344,9 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.transferFrom('0x...01', '0x...02', 100)
 ```
 
-#### symbol
+#### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the token symbol.
-
-```ts
-
-import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  HarmonyShards.SHARD_0,
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC20('0x...00', ABI, wallet)
-
-// returns a string value.
-const symbol = await contract.symbol() // BC
-```
-
-#### name
-
-Returns the token name.
+<p>Returns the token symbol.</p>
 
 ```ts
 
@@ -355,12 +362,33 @@ const wallet = new PrivateKey(
 const contract = new HRC20('0x...00', ABI, wallet)
 
 // returns a string value.
-const name = await contract.name() // Blockcoders
+const symbol = await contract.symbol()
 ```
 
-#### decimals
+#### name(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the decimals places of the token.
+<p>Returns the token name.</p>
+
+```ts
+
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns a string value.
+const name = await contract.name()
+```
+
+#### decimals(txOptions?: ITransactionOptions): Promise&lt;number&gt;
+
+<p>Returns the decimals places of the token.</p>
 
 ```ts
 
@@ -378,9 +406,15 @@ const contract = new HRC20('0x...00', ABI, wallet)
 // returns a number value.
 const name = await contract.decimals() // 18
 ```
-#### mint
+#### mint(account: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Mints an amount of tokens and transfers them to the account increasing the total supply.
+<p>Mints an <code>amount</code> of tokens and transfers them to the <code>account</code> increasing the total supply.</p>
+<p>Emits a <code>Transfer</code> event with from set to the zero address.</p>
+<p>Requirements
+  <ul>
+    <li><code>account</code> cannot be the zero address.</li>
+  </ul>
+</p>
 
 ```ts
 
@@ -399,9 +433,16 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.mint('0x...01', 10)
 ```
 
-#### burn
+#### burn(amount: number, txOptions?: ITransactionOptions)
 
-Destroys an amount of tokens from the account, reducing the total supply.
+<p>Destroys an <code>amount</code> of tokens from the caller wallet, reducing the total supply.</p>
+<p>Emits a <code>Transfer</code> event with to set to the zero address.</p>
+<p>Requirements
+  <ul>
+    <li>account cannot be the zero address.</li>
+    <li>account must have at least <code>amount</code> tokens.</li>
+  </ul>
+</p>
 
 ```ts
 
@@ -420,9 +461,14 @@ const contract = new HRC20('0x...00', ABI, wallet)
 const tx = await contract.burn(10)
 ```
 
-#### burnFrom
+#### burnFrom(account: string, amount: number, txOptions?: ITransactionOptions)
 
-Destroys amount tokens from account, deducting from the caller’s allowance.
+<p>Destroys <code>amount</code> tokens from <code>account</code>, deducting from the caller’s allowance.</p>
+<p>Requirements
+  <ul>
+    <li>the caller must have allowance for <code>accounts</code>'s tokens of at least <code>amount</code>.</li>    
+  </ul>
+</p>
 
 ```ts
 
@@ -450,21 +496,27 @@ The `HRC721` implements the abstract class [Base Token](#base-token).
 Expected Methods:
 | Method | Description |
 | ------------- | ------------- |
-| transferFrom | Transfers tokenId token from an address to another. |
-| safeTransferFrom | Safely transfers tokenId token from an address to another. |
 | balanceOf | The number of tokens in owner's account. |
-| approve | Gives permission to to to transfer tokenId token to another account. |
+| ownerOf | The owner of a token. |
+| safeTransferFrom | Safely transfers a token from an address to another. |
+| transferFrom | Transfers a token from an address to another address. |
+| approve | Gives permission to an account to transfer a token to another account. |
+| getApproved | Returns the account approved for a token. |
+| setApprovalForAll | Approve or remove operator as an operator for the caller. |
+| isApprovedForAll | Returns if the operator is allowed to manage all of the assets of an account. |
 | totalSupply | Total amount of tokens stored by the contract. |
-| ownerOf | The owner of the tokenId token. |
-| tokenURI | The Uniform Resource Identifier (URI) for tokenId token. |
+| tokenURI | The Uniform Resource Identifier (URI) for a token. |
 | symbol | The token collection symbol. |
 | name | The token collection name. |
+| mint | Mints a token with the given id and transfers it to an address. |
+| safeMint | Safely mints a token and transfers it to an address. |
+| burn | Destroys a token |
 
 Expected Events
 | Event | Description |
 | ------------- | ------------- |
 | Transfer | Emitted when a token id is transferred from an address to another. |
-| Approval | Emitted when owner enables approved to manage the tokenId token. |
+| Approval | Emitted when an account enables another account to manage a token. |
 
 You can find an example of [HRC721](./src/tests/contracts/BlockcodersHRC721.sol) in this address [0x...0a0a](https://explorer.pops.one/address/0xbba5d03304318b8fe765d977081eb392eb170a0a?activeTab=0).
 
@@ -500,9 +552,9 @@ const contract = new HRC721('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf
+#### balanceOf(address: string, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
-Returns the number of tokens in owner's account.
+<p>Returns the number of tokens in <code>address</code>'s account.</p>
 
 ```ts
 
@@ -521,9 +573,14 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01')
 ```
 
-#### ownerOf
+#### ownerOf(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the owner of the tokenId token.
+<p>Returns the owner of the <code>tokenId</code> token.</p>
+<p>Requirements
+  <ul>
+    <li><code>tokenId</code> must exist.</li>    
+  </ul>
+</p>
 
 ```ts
 
@@ -542,9 +599,19 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const owner = await contract.ownerOf('1')
 ```
 
-#### safeTransferFrom
+#### safeTransferFrom(from: string, to: string, tokenId: BNish, data?: any, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Safely transfers tokenId token from an address to another.
+<p>Safely transfers <code>tokenId</code> token from <code>from</code> to <code>to</code>.</p>
+<p>Requirements
+  <ul>
+    <li><code>from</code> cannot be the zero address.</li>
+    <li><code>to</code> cannot be the zero address.</li>
+    <li><code>tokenId</code> token must exist and be owned by <code>from</code>.</li>
+    <li>If the caller is not <code>from</code>, it must be approved to move this token by either <code>approve</code> or <code>setApprovalForAll</code>.</li>
+    <li>If <code>to</code> refers to a smart contract, it must implement <code>IERC721Receiver.onERC721Received</code>, which is called upon a safe transfer.</li>
+  </ul>
+</p>
+<p>Emits a <code>Transfer</code> event.</p>
 
 ```ts
 
@@ -560,12 +627,21 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', '0x')
+const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1')
 ```
 
-#### transferFrom
+#### transferFrom(from: string, to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Transfers tokenId token from an address to another. Usage of this method is discouraged, use [safeTransferFrom](#safetransferfrom) whenever possible.
+<p>Transfers <code>tokenId</code> token from <code>from</code> to <code>to</code>. Usage of this method is discouraged, use <code>safeTransferFrom</code> whenever possible.</p>
+<p>Requirements
+  <ul>
+    <li><code>from</code> cannot be the zero address.</li>
+    <li><code>to</code> cannot be the zero address.</li>
+    <li><code>tokenId</code> token must exist and be owned by <code>from</code>.</li>
+    <li>If the caller is not <code>from</code>, it must be approved to move this token by either <code>approve</code> or <code>setApprovalForAll</code>.</li>
+  </ul>
+</p>
+<p>Emits a <code>Transfer</code> event.</p>
 
 ```ts
 
@@ -584,10 +660,19 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.transferFrom('0x...01', '0x...02', '1')
 ```
 
-#### approve
+#### approve(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Gives permission to to to transfer tokenId token to another account.
+<p>Gives permission to <code>to</code> to transfer <code>tokenId</code> token to another account. The approval is cleared when the token is transferred.</p>
+<p>Only a single account can be approved at a time, so approving the zero address clears previous approvals.</p>
 
+<p>Requirements
+  <ul>
+    <li>The caller must own the token or be an approved operator.</li>
+    <li><code>tokenId</code> must exist.</li>
+  </ul>
+</p>
+<p>Emits a <code>Approval</code> event.</p>
+  
 ```ts
 
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
@@ -605,10 +690,15 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const tx = await contract.approve('0x...01', '1')
 ```
 
-#### getApproved
+#### getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the account approved for tokenId token.
-
+<p>Returns the account approved for <code>tokenId</code> token.<p>
+<p>Requirements
+  <ul>
+    <li><code>tokenId</code> must exist.</li>
+  </ul>
+</p>
+  
 ```ts
 
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
@@ -626,9 +716,56 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const address = await contract.getApproved('1')
 ```
 
-####  totalSupply
+#### setApprovalForAll(addressOperator: string, approved: boolean, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Returns the total amount of tokens stored by the contract.
+<p>Approve or remove <code>addressOperator</code> as an operator for the caller. Operators can call <code>transferFrom</code> or <code>safeTransferFrom</code> for any token owned by the caller.<p>
+<p>Requirements
+  <ul>
+    <li>The <code>addressOperator</code> cannot be the caller.</li>
+  </ul>
+</p>
+<p>Emits an <code>ApprovalForAll</code> event.</p>
+  
+```ts
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.setApprovalForAll('0x...01', true)
+```
+
+#### isApprovedForAll(owner: string, operator: string, txOptions?: ITransactionOptions): Promise&lt;boolean&gt;
+
+<p>Returns if the <code>operator</code> is allowed to manage all of the assets of <code>owner</code>.</p>
+<p>See <code>setApprovalForAll</code></p>
+  
+```ts
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a boolean
+const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
+```
+  
+####  totalSupply(txOptions?: ITransactionOptions): Promise&lt;BN&gt;
+
+<p>Returns the total amount of tokens stored by the contract.</p>
 
 ```ts
 
@@ -647,30 +784,9 @@ const contract = new HRC721('0x...00', ABI, wallet)
 const supply = await contract.totalSupply()
 ```
 
-#### tokenURI
+#### tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the Uniform Resource Identifier (URI) for tokenId token.
-
-```ts
-
-import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  HarmonyShards.SHARD_0,
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC721('0x...00', ABI, wallet)
-
-// returns a string value.
-const uri = await contract.tokenURI(1)
-```
-
-#### symbol
-
-Returns the token collection symbol.
+<p>Returns the Uniform Resource Identifier (URI) for <code>tokenId</code> token.</p>
 
 ```ts
 
@@ -686,12 +802,12 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a string value.
-const symbol = await contract.symbol() // Blockcoders
-```
+const uri = await contract.tokenURI('10')
 
-#### name
 
-Returns the token collection name.
+#### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
+
+<p>Returns the token collection symbol.</p>
 
 ```ts
 
@@ -707,12 +823,68 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a string value.
-const name = await contract.name() // Blockcoders NFT
+const symbol = await contract.symbol() 
 ```
 
-#### mint
+#### name(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Mints a token with tokenId and transfers it to the account.
+<p>Returns the token collection name.</p>
+
+```ts
+
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a string value.
+const name = await contract.name()
+```
+
+#### mint(account: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
+
+<p>Mints a token with <code>tokenId</code> and transfers it to the <code>account</code>.</p>
+<p>Usage of this method is discouraged, use <code>safeMint</code> whenever possible</p>
+<p>Requirements
+  <ul>
+    <li><code>tokenId</code> must not exist.</li>
+    <li><code>account</code> cannot be the zero address.</li>
+  </ul>
+</p>
+<p>Emits an <code>Transfer</code> event.</p>
+  
+```ts
+import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC721('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.mint('0x...01', '1')
+```
+
+#### safeMint(to: string, tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
+
+<p>Safely mints a token with <code>tokenId</code> and transfers it to <code>to</code>.</p>
+<p>Requirements
+  <ul>
+    <li><code>tokenId</code> must not exist.</li>
+    <li>If <code>to</code> refers to a smart contract, it must implement <code>IERC721Receiver.onERC721Received</code>, which is called upon a safe transfer.</li>
+  </ul>
+</p>
+<p>Emits an <code>Transfer</code> event.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
@@ -727,13 +899,19 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.mint('0x...01', 1)
+const tx = await contract.mint('0x...01', '1')
 ```
 
-#### safeMint
+#### burn(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Safely mints a token with tokenId and transfers it to the account.
-
+<p>Destroys <code>tokenId</code>. The caller must own <code>tokenId</code> or be an approved operator.</p>
+<p>Requirements
+  <ul>
+    <li><code>tokenId</code> must exist.</li>    
+  </ul>
+</p>
+<p>Emits an <code>Transfer</code> event.</p>
+  
 ```ts
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
@@ -747,42 +925,33 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.mint('0x...01', 1)
-```
-
-#### burn
-
-Destroys tokenId. The caller must own tokenId or be an approved operator.
-
-```ts
-import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  HarmonyShards.SHARD_0,
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC721('0x...00', ABI, wallet)
-
-// returns a Harmony Transaction instance.
-const tx = await contract.burn(1)
+const tx = await contract.burn('1')
 ```
 
 ## HRC1155 API
 
 The `HRC1155` implements the abstract class [Base Token](#base-token).
 
-**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc1155) will look for s specific list of functions and events to identify HRC1155 tokens. You can validate if the bytecode of your HRC1155 is valid [here](https://explorer.harmony.one/tools/checkHrc).
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc1155) will look for a specific list of functions and events to identify HRC1155 tokens. You can validate if the bytecode of your HRC1155 is valid [here](https://explorer.harmony.one/tools/checkHrc).
 
 Expected Methods:
 | Method | Description |
 | ------------- | ------------- |
-| owner | Address of the current owner. |
-| tokenURIPrefix | Token URI prefix |
-| balanceOfBatch | Batched version of balanceOf |
-| contractURI | Contract URI prefix |
+| balanceOf | Returns the amount of tokens of a token type (id) owned by an account. |
+| balanceOfBatch | Batched version of balanceOf. |
+| safeTransferFrom | Transfers the amount of tokens of a token type (id) from an address to another address. |
+| safeBatchTransferFrom | Batched version of safeTransferFrom. |
+| setApprovalForAll | Grants or revokes permission to an operator to transfer the caller’s tokens. |
+| isApprovedForAll | Returns true if an operator is approved to transfer the tokens of an account. |
+| owner | Returns the address of the current contract owner. |
+| tokenURIPrefix | Returns the token URI prefix |
+| contractURI | Returns a URL for the storefront-level metadata for your contract. |
+| tokenURI | Returns the Uniform Resource Identifier (URI) for a token. |
+| totalSupply | Total amount of tokens with a given token id |
+| symbol | Returns the token collection symbol. |
+| name | Returns the token collection name. |
+| mint | Creates the amount of tokens of a token type (id), and assigns them to an account. |
+| mintBatch | Batched version of mint |
 
 Expected Events
 | Event | Description |
@@ -823,9 +992,9 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
 
 ### Methods
 
-#### balanceOf
+#### balanceOf(address: string, id: BNish, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
-Returns the amount of tokens of token type id owned by account.
+<p>Returns the amount of tokens of token type (id) <code>id</code> owned by <code>address</code>.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -843,9 +1012,9 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const balance = await contract.balanceOf('0x...01', '1')
 ```
 
-#### balanceOfBatch
+#### balanceOfBatch(accounts: string[], ids: BNish[], txOptions?: ITransactionOptions): Promise&lt;BN[]&gt;
 
-Batched version of [balanceOf](#balanceof).
+<p>Batched version of <code>balanceOf</code>.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -863,29 +1032,9 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const balances = await contract.balanceOfBatch(['0x...01', '0x...02'], ['1', '2'])
 ```
 
-#### safeTransferFrom
+#### safeTransferFrom(from: string, to: string, id: BNish, amount: BNish, data: any, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Transfers amount tokens of token type id from an address to another.
-
-```ts
-import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
-import * as ABI from './abi.json'
-
-const wallet = new PrivateKey(
-  HarmonyShards.SHARD_0,
-  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
-)
-
-// A contract instance
-const contract = new HRC1155('0x...00', ABI, wallet)
-
-// returns a Harmony Transaction instance.
-const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', 1, '0x')
-```
-
-#### safeBatchTransferFrom
-
-Batched version of [safeTransferFrom](#safetransferfrom).
+<p>Transfers <code>amount</code> tokens of token type (id) <code>id</code> from <code>from</code> to <code>to</code>.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -900,12 +1049,38 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2'], [1, 1], '0x')
+const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', '1', [])
 ```
 
-#### setApprovalForAll
+#### safeBatchTransferFrom(from: string, to: string, ids: BNish[], amounts: BNish[], data: any, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Grants or revokes permission to operator to transfer the caller’s tokens, according to approved.
+<p>Batched version of <code>safeTransferFrom</code>.</p>
+
+```ts
+import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import * as ABI from './abi.json'
+
+const wallet = new PrivateKey(
+  HarmonyShards.SHARD_0,
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
+
+// A contract instance
+const contract = new HRC1155('0x...00', ABI, wallet)
+
+// returns a Harmony Transaction instance.
+const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2'], ['1', '1'], [])
+```
+
+#### setApprovalForAll(addressOperator: string, approved: boolean, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
+
+<p>Grants or revokes permission to <code>operator</code> to transfer the caller’s tokens, according to <code>approved</code>.</p>
+<p>Emits an <code>ApprovalForAll</code> event.</p>
+<p>Requirements
+  <ul>
+    <li><code>operator</code> cannot be the caller.</li>
+  </ul>
+</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -923,9 +1098,9 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const tx = await contract.setApprovalForAll('0x...01', true)
 ```
 
-#### isApprovedForAll
+#### isApprovedForAll(owner: string, operator: string, txOptions?: ITransactionOptions): Promise&lt;boolean&gt;
 
-Returns true if operator is approved to transfer account's tokens.
+<p>Returns true if <code>operator</code> is approved to transfer <code>account</code>'s tokens.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -943,9 +1118,9 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 ```
 
-#### owner
+#### owner(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the address of the current owner.
+<p>Returns the address of the current owner.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -963,9 +1138,9 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const owner = await contract.owner()
 ```
 
-#### tokenURIPrefix
+#### tokenURIPrefix(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the token URI prefix.
+<p>Returns the token URI prefix.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -983,9 +1158,9 @@ const contract = new HRC1155('0x...00', ABI, wallet)
 const uri = await contract.tokenURIPrefix()
 ```
 
-#### contractURI
+#### contractURI(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the contract URI prefix.
+<p>returns a URL for the storefront-level metadata for your contract.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -1004,9 +1179,9 @@ const uri = await contract.contractURI()
 ```
 
 
-#### totalSupply
+#### totalSupply(id: BNish, txOptions?: ITransactionOptions): Promise&lt;BN&gt;
 
-Total amount of tokens in with a given id.
+<p>Total amount of tokens with a given token <code>id</code>.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -1021,12 +1196,12 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a number value.
-const total = await contract.totalSupply(1)
+const total = await contract.totalSupply('1')
 ```
 
-#### tokenURI
+#### tokenURI(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the Uniform Resource Identifier (URI) for tokenId token.
+<p>Returns the Uniform Resource Identifier (URI) for <code>tokenId</code> token.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -1041,13 +1216,13 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a string value.
-const uri = await contract.tokenURI()
+const uri = await contract.tokenURI('1')
 ```
 
 
-#### symbol
+#### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the token collection symbol.
+<p>Returns the token collection symbol.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -1062,12 +1237,12 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a string value.
-const symbol = await contract.symbol() // Blockcoders
+const symbol = await contract.symbol()
 ```
 
-#### name
+#### name(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-Returns the token collection name.
+<p>Returns the token collection name.</p>
 
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
@@ -1082,13 +1257,20 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a string value.
-const name = await contract.name() // Blockcoders NFT
+const name = await contract.name()
 ```
 
-#### mint
+#### mint(account: string, tokenId: BNish, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Creates amount tokens of token type id, and assigns them to to.
-
+<p>Creates <code>amount</code> tokens of token type (id) <code>tokenId</code>, and assigns them to <code>to</code>.</p>
+<p>Emits a <code>TransferSingle</code> event.</p>
+<p>Requirements
+  <ul>
+    <li><code>to</code> cannot be the zero address.</li>
+    <li>If <code>to</code> refers to a smart contract, it must implement <code>IERC1155Receiver.onERC1155Received</code> and return the acceptance magic value.</li>
+  </ul>
+</p>
+  
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
@@ -1102,13 +1284,20 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.mint('0x...01', 1, 10)
+const tx = await contract.mint('0x...01', '1', '10')
 ```
 
-#### mintBatch
+#### mintBatch(account: string, tokenIds: BNish[], amounts: BNish[], txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-Batched version of [mint](#mint).
-
+<p>Batched version of <code>mint</code>.<p>
+<p>Emits a <code>TransferBatch</code> event.</p>
+<p>Requirements
+  <ul>
+    <li><code>tokenIds</code> and <code>amounts</code> must have the same length.</li>
+    <li>If <code>to</code> refers to a smart contract, it must implement <code>IERC1155Receiver.onERC1155Received</code> and return the acceptance magic value.</li>
+  </ul>
+</p>
+  
 ```ts
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
@@ -1122,7 +1311,7 @@ const wallet = new PrivateKey(
 const contract = new HRC1155('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.mintBatch('0x...01', [1, 2, 3], [10, 5, 20])
+const tx = await contract.mintBatch('0x...01', ['1', '2', '3'], ['10', '5', '20'])
 ```
 
 ## BridgeToken API
