@@ -183,7 +183,6 @@ You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) i
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -217,7 +216,7 @@ const contract = new HRC20('0x...00', ABI, wallet, {
 Returns the number of tokens in owner's account.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -238,7 +237,7 @@ const balance = await contract.balanceOf('0x...01')
 Moves amount tokens from the caller’s account to to.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -259,7 +258,7 @@ const tx = await contract.transfer('0x...01', '1')
 Moves amount tokens from the caller’s account to to.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -280,7 +279,7 @@ const tx = await contract.allowance('0x...01', '0x...02')
 Moves amount tokens from the caller’s account to to.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -301,7 +300,7 @@ const tx = await contract.approve('0x...01', 100)
 Moves amount tokens from the caller’s account to to.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -322,7 +321,7 @@ const tx = await contract.transferFrom('0x...01', '0x...02', 100)
 Returns the token symbol.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -343,7 +342,7 @@ const symbol = await contract.symbol() // BC
 Returns the token name.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -364,7 +363,7 @@ const name = await contract.name() // Blockcoders
 Returns the decimals places of the token.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -384,7 +383,7 @@ const name = await contract.decimals() // 18
 Mints an amount of tokens and transfers them to the account increasing the total supply.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -405,7 +404,7 @@ const tx = await contract.mint('0x...01', 10)
 Destroys an amount of tokens from the account, reducing the total supply.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -426,7 +425,7 @@ const tx = await contract.burn(10)
 Destroys amount tokens from account, deducting from the caller’s allowance.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -472,7 +471,7 @@ You can find an example of [HRC721](./src/tests/contracts/BlockcodersHRC721.sol)
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -506,7 +505,7 @@ const contract = new HRC721('0x...00', ABI, wallet, {
 Returns the number of tokens in owner's account.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -527,7 +526,7 @@ const balance = await contract.balanceOf('0x...01')
 Returns the owner of the tokenId token.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -548,7 +547,7 @@ const owner = await contract.ownerOf('1')
 Safely transfers tokenId token from an address to another.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -569,7 +568,7 @@ const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', '0x')
 Transfers tokenId token from an address to another. Usage of this method is discouraged, use [safeTransferFrom](#safetransferfrom) whenever possible.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -590,7 +589,7 @@ const tx = await contract.transferFrom('0x...01', '0x...02', '1')
 Gives permission to to to transfer tokenId token to another account.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -611,7 +610,7 @@ const tx = await contract.approve('0x...01', '1')
 Returns the account approved for tokenId token.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -632,7 +631,7 @@ const address = await contract.getApproved('1')
 Returns the total amount of tokens stored by the contract.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -653,7 +652,7 @@ const supply = await contract.totalSupply()
 Returns the Uniform Resource Identifier (URI) for tokenId token.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -674,7 +673,7 @@ const uri = await contract.tokenURI()
 Returns the token collection symbol.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -695,7 +694,7 @@ const symbol = await contract.symbol() // Blockcoders
 Returns the token collection name.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -716,7 +715,6 @@ const name = await contract.name() // Blockcoders NFT
 Mints a token with tokenId and transfers it to the account.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -737,7 +735,6 @@ const tx = await contract.mint('0x...01', 1)
 Safely mints a token with tokenId and transfers it to the account.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -758,7 +755,6 @@ const tx = await contract.mint('0x...01', 1)
 Destroys tokenId. The caller must own tokenId or be an approved operator.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -799,7 +795,6 @@ You can find an example of [HRC1155](./src/tests/contracts/BlockcodersHRC1155.so
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -833,7 +828,6 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
 Returns the amount of tokens of token type id owned by account.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -854,7 +848,6 @@ const balance = await contract.balanceOf('0x...01', '1')
 Batched version of [balanceOf](#balanceof).
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -875,7 +868,6 @@ const balances = await contract.balanceOfBatch(['0x...01', '0x...02'], ['1', '2'
 Transfers amount tokens of token type id from an address to another.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -896,7 +888,6 @@ const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', 1, '0x')
 Batched version of [safeTransferFrom](#safetransferfrom).
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -917,7 +908,6 @@ const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2']
 Grants or revokes permission to operator to transfer the caller’s tokens, according to approved.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -938,7 +928,6 @@ const tx = await contract.setApprovalForAll('0x...01', true)
 Returns true if operator is approved to transfer account's tokens.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -959,7 +948,6 @@ const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 Returns the address of the current owner.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -980,7 +968,6 @@ const owner = await contract.owner()
 Returns the token URI prefix.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1001,7 +988,6 @@ const uri = await contract.tokenURIPrefix()
 Returns the contract URI prefix.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1023,7 +1009,6 @@ const uri = await contract.contractURI()
 Total amount of tokens in with a given id.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1044,7 +1029,6 @@ const total = await contract.totalSupply(1)
 Returns the Uniform Resource Identifier (URI) for tokenId token.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1066,7 +1050,6 @@ const uri = await contract.tokenURI()
 Returns the token collection symbol.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1087,7 +1070,6 @@ const symbol = await contract.symbol() // Blockcoders
 Returns the token collection name.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1108,7 +1090,6 @@ const name = await contract.name() // Blockcoders NFT
 Creates amount tokens of token type id, and assigns them to to.
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1129,7 +1110,6 @@ const tx = await contract.mint('0x...01', 1, 10)
 Batched version of [mint](#mint).
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1152,7 +1132,6 @@ Harmony -> Ethereum way bridge
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
