@@ -666,7 +666,7 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a string value.
-const uri = await contract.tokenURI()
+const uri = await contract.tokenURI(1)
 ```
 
 #### symbol
