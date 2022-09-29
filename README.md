@@ -222,12 +222,11 @@ const contract = new HRC20('0x...00', ABI, wallet, {
 <p>Returns the amount of tokens in existence.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -728,12 +727,11 @@ const address = await contract.getApproved('1')
 <p>Emits an <code>ApprovalForAll</code> event.</p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -750,12 +748,11 @@ const tx = await contract.setApprovalForAll('0x...01', true)
 <p>See <code>setApprovalForAll</code></p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
