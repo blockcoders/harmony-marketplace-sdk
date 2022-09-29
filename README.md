@@ -58,11 +58,11 @@ const pk = new PrivateKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), privateKey)
 // Using a WSProvider with a string url.
 const pk = new PrivateKey(new WSProvider('wss://ws.s0.t.hmny.io'), privateKey)
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const pk = new PrivateKey(new WSProvider(HARMONY_RPC_WS), privateKey)
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const pk = new PrivateKey(new HttpProvider(HarmonyShards.SHARD_0), privateKey)
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const pk = new PrivateKey(HarmonyShards.SHARD_0, privateKey)
 ```
 
 ### Mnemonic Key
@@ -84,11 +84,11 @@ const mnemonicKey = new MnemonicKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), {
 // Using a WSProvider with a string url.
 const mnemonicKey = new MnemonicKey(new WSProvider('wss://ws.s0.t.hmny.io'), { mnemonic })
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const mnemonicKey = new MnemonicKey(new WSProvider(HARMONY_RPC_WS), { mnemonic })
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const mnemonicKey = new MnemonicKey(new HttpProvider(HarmonyShards.SHARD_0), { mnemonic })
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const mnemonicKey = new MnemonicKey(HarmonyShards.SHARD_0, { mnemonic })
 ```
 
 ### Simple Key
@@ -108,11 +108,11 @@ const key = new Key(new HttpProvider(HARMONY_RPC_SHARD_0_URL))
 // Using a WSProvider with a string url.
 const key = new Key(new WSProvider('wss://ws.s0.t.hmny.io'))
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const key = new Key(new WSProvider(HARMONY_RPC_WS))
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const key = new Key(new HttpProvider(HarmonyShards.SHARD_0))
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const key = new Key(HarmonyShards.SHARD_0)
 
 // Add Private key manually
 key.addByPrivateKey('45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e')
@@ -144,11 +144,11 @@ const key = new HDKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), options)
 // Using a WSProvider with a string url.
 const key = new HDKey(new WSProvider('wss://ws.s0.t.hmny.io'), options)
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const key = new HDKey(new WSProvider(HARMONY_RPC_WS), options)
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const key = new HDKey(new HttpProvider(HarmonyShards.SHARD_0), options)
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const key = new HDKey(HarmonyShards.SHARD_0, options)
 ```
 
 ## Base Token
@@ -188,7 +188,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -222,7 +222,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -243,7 +243,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -264,7 +264,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -285,7 +285,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -306,7 +306,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -327,7 +327,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -348,7 +348,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -369,7 +369,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -389,7 +389,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -410,7 +410,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -431,7 +431,7 @@ import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -477,7 +477,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -511,7 +511,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -532,7 +532,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -553,7 +553,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -574,7 +574,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -595,7 +595,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -616,7 +616,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -637,7 +637,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -658,7 +658,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -679,7 +679,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -700,7 +700,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -721,7 +721,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -742,7 +742,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -763,7 +763,7 @@ import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -804,7 +804,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -838,7 +838,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -859,7 +859,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -880,7 +880,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -901,7 +901,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -922,7 +922,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -943,7 +943,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -964,7 +964,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -985,7 +985,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1006,7 +1006,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1028,7 +1028,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1049,7 +1049,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1071,7 +1071,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1092,7 +1092,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1113,7 +1113,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1134,7 +1134,7 @@ import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1164,7 +1164,7 @@ const ethOwner = new Wallet(
   )
 ) 
 const hmyOwner = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 const bridge = new BridgeHRC20Token(hmyOwner, ethOwner)
