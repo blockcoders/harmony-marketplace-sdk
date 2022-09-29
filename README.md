@@ -224,13 +224,18 @@ const contract = new HRC20('0x...00', ABI, wallet, {
 
 ```ts
 import { HttpProvider } from '@harmony-js/network'
-import { HRC20 } from 'harmony-marketplace-sdk'
+import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
-// A contract instance
-const contract = new HRC20('0x...00', ABI, HttpProvider)
+const wallet = new PrivateKey(
+  new HttpProvider(HarmonyShards.SHARD_0),
+  '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
+)
 
-// returns the totalSupply
+// A contract instance
+const contract = new HRC20('0x...00', ABI, wallet)
+
+// returns the totalSupply as a BN instance
 const totalSupply = await contract.totalSupply()
 ```
 
