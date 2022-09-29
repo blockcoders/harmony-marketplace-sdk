@@ -58,11 +58,11 @@ const pk = new PrivateKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), privateKey)
 // Using a WSProvider with a string url.
 const pk = new PrivateKey(new WSProvider('wss://ws.s0.t.hmny.io'), privateKey)
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const pk = new PrivateKey(new WSProvider(HARMONY_RPC_WS), privateKey)
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const pk = new PrivateKey(new HttpProvider(HarmonyShards.SHARD_0), privateKey)
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const pk = new PrivateKey(HarmonyShards.SHARD_0, privateKey)
 ```
 
 ### Mnemonic Key
@@ -84,11 +84,11 @@ const mnemonicKey = new MnemonicKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), {
 // Using a WSProvider with a string url.
 const mnemonicKey = new MnemonicKey(new WSProvider('wss://ws.s0.t.hmny.io'), { mnemonic })
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const mnemonicKey = new MnemonicKey(new WSProvider(HARMONY_RPC_WS), { mnemonic })
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const mnemonicKey = new MnemonicKey(new HttpProvider(HarmonyShards.SHARD_0), { mnemonic })
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const mnemonicKey = new MnemonicKey(HarmonyShards.SHARD_0, { mnemonic })
 ```
 
 ### Simple Key
@@ -108,11 +108,11 @@ const key = new Key(new HttpProvider(HARMONY_RPC_SHARD_0_URL))
 // Using a WSProvider with a string url.
 const key = new Key(new WSProvider('wss://ws.s0.t.hmny.io'))
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const key = new Key(new WSProvider(HARMONY_RPC_WS))
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const key = new Key(new HttpProvider(HarmonyShards.SHARD_0))
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const key = new Key(HarmonyShards.SHARD_0)
 
 // Add Private key manually
 key.addByPrivateKey('45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e')
@@ -144,11 +144,11 @@ const key = new HDKey(new HttpProvider(HARMONY_RPC_SHARD_0_URL), options)
 // Using a WSProvider with a string url.
 const key = new HDKey(new WSProvider('wss://ws.s0.t.hmny.io'), options)
 
-// Using a HttpProvider with a const from Harmony Marketplace SDK.
+// Using a WSProvider with a const from Harmony Marketplace SDK.
 const key = new HDKey(new WSProvider(HARMONY_RPC_WS), options)
 
-// Using a HttpProvider with a pre-configuration from Harmony Marketplace SDK.
-const key = new HDKey(new HttpProvider(HarmonyShards.SHARD_0), options)
+// Using a provider with a pre-configuration from Harmony Marketplace SDK.
+const key = new HDKey(HarmonyShards.SHARD_0, options)
 ```
 
 ## Base Token
@@ -189,12 +189,11 @@ You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) i
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -244,12 +243,12 @@ const totalSupply = await contract.totalSupply()
 <p>Returns the number of tokens owned by <code>address</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -265,12 +264,12 @@ const balance = await contract.balanceOf('0x...01')
 <p>Moves <code>amount</code> tokens from the caller’s account to <code>to</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -287,12 +286,12 @@ const tx = await contract.transfer('0x...01', '1')
 <p>This value changes when <code>approve</code> or <code>transferFrom</code> are called.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -309,12 +308,12 @@ const tx = await contract.allowance('0x...01', '0x...02')
 <p>Emits an <code>Approval</code> event.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -330,12 +329,12 @@ const tx = await contract.approve('0x...01', 100)
 <p>Moves <code>amount</code> tokens from <code>from</code> account to <code>to</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -351,12 +350,12 @@ const tx = await contract.transferFrom('0x...01', '0x...02', 100)
 <p>Returns the token symbol.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -372,12 +371,12 @@ const symbol = await contract.symbol()
 <p>Returns the token name.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -393,12 +392,12 @@ const name = await contract.name()
 <p>Returns the decimals places of the token.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -419,12 +418,12 @@ const name = await contract.decimals() // 18
 </p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -447,12 +446,12 @@ const tx = await contract.mint('0x...01', 10)
 </p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -473,12 +472,12 @@ const tx = await contract.burn(10)
 </p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC20 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -525,12 +524,12 @@ You can find an example of [HRC721](./src/tests/contracts/BlockcodersHRC721.sol)
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -559,12 +558,12 @@ const contract = new HRC721('0x...00', ABI, wallet, {
 <p>Returns the number of tokens in <code>address</code>'s account.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -585,12 +584,12 @@ const balance = await contract.balanceOf('0x...01')
 </p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -616,12 +615,12 @@ const owner = await contract.ownerOf('1')
 <p>Emits a <code>Transfer</code> event.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -646,12 +645,12 @@ const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1')
 <p>Emits a <code>Transfer</code> event.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -676,12 +675,12 @@ const tx = await contract.transferFrom('0x...01', '0x...02', '1')
 <p>Emits a <code>Approval</code> event.</p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -702,12 +701,12 @@ const tx = await contract.approve('0x...01', '1')
 </p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -772,12 +771,12 @@ const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 <p>Returns the total amount of tokens stored by the contract.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -793,12 +792,12 @@ const supply = await contract.totalSupply()
 <p>Returns the Uniform Resource Identifier (URI) for <code>tokenId</code> token.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -807,19 +806,19 @@ const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a string value.
 const uri = await contract.tokenURI('10')
-```
+
 
 #### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
 <p>Returns the token collection symbol.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -835,12 +834,12 @@ const symbol = await contract.symbol()
 <p>Returns the token collection name.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
+
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -864,12 +863,11 @@ const name = await contract.name()
 <p>Emits an <code>Transfer</code> event.</p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -892,12 +890,11 @@ const tx = await contract.mint('0x...01', '1')
 <p>Emits an <code>Transfer</code> event.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -919,12 +916,11 @@ const tx = await contract.mint('0x...01', '1')
 <p>Emits an <code>Transfer</code> event.</p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC721 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -971,12 +967,11 @@ You can find an example of [HRC1155](./src/tests/contracts/BlockcodersHRC1155.so
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1005,12 +1000,11 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
 <p>Returns the amount of tokens of token type (id) <code>id</code> owned by <code>address</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1026,12 +1020,11 @@ const balance = await contract.balanceOf('0x...01', '1')
 <p>Batched version of <code>balanceOf</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1047,12 +1040,11 @@ const balances = await contract.balanceOfBatch(['0x...01', '0x...02'], ['1', '2'
 <p>Transfers <code>amount</code> tokens of token type (id) <code>id</code> from <code>from</code> to <code>to</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1068,12 +1060,11 @@ const tx = await contract.safeTransferFrom('0x...01', '0x...02', '1', '1', [])
 <p>Batched version of <code>safeTransferFrom</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1095,12 +1086,11 @@ const tx = await contract.safeBatchTransferFrom('0x...01', '0x...02', ['1', '2']
 </p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1116,12 +1106,11 @@ const tx = await contract.setApprovalForAll('0x...01', true)
 <p>Returns true if <code>operator</code> is approved to transfer <code>account</code>'s tokens.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1137,12 +1126,11 @@ const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 <p>Returns the address of the current owner.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1158,12 +1146,11 @@ const owner = await contract.owner()
 <p>Returns the token URI prefix.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1179,12 +1166,11 @@ const uri = await contract.tokenURIPrefix()
 <p>returns a URL for the storefront-level metadata for your contract.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1201,12 +1187,11 @@ const uri = await contract.contractURI()
 <p>Total amount of tokens with a given token <code>id</code>.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1222,12 +1207,11 @@ const total = await contract.totalSupply('1')
 <p>Returns the Uniform Resource Identifier (URI) for <code>tokenId</code> token.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1244,12 +1228,11 @@ const uri = await contract.tokenURI('1')
 <p>Returns the token collection symbol.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1265,12 +1248,11 @@ const symbol = await contract.symbol()
 <p>Returns the token collection name.</p>
 
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1293,12 +1275,11 @@ const name = await contract.name()
 </p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1321,12 +1302,11 @@ const tx = await contract.mint('0x...01', '1', '10')
 </p>
   
 ```ts
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const wallet = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 
@@ -1344,7 +1324,6 @@ Harmony -> Ethereum way bridge
 ### Initializing
 
 ```typescript
-import { HttpProvider } from '@harmony-js/network'
 import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
@@ -1356,7 +1335,7 @@ const ethOwner = new Wallet(
   )
 ) 
 const hmyOwner = new PrivateKey(
-  new HttpProvider(HarmonyShards.SHARD_0),
+  HarmonyShards.SHARD_0,
   '45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60bf25e'
 )
 const bridge = new BridgeHRC20Token(hmyOwner, ethOwner)
