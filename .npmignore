@@ -19,3 +19,4 @@ hardhat.config.js
 .env.sample
 .env
 .vscode/settings.json
+.bettercodehub.yml
