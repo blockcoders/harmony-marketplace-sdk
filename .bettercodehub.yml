@@ -1,0 +1,2 @@
+exclude:
+- .*/abi\.ts

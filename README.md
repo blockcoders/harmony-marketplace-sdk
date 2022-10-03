@@ -1,9 +1,14 @@
-# Harmony Marketplace SDK
+Harmony Marketplace SDK
+=================
 
 [![npm](https://img.shields.io/npm/v/harmony-marketplace-sdk)](https://www.npmjs.com/package/harmony-marketplace-sdk)
 [![CircleCI](https://circleci.com/gh/blockcoders/harmony-marketplace-sdk/tree/main.svg?style=svg)](https://circleci.com/gh/blockcoders/harmony-marketplace-sdk/tree/main)
 [![Coverage Status](https://coveralls.io/repos/github/blockcoders/harmony-marketplace-sdk/badge.svg?branch=main)](https://coveralls.io/github/blockcoders/harmony-marketplace-sdk?branch=main)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/943e9d8d050d4f129d2a2c63afdd419b)](https://www.codacy.com/gh/blockcoders/harmony-marketplace-sdk/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=blockcoders/harmony-marketplace-sdk&amp;utm_campaign=Badge_Grade)
 [![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/harmony-marketplace-sdk)](https://snyk.io/test/github/blockcoders/harmony-marketplace-sdk)
+[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![BCH compliance](https://bettercodehub.com/edge/badge/blockcoders/harmony-marketplace-sdk?branch=main)](https://bettercodehub.com/)
+[![CodeQL](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml)
 
 Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
 
