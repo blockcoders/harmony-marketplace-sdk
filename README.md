@@ -104,9 +104,6 @@ Implementation of the Wallet that does not use any pk or mnemonic.
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { Key, HarmonyShards, HARMONY_RPC_SHARD_0_URL, HARMONY_RPC_WS } from 'harmony-marketplace-sdk'
 
-// Using with Metamask
-const key = new Key(window.ethereum)
-
 // Using a HttpProvider with a string url.
 const key = new Key(new HttpProvider('https://api.harmony.one'))
 
