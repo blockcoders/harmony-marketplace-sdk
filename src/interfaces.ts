@@ -80,3 +80,7 @@ export interface BridgeResponse {
   addr: string
   receiptId: string
 }
+
+export interface ChainId {
+  [key: number]: string
+}

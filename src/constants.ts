@@ -1,5 +1,5 @@
 import { ChainID, ChainType, Unit } from '@harmony-js/utils'
-import { ContractAddresses, HarmonyRpcConfig, HarmonyShards, ITransactionOptions } from './interfaces'
+import { ChainId, ContractAddresses, HarmonyRpcConfig, HarmonyShards, ITransactionOptions } from './interfaces'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const DEFAULT_GAS_PRICE = '1000000000'
@@ -8,6 +8,10 @@ export const HARMONY_RPC_SHARD_0_URL = 'https://api.harmony.one'
 export const HARMONY_RPC_SHARD_1_URL = 'https://s1.api.harmony.one'
 export const HARMONY_RPC_SHARD_2_URL = 'https://s2.api.harmony.one'
 export const HARMONY_RPC_SHARD_3_URL = 'https://s3.api.harmony.one'
+export const HARMONY_RPC_SHARD_0_TESTNET_URL = 'https://api.s0.b.hmny.io'
+export const HARMONY_RPC_SHARD_1_TESTNET_URL = 'https://api.s1.b.hmny.io'
+export const HARMONY_RPC_SHARD_2_TESTNET_URL = 'https://api.s2.b.hmny.io'
+export const HARMONY_RPC_SHARD_3_TESTNET_URL = 'https://api.s3.b.hmny.io'
 export const HARMONY_RPC_SHARD_0_DEVNET_URL = 'https://api.s0.ps.hmny.io'
 export const HARMONY_RPC_WS = 'wss://ws.s0.t.hmny.io'
 export const HARMONY_RPC_DEVNET_WS = 'wss://ws.s0.ps.hmny.io'
@@ -43,6 +47,18 @@ export const HARMONY_SHARDS = {
   [HarmonyShards.SHARD_2]: HARMONY_RPC_SHARD_2,
   [HarmonyShards.SHARD_3]: HARMONY_RPC_SHARD_3,
   [HarmonyShards.SHARD_0_DEVNET]: HARMONY_RPC_SHARD_0_DEVNET,
+}
+
+export const CHAINS_ID: ChainId = {
+  1666600000: HARMONY_RPC_SHARD_0_URL,
+  1666600001: HARMONY_RPC_SHARD_1_URL,
+  1666600002: HARMONY_RPC_SHARD_2_URL,
+  1666600003: HARMONY_RPC_SHARD_3_URL,
+  1666700000: HARMONY_RPC_SHARD_0_TESTNET_URL,
+  1666700001: HARMONY_RPC_SHARD_1_TESTNET_URL,
+  1666700002: HARMONY_RPC_SHARD_2_TESTNET_URL,
+  1666700003: HARMONY_RPC_SHARD_3_TESTNET_URL,
+  1666900000: HARMONY_RPC_SHARD_0_DEVNET_URL,
 }
 
 export enum NetworkInfo {
