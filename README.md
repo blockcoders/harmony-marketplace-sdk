@@ -42,7 +42,7 @@ Include the ESM module (harmony-marketplace-sdk.esm.js) and import using:
 
 ## Wallet
 
-Harmony Marketplace SDK provides three implemntation of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a pivate key or mnemonic effortless.
+Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a private key or mnemonic effortless.
 
 ### Private Key
 
