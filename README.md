@@ -10,7 +10,7 @@ Harmony Marketplace SDK
 [![BCH compliance](https://bettercodehub.com/edge/badge/blockcoders/harmony-marketplace-sdk?branch=main)](https://bettercodehub.com/)
 [![CodeQL](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml)
 
-Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155, and any Smart Contracts that extend those standards. This library is based on [@harmony-js](https://github.com/harmony-one/sdk)
+Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
 
 ## Install
 
@@ -32,7 +32,7 @@ import { HRC721 } from 'harmony-marketplace-sdk'
 
 ### Browser
 
-Include the ESM module (harmony-marketplace-sdk.esm.js) and import it using:
+Include the ESM module (harmony-marketplace-sdk.esm.js) and import using:
 
 ```html
 <script type="module">
@@ -42,11 +42,11 @@ Include the ESM module (harmony-marketplace-sdk.esm.js) and import it using:
 
 ## Wallet
 
-Harmony Marketplace SDK provides three implementations of the [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14), which helps to create a Signer from a private key or mnemonic effortlessly.
+Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a private key or mnemonic effortless.
 
 ### Private Key
 
-Implementation of the Wallet using a private key.
+Implementation of the Wallet that uses a private key.
 
 ```ts
 import { HttpProvider, WSProvider } from '@harmony-js/network'
@@ -72,7 +72,7 @@ const pk = new PrivateKey(HarmonyShards.SHARD_0, privateKey)
 
 ### Mnemonic Key
 
-Implementation of the Wallet using a list of words as the mnemonic key.
+Implementation of the Wallet that uses a list of words for the mnemonic key.
 
 ```ts
 import { HttpProvider, WSProvider } from '@harmony-js/network'
@@ -98,7 +98,7 @@ const mnemonicKey = new MnemonicKey(HarmonyShards.SHARD_0, { mnemonic })
 
 ### Simple Key
 
-Implementation of the Wallet that does not use either pk or mnemonic.
+Implementation of the Wallet that does not use any pk or mnemonic.
 
 ```ts
 import { HttpProvider, WSProvider } from '@harmony-js/network'
@@ -128,7 +128,7 @@ key.addByPrivateKey('45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60
 
 ### HD Key
 
-Implementation of a hierarchical deterministic (HD) wallet that uses mnemonics to generate the derivative addresses.
+Implementation of a hierarchical deterministic (HD) wallet that uses a mnemonic to generate the derivative addresses.
 
 ```ts
 import { HttpProvider, WSProvider } from '@harmony-js/network'
@@ -161,13 +161,13 @@ const key = new HDKey(HarmonyShards.SHARD_0, options)
 
 ## Base Token
 
-The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is Harmony's recomendation for interacting with smart contracts. This abstract class contains the core functionality for interacting with Harmony Smart Contracts.
+The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
 
 ## HRC20 API
 
 The `HRC20` implements the abstract class [Base Token](#base-token).
 
-**NOTE**: The Harmony [Explorer](https://explorer.harmony.one/hrc20) will look for a specific list of functions and events to identify HRC20 tokens. You can validate if the bytecode of your HRC20 is valid [here](https://explorer.harmony.one/tools/checkHrc).
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc20) will look for a specific list of functions and events to identify HRC20 tokens. You can validate if the bytecode of your HRC20 is valid [here](https://explorer.harmony.one/tools/checkHrc).
 
 Expected Methods:
 | Method | Description |
@@ -175,7 +175,7 @@ Expected Methods:
 | totalSupply | Total amount of tokens stored by the contract. |
 | balanceOf | Returns the amount of tokens owned by account. |
 | transfer | Moves amount tokens from the caller’s account to another account. |
-| allowance | Returns the remaining number of tokens that the spender will be allowed to spend on behalf of the owner through transferFrom |
+| allowance | Returns the remaining number of tokens that spender will be allowed to spend on behalf of owner through transferFrom |
 | approve | Sets amount as the allowance of spender over the caller’s tokens. |
 | transferFrom | Moves amount tokens from an account to another account using the allowance mechanism. |
 | symbol | Returns the symbol of the token. |
@@ -268,7 +268,7 @@ const balance = await contract.balanceOf('0x...01')
 
 #### transfer(to: string, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-<p>Moves <code>amount</code> tokens from the caller’s account <code>to</code> another account.</p>
+<p>Moves <code>amount</code> tokens from the caller’s account to <code>to</code>.</p>
 
 ```ts
 
