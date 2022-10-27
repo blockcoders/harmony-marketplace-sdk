@@ -7,9 +7,17 @@ import { Key, MnemonicKey, PrivateKey } from './wallets'
 
 export type BNish = BN | Arrayish | bigint | number
 
+/**
+ * Supported parameter by smart contracts
+ * @see {@link https://github.com/harmony-one/sdk/blob/master/packages/harmony-contract/src/methods/method.ts#L169}
+ */
 export interface ITransactionOptions {
   gasLimit?: BN | number | string
   gasPrice: BN | number | string
+  from?: string
+  to?: string
+  value?: string
+  data?: string
 }
 
 export interface HarmonyRpcConfig {
