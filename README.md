@@ -156,6 +156,21 @@ const key = new HDKey(new WSProvider(HARMONY_RPC_WS), options)
 const key = new HDKey(HarmonyShards.SHARD_0, options)
 ```
 
+## Metamask Provider
+
+Implementation a subclass of HttpProvider that takes window.ethereum as a parameter, each method of HttpProvider is implemented by this subclass by cascading the request appropriately to window.ethereum
+
+```ts
+import detectEthereumProvider from '@metamask/detect-provider'
+import { MetamaskProvider } from 'harmony-marketplace-sdk'
+
+const provider = await detectEthereumProvider()
+
+// Using a MetamaskProvider with window or a detected provider.
+const key = new Key(new MetamaskProvider(window.ethereum || provider))
+
+```
+
 ## Base Token
 
 The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
@@ -1364,6 +1379,38 @@ const { addr, receiptId } = await bridge.sendToken(
   tokenInfo,
 )
 ```
+
+## Development
+
+Install all the dependencies:
+
+```sh
+npmn ci
+```
+
+Copy the `.env.sample` file to `.env`
+
+```sh
+cp .env.sample .env
+```
+
+In the project directory, you can run:
+
+### `npm run test`
+
+Running the unit tests.
+
+### `npm run test:cov`
+
+Running the test coverage.
+
+### `npm run test:e2e`
+
+Running the end to end test.
+
+### `npm run test:lint`
+
+Running the lint.
 
 ## Change Log
 

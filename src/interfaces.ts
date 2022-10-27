@@ -3,6 +3,7 @@ import { Arrayish } from '@harmony-js/crypto'
 import { HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType } from '@harmony-js/utils'
 import BN from 'bn.js'
+import { MetamaskProvider } from './providers'
 import { Key, MnemonicKey, PrivateKey } from './wallets'
 
 export type BNish = BN | Arrayish | bigint | number
@@ -34,7 +35,7 @@ export enum HarmonyShards {
   SHARD_0_DEVNET = 'SHARD_0_DEVNET',
 }
 
-export type RpcProviderType = string | HttpProvider | WSProvider | HarmonyShards
+export type RpcProviderType = string | HttpProvider | WSProvider | MetamaskProvider | HarmonyShards
 
 export type ContractProviderType = Wallet | Key | PrivateKey | MnemonicKey
 
@@ -91,4 +92,20 @@ export interface BridgeResponse {
 
 export interface ChainId {
   [key: number]: string
+}
+
+interface ProviderRequestArguments {
+  readonly method: string
+  readonly params?: readonly unknown[] | object
+}
+
+export interface MetaMaskEthereumProvider {
+  isMetaMask?: boolean
+  once(eventName: string | symbol, listener: (...args: any[]) => void): this
+  on(eventName: string | symbol, listener: (...args: any[]) => void): this
+  off(eventName: string | symbol, listener: (...args: any[]) => void): this
+  addListener(eventName: string | symbol, listener: (...args: any[]) => void): this
+  removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this
+  removeAllListeners(event?: string | symbol): this
+  request(args: ProviderRequestArguments): Promise<any>
 }

@@ -1,7 +1,7 @@
 import { Wallet } from '@harmony-js/account'
 import { Messenger, HttpProvider, WSProvider } from '@harmony-js/network'
 import { ChainID, ChainType, isWs } from '@harmony-js/utils'
-import { HARMONY_SHARDS, CHAINS_ID } from '../constants'
+import { HARMONY_SHARDS } from '../constants'
 import { HarmonyRpcConfig, HarmonyShards, RpcProviderType } from '../interfaces'
 
 /**
@@ -21,14 +21,6 @@ export class Key extends Wallet {
       provider = url
     } else if (typeof url === 'string') {
       provider = isWs(url) ? new WSProvider(url) : new HttpProvider(url)
-    } else if (url['isMetaMask']) {
-      const _chain = Number(url['networkVersion'])
-      const rpc_url = CHAINS_ID[_chain]
-
-      if (!rpc_url) throw new Error('Invalid metamask harmony chain.')
-
-      provider = new HttpProvider(rpc_url)
-      chain = _chain
     } else {
       throw new Error('Invalid url param.')
     }
