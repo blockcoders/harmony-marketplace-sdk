@@ -17,7 +17,7 @@ export interface ITransactionOptions {
   gasPrice: BN | number | string
   from?: string
   to?: string
-  value?: string
+  value?: BN | number | string
   data?: string
 }
 
