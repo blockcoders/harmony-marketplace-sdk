@@ -1394,6 +1394,23 @@ Copy the `.env.sample` file to `.env`
 cp .env.sample .env
 ```
 
+### Configure the environment variables
+
+```sh
+# An Etherscan API key. This is need it for use the bridge contracts.
+API_KEY=
+# A private key
+TEST_PK_1=
+# A private key
+TEST_PK_2=
+# A private key for the end 2 end test
+MASTER_PRIVATE_KEY=
+# A private key for the end 2 end test
+OWNER_PRIVATE_KEY=
+# A test seed for the unit test
+TEST_SEED="pablo diego jose francisco de paula juan nepomuceno maria ruiz y picasso"
+```
+
 In the project directory, you can run:
 
 ### `npm run test`
