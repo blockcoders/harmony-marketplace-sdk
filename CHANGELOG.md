@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.2
+- [#70](https://github.com/blockcoders/harmony-marketplace-sdk/pull/70) change value type to support BN and number by [@MaxMustermann2](https://github.com/MaxMustermann2)
+
 ## 0.1.1
 - [#69](https://github.com/blockcoders/harmony-marketplace-sdk/pull/69) Metamask signing support
 - [#68](https://github.com/blockcoders/harmony-marketplace-sdk/pull/68) Support for payable contract methods
