@@ -42,7 +42,7 @@ Include the ESM module (harmony-marketplace-sdk.esm.js) and import using:
 
 ## Wallet
 
-Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a private key or mnemonic effortless.
+Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a private key or mnemonic effortlessly.
 
 ### Private Key
 
@@ -173,7 +173,7 @@ const key = new Key(new MetamaskProvider(window.ethereum || provider))
 
 ## Base Token
 
-The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
+The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recommendation for interacting with smart contracts. This abstract class contains the core functionality for interacting with Harmony Smart Contracts.
 
 ## HRC20 API
 
@@ -202,7 +202,7 @@ Expected Events
 | Event | Description |
 | ------------- | ------------- |
 | Transfer | Emitted when a token id is transferred from an address to another. |
-| Approval | Emitted when owner enables approved to manage the tokenId token. |
+| Approval | Emitted when owner enables an approved account to manage the tokenId token. |
 
 You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) in this address [0x...0a0a](https://explorer.ps.hmny.io/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
 
@@ -957,9 +957,9 @@ The `HRC1155` implements the abstract class [Base Token](#base-token).
 Expected Methods:
 | Method | Description |
 | ------------- | ------------- |
-| balanceOf | Returns the amount of tokens of a token type (id) owned by an account. |
+| balanceOf | Returns the the amount of tokens of a token type (id) owned by an account. |
 | balanceOfBatch | Batched version of balanceOf. |
-| safeTransferFrom | Transfers the amount of tokens of a token type (id) from an address to another address. |
+| safeTransferFrom | Transfers the the amount of tokens of a token type (id) from an address to another address. |
 | safeBatchTransferFrom | Batched version of safeTransferFrom. |
 | setApprovalForAll | Grants or revokes permission to an operator to transfer the caller’s tokens. |
 | isApprovedForAll | Returns true if an operator is approved to transfer the tokens of an account. |
@@ -970,14 +970,14 @@ Expected Methods:
 | totalSupply | Total amount of tokens with a given token id |
 | symbol | Returns the token collection symbol. |
 | name | Returns the token collection name. |
-| mint | Creates the amount of tokens of a token type (id), and assigns them to an account. |
+| mint | Creates the the amount of tokens of a token type (id), and assigns them to an account. |
 | mintBatch | Batched version of mint |
 
 Expected Events
 | Event | Description |
 | ------------- | ------------- |
-| TransferSingle | Emitted when a token id are transferred from an address to another by operator. |
-| TransferBatch | Emitted when a token ids are transferred from an address to another by operator. |
+| TransferSingle | Emitted when a token id is transferred from an address to another by operator. |
+| TransferBatch | Emitted when token ids are transferred from an address to another by operator. |
 
 You can find an example of [HRC1155](./src/tests/contracts/BlockcodersHRC1155.sol) in this address [0x...b264](https://explorer.pops.one/address/0x16703afb468e4ba88380c2a2fda1aa4c5ec7b264).
 
@@ -1385,7 +1385,7 @@ const { addr, receiptId } = await bridge.sendToken(
 Install all the dependencies:
 
 ```sh
-npmn ci
+npm ci
 ```
 
 Copy the `.env.sample` file to `.env`
@@ -1397,7 +1397,7 @@ cp .env.sample .env
 ### Configure the environment variables
 
 ```sh
-# An Etherscan API key. This is need it for use the bridge contracts.
+# An Etherscan API key. This is needed for use the bridge contracts.
 API_KEY=
 # A private key
 TEST_PK_1=
