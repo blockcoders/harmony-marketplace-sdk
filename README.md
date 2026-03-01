@@ -226,7 +226,7 @@ const contract = new HRC20('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -561,7 +561,7 @@ const contract = new HRC721('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -1001,7 +1001,7 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -1385,7 +1385,7 @@ const { addr, receiptId } = await bridge.sendToken(
 Install all the dependencies:
 
 ```sh
-npmn ci
+npm ci
 ```
 
 Copy the `.env.sample` file to `.env`
