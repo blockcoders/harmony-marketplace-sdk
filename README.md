@@ -158,11 +158,11 @@ const key = new HDKey(HarmonyShards.SHARD_0, options)
 
 ## Metamask Provider
 
-Implementation a subclass of HttpProvider that takes window.ethereum as a parameter, each method of HttpProvider is implemented by this subclass by cascading the request appropriately to window.ethereum
+Implementation of a subclass of HttpProvider that takes window.ethereum as a parameter. Each HttpProvider method is implemented by this subclass by cascading the request appropriately to window.ethereum.
 
 ```ts
 import detectEthereumProvider from '@metamask/detect-provider'
-import { MetamaskProvider } from 'harmony-marketplace-sdk'
+import { Key, MetamaskProvider } from 'harmony-marketplace-sdk'
 
 const provider = await detectEthereumProvider()
 
@@ -201,10 +201,10 @@ Expected Methods:
 Expected Events
 | Event | Description |
 | ------------- | ------------- |
-| Transfer | Emitted when a token id is transferred from an address to another. |
-| Approval | Emitted when owner enables approved to manage the tokenId token. |
+| Transfer | Emitted when `value` tokens are transferred from one address to another. |
+| Approval | Emitted when `owner` sets `value` as the allowance of `spender`. |
 
-You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) in this address [0x...0a0a](https://explorer.ps.hmny.io/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
+You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) at this address [0x...254b](https://explorer.ps.hmny.io/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
 
 ### Initializing
 
@@ -511,7 +511,7 @@ const tx = await contract.burnFrom('0x...01', 10)
 
 The `HRC721` implements the abstract class [Base Token](#base-token).
 
-**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc721) will look for a specific list of functions and events to identify HRC721 tokens. You can validate if the bytecode of your HRC71 is valid [here](https://explorer.harmony.one/tools/checkHrc).
+**NOTE**: The harmony [explorer](https://explorer.harmony.one/hrc721) will look for a specific list of functions and events to identify HRC721 tokens. You can validate if the bytecode of your HRC721 is valid [here](https://explorer.harmony.one/tools/checkHrc).
 
 Expected Methods:
 | Method | Description |
@@ -712,7 +712,7 @@ const tx = await contract.approve('0x...01', '1')
 
 #### getApproved(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
-<p>Returns the account approved for <code>tokenId</code> token.<p>
+<p>Returns the account approved for <code>tokenId</code> token.</p>
 <p>Requirements
   <ul>
     <li><code>tokenId</code> must exist.</li>
@@ -738,7 +738,7 @@ const address = await contract.getApproved('1')
 
 #### setApprovalForAll(addressOperator: string, approved: boolean, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-<p>Approve or remove <code>addressOperator</code> as an operator for the caller. Operators can call <code>transferFrom</code> or <code>safeTransferFrom</code> for any token owned by the caller.<p>
+<p>Approve or remove <code>addressOperator</code> as an operator for the caller. Operators can call <code>transferFrom</code> or <code>safeTransferFrom</code> for any token owned by the caller.</p>
 <p>Requirements
   <ul>
     <li>The <code>addressOperator</code> cannot be the caller.</li>
@@ -823,7 +823,7 @@ const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a string value.
 const uri = await contract.tokenURI('10')
-
+```
 
 #### symbol(txOptions?: ITransactionOptions): Promise&lt;string&gt;
 
@@ -919,7 +919,7 @@ const wallet = new PrivateKey(
 const contract = new HRC721('0x...00', ABI, wallet)
 
 // returns a Harmony Transaction instance.
-const tx = await contract.mint('0x...01', '1')
+const tx = await contract.safeMint('0x...01', '1')
 ```
 
 #### burn(tokenId: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
@@ -1134,7 +1134,7 @@ const wallet = new PrivateKey(
 // A contract instance
 const contract = new HRC1155('0x...00', ABI, wallet)
 
-// returns an boolean value.
+// returns a boolean value.
 const isApproved = await contract.isApprovedForAll('0x...01', '0x...02')
 ```
 
@@ -1282,12 +1282,12 @@ const name = await contract.name()
 
 #### mint(account: string, tokenId: BNish, amount: BNish, txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-<p>Creates <code>amount</code> tokens of token type (id) <code>tokenId</code>, and assigns them to <code>to</code>.</p>
+<p>Creates <code>amount</code> tokens of token type (id) <code>tokenId</code>, and assigns them to <code>account</code>.</p>
 <p>Emits a <code>TransferSingle</code> event.</p>
 <p>Requirements
   <ul>
-    <li><code>to</code> cannot be the zero address.</li>
-    <li>If <code>to</code> refers to a smart contract, it must implement <code>IERC1155Receiver.onERC1155Received</code> and return the acceptance magic value.</li>
+    <li><code>account</code> cannot be the zero address.</li>
+    <li>If <code>account</code> refers to a smart contract, it must implement <code>IERC1155Receiver.onERC1155Received</code> and return the acceptance magic value.</li>
   </ul>
 </p>
   
@@ -1309,7 +1309,7 @@ const tx = await contract.mint('0x...01', '1', '10')
 
 #### mintBatch(account: string, tokenIds: BNish[], amounts: BNish[], txOptions?: ITransactionOptions): Promise&lt;Transaction&gt;
 
-<p>Batched version of <code>mint</code>.<p>
+<p>Batched version of <code>mint</code>.</p>
 <p>Emits a <code>TransferBatch</code> event.</p>
 <p>Requirements
   <ul>
@@ -1341,7 +1341,9 @@ Harmony -> Ethereum way bridge
 ### Initializing
 
 ```typescript
-import { PrivateKey, HarmonyShards, HRC1155 } from 'harmony-marketplace-sdk'
+import { Wallet } from '@ethersproject/wallet'
+import { EtherscanProvider } from '@ethersproject/providers'
+import { BridgeHRC20Token, BridgeType, HRC20, PrivateKey, HarmonyShards } from 'harmony-marketplace-sdk'
 import * as ABI from './abi.json'
 
 const ethOwner = new Wallet(
