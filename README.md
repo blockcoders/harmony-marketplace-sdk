@@ -42,7 +42,7 @@ Include the ESM module (harmony-marketplace-sdk.esm.js) and import using:
 
 ## Wallet
 
-Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a private key or mnemonic effortless.
+Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help create a Signer from a private key or mnemonic effortlessly.
 
 ### Private Key
 
@@ -173,7 +173,7 @@ const key = new Key(new MetamaskProvider(window.ethereum || provider))
 
 ## Base Token
 
-The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
+The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract), which is the Harmony recommendation for interacting with smart contracts. This abstract class contains the core functionality for interacting with Harmony smart contracts.
 
 ## HRC20 API
 
@@ -202,7 +202,7 @@ Expected Events
 | Event | Description |
 | ------------- | ------------- |
 | Transfer | Emitted when a token id is transferred from an address to another. |
-| Approval | Emitted when owner enables approved to manage the tokenId token. |
+| Approval | Emitted when the owner enables an approved account to manage the tokenId token. |
 
 You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) in this address [0x...0a0a](https://explorer.ps.hmny.io/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
 
@@ -226,7 +226,7 @@ const contract = new HRC20('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -561,7 +561,7 @@ const contract = new HRC721('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -1001,7 +1001,7 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -1385,7 +1385,7 @@ const { addr, receiptId } = await bridge.sendToken(
 Install all the dependencies:
 
 ```sh
-npmn ci
+npm ci
 ```
 
 Copy the `.env.sample` file to `.env`
@@ -1397,7 +1397,7 @@ cp .env.sample .env
 ### Configure the environment variables
 
 ```sh
-# An Etherscan API key. This is need it for use the bridge contracts.
+# An Etherscan API key. This is needed to use the bridge contracts.
 API_KEY=
 # A private key
 TEST_PK_1=
