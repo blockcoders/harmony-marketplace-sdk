@@ -46,6 +46,8 @@ Harmony Marketplace SDK provides three implementations of [Wallet](https://githu
 
 ### Private Key
 
+
+**Note**: If you encounter import errors for `@harmony-js/network`, ensure you have the required peer dependencies installed.
 Implementation of the Wallet that uses a private key.
 
 ```ts
