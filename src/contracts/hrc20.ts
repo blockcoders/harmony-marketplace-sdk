@@ -49,11 +49,11 @@ export class HRC20 extends BaseToken {
     return this.send('mint', [account, amount], txOptions)
   }
 
-  public burn(amount: number, txOptions?: ITransactionOptions) {
+  public burn(amount: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('burn', [amount], txOptions)
   }
 
-  public burnFrom(account: string, amount: number, txOptions?: ITransactionOptions) {
+  public burnFrom(account: string, amount: BNish, txOptions?: ITransactionOptions): Promise<Transaction> {
     return this.send('burnFrom', [account, amount], txOptions)
   }
 }
