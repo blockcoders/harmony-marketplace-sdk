@@ -10,7 +10,7 @@ Harmony Marketplace SDK
 [![BCH compliance](https://bettercodehub.com/edge/badge/blockcoders/harmony-marketplace-sdk?branch=main)](https://bettercodehub.com/)
 [![CodeQL](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml)
 
-Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
+Harmony Marketplace SDK provides a collection of interfaces to interact with HRC-721, HRC-1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
 
 ## Install
 
@@ -204,7 +204,7 @@ Expected Events
 | Transfer | Emitted when a token id is transferred from an address to another. |
 | Approval | Emitted when owner enables approved to manage the tokenId token. |
 
-You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) in this address [0x...0a0a](https://explorer.ps.hmny.io/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
+You can find an example of [HRC20](./src/tests/contracts/BlockcodersHRC20.sol) in this address [0x...0a0a](https://explorer.harmony.one/address/0x35305d505a884ccfaba7b7d5f533ef29ad57254b?activeTab=7).
 
 ### Initializing
 
@@ -226,7 +226,7 @@ const contract = new HRC20('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -561,7 +561,7 @@ const contract = new HRC721('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -1001,7 +1001,7 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
