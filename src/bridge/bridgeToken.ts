@@ -38,7 +38,9 @@ export abstract class BridgeToken {
     }
 
     this.ethMasterWallet = this.ethMasterWallet.connect(ethOwnerWallet.provider)
-    this.hmyMasterWallet.setSigner(MAINNET_MULTISIG_WALLET)
+    this.hmyMasterWallet = this.hmyMasterWallet.setSigner(
+      this.isMainnet ? MAINNET_MULTISIG_WALLET : DEVNET_MULTISIG_WALLET,
+    )
 
     this.hmyOwnerWallet = hmyOwnerWallet
     this.ethOwnerWallet = ethOwnerWallet
