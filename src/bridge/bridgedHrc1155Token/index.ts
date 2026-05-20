@@ -81,6 +81,14 @@ export class BridgedHRC1155Token extends EthBaseContract {
     return address.toLowerCase()
   }
 
+  public async name(): Promise<string> {
+    return this.read<string>('name', [])
+  }
+
+  public async symbol(): Promise<string> {
+    return this.read<string>('symbol', [])
+  }
+
   public async tokenURIPrefix(): Promise<string> {
     return this.read<string>('tokenURIPrefix', [])
   }
@@ -91,5 +99,15 @@ export class BridgedHRC1155Token extends EthBaseContract {
 
   public async totalSupply(id: BigNumberish): Promise<BigNumber> {
     return this.read<BigNumber>('totalSupply', [id])
+  }
+
+  public async tokenURI(id: BigNumberish): Promise<string> {
+    try {
+      BigNumber.from(id)
+    } catch (error) {
+      throw new ContractError('You must provide a valid token id', 'tokenURI')
+    }
+
+    return this.read<string>('uri', [id])
   }
 }
