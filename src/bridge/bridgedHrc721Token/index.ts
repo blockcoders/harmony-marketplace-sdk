@@ -31,6 +31,18 @@ export class BridgedHRC721Token extends EthBaseContract {
     return this.write('transferFrom', [from, to, tokenId], txOptions)
   }
 
+  public async mint(account: string, tokenId: BigNumberish, txOptions?: CallOverrides): Promise<TransactionReceipt> {
+    return this.write('mint', [account, tokenId], txOptions)
+  }
+
+  public async burn(tokenId: BigNumberish, txOptions?: CallOverrides): Promise<TransactionReceipt> {
+    return this.write('burn', [tokenId], txOptions)
+  }
+
+  public async burnFrom(owner: string, tokenId: BigNumberish, txOptions?: CallOverrides): Promise<TransactionReceipt> {
+    return this.write('burnFrom', [owner, tokenId], txOptions)
+  }
+
   public async symbol(): Promise<string> {
     return this.read<string>('symbol')
   }
