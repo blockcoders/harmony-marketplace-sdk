@@ -31,6 +31,10 @@ export class BridgedHRC721Token extends EthBaseContract {
     return this.write('transferFrom', [from, to, tokenId], txOptions)
   }
 
+  public async safeMint(to: string, tokenId: BigNumberish, txOptions?: CallOverrides): Promise<TransactionReceipt> {
+    return this.write('safeMint(address,uint256)', [to, tokenId], txOptions)
+  }
+
   public async symbol(): Promise<string> {
     return this.read<string>('symbol')
   }
