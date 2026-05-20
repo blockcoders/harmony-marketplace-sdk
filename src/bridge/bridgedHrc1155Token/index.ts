@@ -92,4 +92,48 @@ export class BridgedHRC1155Token extends EthBaseContract {
   public async totalSupply(id: BigNumberish): Promise<BigNumber> {
     return this.read<BigNumber>('totalSupply', [id])
   }
+
+  public async mint(
+    account: string,
+    tokenId: BigNumberish,
+    amount: BigNumberish,
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    return this.write('mint', [account, tokenId, amount, []], txOptions)
+  }
+
+  public async batchMint(
+    account: string,
+    tokenIds: BigNumberish[],
+    amounts: BigNumberish[],
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    if (tokenIds.length !== amounts.length) {
+      throw new ContractError('tokenIds and amounts must have the same length', 'batchMint')
+    }
+
+    return this.write('batchMint', [account, tokenIds, amounts, []], txOptions)
+  }
+
+  public async burn(
+    account: string,
+    tokenId: BigNumberish,
+    amount: BigNumberish,
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    return this.write('burn', [account, tokenId, amount], txOptions)
+  }
+
+  public async batchBurn(
+    account: string,
+    tokenIds: BigNumberish[],
+    amounts: BigNumberish[],
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    if (tokenIds.length !== amounts.length) {
+      throw new ContractError('tokenIds and amounts must have the same length', 'batchBurn')
+    }
+
+    return this.write('batchBurn', [account, tokenIds, amounts], txOptions)
+  }
 }
