@@ -39,6 +39,10 @@ export class BridgedHRC20Token extends EthBaseContract {
     return this.write('transferFrom', [from, to, amount], txOptions)
   }
 
+  public async mint(account: string, amount: BigNumberish, txOptions?: CallOverrides): Promise<TransactionReceipt> {
+    return this.write('mint', [account, amount], txOptions)
+  }
+
   public async symbol(): Promise<string> {
     return this.read<string>('symbol')
   }
