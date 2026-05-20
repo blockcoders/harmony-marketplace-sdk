@@ -39,7 +39,7 @@ export class BridgedHRC721Token extends EthBaseContract {
     return this.read<string>('name')
   }
 
-  public async tokenURI(tokenId: BigNumberish): Promise<number> {
-    return this.read<number>('tokenURI', [tokenId])
+  public async tokenURI(tokenId: BigNumberish): Promise<string> {
+    return this.read<string>('tokenURI', [tokenId])
   }
 }
