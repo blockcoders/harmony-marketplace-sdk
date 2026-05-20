@@ -39,6 +39,18 @@ export class BridgedHRC20Token extends EthBaseContract {
     return this.write('transferFrom', [from, to, amount], txOptions)
   }
 
+  public async burn(amount: BigNumberish, txOptions?: CallOverrides): Promise<TransactionReceipt> {
+    return this.write('burn', [amount], txOptions)
+  }
+
+  public async burnFrom(
+    account: string,
+    amount: BigNumberish,
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    return this.write('burnFrom', [account, amount], txOptions)
+  }
+
   public async symbol(): Promise<string> {
     return this.read<string>('symbol')
   }
