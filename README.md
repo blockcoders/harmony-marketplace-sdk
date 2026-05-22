@@ -10,7 +10,7 @@ Harmony Marketplace SDK
 [![BCH compliance](https://bettercodehub.com/edge/badge/blockcoders/harmony-marketplace-sdk?branch=main)](https://bettercodehub.com/)
 [![CodeQL](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/blockcoders/harmony-marketplace-sdk/actions/workflows/codeql-analysis.yml)
 
-Harmony Marketplace SDK provides a collection of interfaces to interact with HRC721, HRC1155 and any Smart Contracts that extends those standards. This library was based on [@harmony-js](https://github.com/harmony-one/sdk)
+Harmony Marketplace SDK provides a collection of interfaces to interact with HRC20, HRC721, HRC1155, and smart contracts that extend those standards. This library is based on [@harmony-js](https://github.com/harmony-one/sdk).
 
 ## Install
 
@@ -32,17 +32,17 @@ import { HRC721 } from 'harmony-marketplace-sdk'
 
 ### Browser
 
-Include the ESM module (harmony-marketplace-sdk.esm.js) and import using:
+In browser-based builds, import the package through your bundler just like the Node example:
 
-```html
-<script type="module">
-  import { HRC721 } from './harmony-marketplace-sdk.esm.js'
-</script>
+```typescript
+import { HRC721 } from 'harmony-marketplace-sdk'
 ```
+
+If you need a direct browser build, use the package's generated ESM entry from `lib.esm/index.js` rather than the outdated `harmony-marketplace-sdk.esm.js` filename.
 
 ## Wallet
 
-Harmony Marketplace SDK provides three implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) which help to create a Signer from a private key or mnemonic effortless.
+Harmony Marketplace SDK provides four wallet implementations of [Wallet](https://github.com/harmony-one/sdk/blob/master/packages/harmony-account/src/wallet.ts#L14) that help create a signer from a private key or mnemonic with minimal setup.
 
 ### Private Key
 
@@ -125,7 +125,7 @@ key.addByPrivateKey('45e497bd45a9049bcb649016594489ac67b9f052a6cdf5cb74ee2427a60
 
 ### HD Key
 
-Implementation of a hierarchical deterministic (HD) wallet that uses a mnemonic to generate the derivative addresses.
+Implementation of a hierarchical deterministic (HD) wallet that uses a mnemonic to generate derived addresses.
 
 ```ts
 import { HttpProvider, WSProvider } from '@harmony-js/network'
@@ -158,7 +158,7 @@ const key = new HDKey(HarmonyShards.SHARD_0, options)
 
 ## Metamask Provider
 
-Implementation a subclass of HttpProvider that takes window.ethereum as a parameter, each method of HttpProvider is implemented by this subclass by cascading the request appropriately to window.ethereum
+Implementation of a subclass of `HttpProvider` that takes `window.ethereum` as a parameter. Each `HttpProvider` method is forwarded to `window.ethereum` through the injected provider request flow.
 
 ```ts
 import detectEthereumProvider from '@metamask/detect-provider'
@@ -173,7 +173,7 @@ const key = new Key(new MetamaskProvider(window.ethereum || provider))
 
 ## Base Token
 
-The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
+The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract), which is Harmony's recommended way to interact with smart contracts. This abstract class contains the core functionality for interacting with Harmony smart contracts.
 
 ## HRC20 API
 
@@ -226,7 +226,7 @@ const contract = new HRC20('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -561,7 +561,7 @@ const contract = new HRC721('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
@@ -1001,7 +1001,7 @@ const contract = new HRC1155('0x...00', ABI, wallet, {
   shardID: 0,
   address: '0x...00',
   defaultAccount: wallet.getAccount('0x...00'),
-  defaultBlock: 'lastest',
+  defaultBlock: 'latest',
   defaultGas: '21000',
   defaultGasPrice: '1',
   transactionBlockTimeout: 2000,
