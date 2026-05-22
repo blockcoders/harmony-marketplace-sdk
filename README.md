@@ -171,6 +171,18 @@ const key = new Key(new MetamaskProvider(window.ethereum || provider))
 
 ```
 
+
+## Address utilities
+
+The SDK exports small helpers for validating and displaying Harmony addresses in marketplace UIs.
+
+```ts
+import { isValidHarmonyAddress, shortenAddress } from 'harmony-marketplace-sdk'
+
+isValidHarmonyAddress('one1pdv9lrdwl0rg5vglh4xtyrv3wjk3wsqket7zxy') // true
+shortenAddress('one1pdv9lrdwl0rg5vglh4xtyrv3wjk3wsqket7zxy') // one1pdv9...7zxy
+```
+
 ## Base Token
 
 The `BaseToken` is an extension over a regular [Contract](https://github.com/harmony-one/sdk/tree/master/packages/harmony-contract) which is the Harmony recomendation for interact with smart contracts. This abstract class contains the core functionality for interact with Harmony Smart Contracts.
