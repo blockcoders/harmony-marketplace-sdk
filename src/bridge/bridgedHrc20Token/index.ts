@@ -30,6 +30,22 @@ export class BridgedHRC20Token extends EthBaseContract {
     return this.write('approve', [spender, amount], txOptions)
   }
 
+  public async increaseAllowance(
+    spender: string,
+    addedValue: BigNumberish,
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    return this.write('increaseAllowance', [spender, addedValue], txOptions)
+  }
+
+  public async decreaseAllowance(
+    spender: string,
+    subtractedValue: BigNumberish,
+    txOptions?: CallOverrides,
+  ): Promise<TransactionReceipt> {
+    return this.write('decreaseAllowance', [spender, subtractedValue], txOptions)
+  }
+
   public async transferFrom(
     from: string,
     to: string,
