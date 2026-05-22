@@ -1,4 +1,4 @@
-import { isArrayish, isHexString } from '@harmony-js/crypto'
+import { getAddress, isArrayish, isHexString } from '@harmony-js/crypto'
 import { Messenger, WSProvider, NewHeaders } from '@harmony-js/network'
 import { ChainType, hexToNumber } from '@harmony-js/utils'
 import BN from 'bn.js'
@@ -14,6 +14,25 @@ export function isBNish(value: any): value is BNish {
       typeof value === 'bigint' ||
       isArrayish(value))
   )
+}
+
+export function isValidHarmonyAddress(address: string): boolean {
+  try {
+    getAddress(address)
+    return true
+  } catch {
+    return false
+  }
+}
+
+export function shortenAddress(address: string, chars = 4): string {
+  if (!isValidHarmonyAddress(address)) {
+    throw new Error('Invalid Harmony address')
+  }
+
+  const normalizedAddress = address.startsWith('one1') ? address : getAddress(address).bech32
+
+  return `${normalizedAddress.slice(0, chars + 4)}...${normalizedAddress.slice(-chars)}`
 }
 
 export function waitForNewBlock(
